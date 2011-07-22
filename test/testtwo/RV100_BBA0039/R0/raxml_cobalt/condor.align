@@ -1,0 +1,18 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64"
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/tools/bin/cobalt-2.0.1-64bit
+
+Log = logs/alg_condor_log
+ 
+
+ Arguments = -i input.fasta -rpsdb /projects/sate7/tools/ncbi-cobalt-2.0.1/db/cdd_clique_0.75
+ Error=logs/alg_std.err
+ Output=aligned.fasta
+ Queue

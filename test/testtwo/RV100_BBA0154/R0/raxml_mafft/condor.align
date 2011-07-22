@@ -1,0 +1,18 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64"
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/tools/bin/mafft.6.857-64bit
+
+Log = logs/alg_condor_log
+ 
+
+ Arguments = --localpair --maxiterate 1000 --quiet --ep 0.123 input.fasta
+ Error=logs/alg_std.err
+ Output=aligned.fasta
+ Queue

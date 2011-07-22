@@ -1,0 +1,19 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" 
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/smirarab/workspace/global/src/mirphyl/utils/missingbranch.py
+
+Log = logs/mb_condor_log
+
+getEnv=True 
+
+ Arguments =  reference.tre raxml/RAxML_bestTree.ml mb.stat
+ Error=logs/mb_std.err
+ Output=logs/mb_std.out
+ Queue

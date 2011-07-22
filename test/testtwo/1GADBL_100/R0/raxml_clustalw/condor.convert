@@ -1,0 +1,19 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" 
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/tools/bin/readseq.sh
+
+Log = logs/readseq_condor_log
+
+getEnv=True 
+
+ Arguments = -f12 aligned.fasta -o aligned.phylip
+ Error=logs/readseq_std.err
+ Output=logs/readseq_std.out
+ Queue

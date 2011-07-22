@@ -1,0 +1,18 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64"
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/tools/bin/clustalw2-2.0
+
+Log = logs/alg_condor_log
+ 
+
+ Arguments = -align -infile=input.fasta -outfile=aligned.fasta -output=fasta
+ Error=logs/alg-std.err
+ Output=logs/alg-std.out
+ Queue

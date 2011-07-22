@@ -1,0 +1,19 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" 
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/smirarab/workspace/FastSP/spfn.jar
+
+Log = logs/spfn_condor_log
+
+getEnv=True 
+
+ Arguments =  -e aligned.fasta -r reference.fasta -o spfn.stat
+ Error=logs/spfn_std.err
+ Output=logs/spfn_std.out
+ Queue

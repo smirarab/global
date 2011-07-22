@@ -1,0 +1,18 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64"
+# && Memory >= 4000 && InMastodon 
+
+executable = /projects/sate7/tools/bin/muscle3.8.31_i86linux64
+
+Log = logs/alg_condor_log
+ 
+
+ Arguments = -in input.fasta -out aligned.fasta -quiet
+ Error=logs/alg_std.err
+ Output=logs/alg_std.out
+ Queue

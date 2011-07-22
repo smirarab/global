@@ -1,0 +1,18 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64"
+# && Memory >= 4000 && InMastodon 
+
+executable = {exe}
+
+Log = logs/{name}_condor_log
+ 
+
+ Arguments = -align -infile={input} -outfile={output} -output=fasta
+ Error=logs/{name}-std.err
+ Output=logs/{name}-std.out
+ Queue

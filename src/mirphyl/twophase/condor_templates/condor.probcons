@@ -1,0 +1,17 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" && Memory >= 4000 
+
+executable = {exe}
+
+Log = logs/{name}_condor_log
+ 
+
+ Arguments = {input}
+ Error = logs/{name}_std.err
+ Output = {output}
+ Queue
