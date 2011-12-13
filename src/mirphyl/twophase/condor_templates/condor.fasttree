@@ -12,7 +12,7 @@ executable = {exe}
 Log = logs/{name}_condor_log
  
 
- Arguments = -quiet -nopr -nosupport -log logs/fasttree_log.err {input}
+ Arguments = -quiet -nopr -nosupport {model} -log logs/fasttree_log.err {input}
  Error=logs/{name}_std.err 
  Output={output}
  Queue

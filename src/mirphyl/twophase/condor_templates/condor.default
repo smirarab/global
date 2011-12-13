@@ -4,7 +4,7 @@
 
 Universe = vanilla
 
-Requirements = Arch == "X86_64" 
+#Requirements = Arch == "X86_64" 
 # && Memory >= 4000 && InMastodon 
 
 executable = {exe}

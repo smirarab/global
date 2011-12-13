@@ -4,15 +4,17 @@
 
 Universe = vanilla
 
-Requirements = Arch == "X86_64"
-# && Memory >= 4000 && InMastodon 
+Requirements = Arch == "X86_64" && Memory >= 4000 && InMastodon 
 
 executable = {exe}
 
 Log = logs/{name}_condor_log
  
 
- Arguments = -m PROTCATWAGF -n {output} -s {input} -w raxml
- Error=logs/{name}_std.err
- Output=logs/{name}_std.out
+ Arguments = -m {model} -n {output} -s {input} -T 2 -w {options}/raxml {outgroup}
+ Error=logs/{name}_std.errout
+ Output=logs/{name}_std.errout
  Queue
+
+# To manually run use the following
+# nohup memusg --o ml.stat {exe} -m {model} -n {output} -s {input} -T 2 -w {options}/raxml 1>logs/{name}_std.errout 2>logs/{name}_std.errout &

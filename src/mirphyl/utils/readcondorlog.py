@@ -33,15 +33,24 @@ def get_result(key):
 
 if __name__ == '__main__':
     condor_file = sys.argv[1]
-    out = open(sys.argv[2],"w") if len(sys.argv) > 2 else sys.stdout
+    out = open(sys.argv[2],"w")
+    
+    scaleup = None 
+    if len(sys.argv) > 3:
+        scaleup = {}
+        for line in open(sys.argv[3]).readlines():
+            scaleup[line.split()[0]] = int(line.split()[1]) 
 
     pat = re.compile(".*Usr (.*), Sys.*")
         
     d = get_result("Total Remote Usage")
+    if scaleup is not None: d += scaleup["Total_time"]
     print >>out, "Total_time %d" %d 
         
     d = get_result("Run Remote Usage")
+    if scaleup is not None: d += scaleup["Run_time"]
     print >>out, "Run_time %d" %d 
         
     s = get_mem_result()    
-    print >>out, "Image_size %s" %s
+    if scaleup is not None: d = max(scaleup["Image_size"],d)
+    print >>out, "Image_size %s" %s    
