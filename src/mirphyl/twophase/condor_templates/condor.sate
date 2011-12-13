@@ -1,0 +1,22 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "SATe method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" && Memory >= 4000 
+# && InMastodon 
+
+executable = {exe}
+
+Log = logs/{name}_condor_log
+ 
+getEnv=True 
+
+ Arguments = -i {input} -o sateout -j {output} -c checkpoint.dump {options}
+ Error=logs/{name}_std.err
+ Output=logs/{name}_std.out
+ Queue
+
+# To manually run use the following
+# nohup memusg --o alg.stat {exe} -i {input} -o sateout -j {output} -c checkpoint.dump {options} 1>logs/alg_std.out 2>logs/alg_std.err &

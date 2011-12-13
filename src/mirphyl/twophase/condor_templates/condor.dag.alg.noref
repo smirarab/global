@@ -1,0 +1,4 @@
+JOB  ALG  condor.align 
+JOB RALG condor.read.alg
+JOB DIST condor.distance
+PARENT ALG CHILD RALG DIST

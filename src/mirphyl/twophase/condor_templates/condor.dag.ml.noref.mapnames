@@ -1,0 +1,7 @@
+JOB  CONV  condor.convert
+JOB STD condor.std
+JOB  ML  condor.ml
+JOB MAP condor.map
+PARENT STD CHILD CONV
+PARENT CONV CHILD ML
+PARENT ML CHILD MAP

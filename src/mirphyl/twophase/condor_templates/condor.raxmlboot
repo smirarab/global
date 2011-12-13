@@ -1,0 +1,17 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" && Memory >= 4000 && InMastodon 
+
+executable = {exe}
+
+Log = logs/{name}_condor_log
+ 
+# -f a to turn on rapid bootstraps. -N to give the number of runs. -x to set the seed. 
+ Arguments = -f a -m {model} -n {output} -s {input} -N 100 -x 11111 -T 3 -w {options}/raxml {outgroup}
+ Error=logs/{name}_std.errout
+ Output=logs/{name}_std.errout
+ Queue

@@ -1,0 +1,5 @@
+JOB  CONV  condor.convert
+JOB  ML  condor.ml
+JOB RML condor.read.ml
+PARENT CONV CHILD ML
+PARENT ML CHILD RML

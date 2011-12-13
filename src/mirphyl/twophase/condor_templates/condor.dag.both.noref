@@ -1,0 +1,9 @@
+JOB  ALG  condor.align 
+JOB  CONV  condor.convert
+JOB  ML  condor.ml
+JOB RALG condor.read.alg
+JOB RML condor.read.ml
+JOB DIST condor.distance
+PARENT ALG CHILD CONV RALG DIST
+PARENT CONV CHILD ML
+PARENT ML CHILD RML

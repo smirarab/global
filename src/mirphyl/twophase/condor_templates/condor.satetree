@@ -1,0 +1,18 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" && Memory >= 4000 
+# && InMastodon 
+
+executable = {exe}
+
+Log = logs/{name}_condor_log
+ 
+# TODO: the following path is hard-coded. Change to be passed in as a parameter
+ Arguments = sateout/aligned.fasta.tre {output}
+ Error=logs/{name}_std.err
+ Output=logs/{name}_std.out
+ Queue
