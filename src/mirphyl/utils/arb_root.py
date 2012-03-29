@@ -22,7 +22,7 @@ if __name__ == '__main__':
     
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
     for tree in trees:
-        n = tree.find_node_with_taxon_label("O")     
+        n = tree.find_node_with_taxon_label("ANOCA")     
         tree.reroot_at_edge(n.edge, update_splits=False)
         #tree.reroot_at_midpoint(update_splits=False)
         

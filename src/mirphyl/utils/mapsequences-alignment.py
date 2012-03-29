@@ -31,10 +31,11 @@ mapping = {}
 for line in mapfile:
     m = line.replace("\n","").replace("\r","").split("\t")
     if not reverse:
-        mapping[m[1].split(" ")[0]] = m[0]
+        mapping[m[1]] = m[0]
     else: 
-        mapping[m[0].split(" ")[0]] = m[1]
+        mapping[m[0]] = m[1]
         
+#print mapping
 for t in src:    
     t = pattern.sub(lambda m: mapping[m.group(1)],t)
     dest.write(t)

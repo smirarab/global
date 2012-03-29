@@ -24,11 +24,16 @@ argv <- commandArgs(trailingOnly = TRUE)
 bdir = "."
 if (length(grep("-in",argv)) > 0) { bdir = argv[grep("-in",argv)+1] }
 
+if (!exists("eliminate.ds")) eliminate.ds=c()
+
 alldata<-read.csv(file,head=T,sep=" ")
 data<-data.frame()
 # read the file
+print(directories)
 for (dir in names(directories)) {
-	d = alldata[which( alldata$DIR == dir & alldata$FACTORS %in% directories[[dir]]),]
+	d = alldata[which( alldata$DIR == dir & 
+					   alldata$FACTORS %in% directories[[dir]] &
+					   ! alldata$DATASET %in% eliminate.ds),]
 	m  = d
 	# -- drop levels that are factored out
 	d$FACTORS <- d$FACTORS[, drop = TRUE]
@@ -41,15 +46,15 @@ for (dir in names(directories)) {
 	}	
 }
 data$FACTORS<-factor(data$FACTORS)
-
 ## read the datasets statistics file
 dataset.data<-read.csv(datasets.stat.file,head=T,sep=" ")
 
 ## filter out specified factors
 #data = data[which(! data$FACTORS %in% filterout.factors),]
-## -- drop levels that are factored out
-#data$FACTORS <- data$FACTORS[, drop = TRUE]
 
+## -- drop levels that are factored out
+data$FACTORS <- data$FACTORS[, drop = TRUE]
+data$DATASET <- data$DATASET[, drop = TRUE]
 # add a column to be used for sorting the datasets. see settings. 
 if (sort.from.data) {
 	data = merge( data, 
@@ -60,14 +65,6 @@ if (sort.from.data) {
 			dataset.data[which(dataset.data$STAT==sort.by.stat & dataset.data$FACTOR == sort.by.factor),c("DATASET", "REPLICA" ,"VAL")],
 			c("DATASET","REPLICA"),suffixes=c("",".sort"))
 }
-# adjust running times to be in hours
-data[which(grepl(stat.time.suffix,data$STAT)),"VAL"] = 
-		data[which(grepl(stat.time.suffix,data$STAT)),"VAL"] / 3600 
-
-# adjust memory to be in mega-bytes (assume already in kilo-bytes)
-data[which(grepl(stat.mem.suffix,data$STAT)),"VAL"] = 
-		data[which(grepl(stat.mem.suffix,data$STAT)),"VAL"] / 1000
-
 # Assign a number to each Dataset (and print it for future reference)
 # define xformatter so that this default formattign is overwitten
 if (! exists("xformatter")){
@@ -79,7 +76,15 @@ if (! exists("xformatter")){
 print (xformatter(levels(data$DATASET)))
 
 # print the count of rows in each dataset - to be eye balled
-print (table(data[which(data$STAT=="MB_FN"),c("DATASET","FACTORS")])) 
+print (table(data[which(data$STAT=="SPFN_Compression"),c("DATASET","FACTORS")])) 
+
+# adjust running times to be in hours
+data[which(grepl(stat.time.suffix,data$STAT)),"VAL"] = 
+		data[which(grepl(stat.time.suffix,data$STAT)),"VAL"] / 3600 
+
+# adjust memory to be in mega-bytes (assume already in kilo-bytes)
+data[which(grepl(stat.mem.suffix,data$STAT)),"VAL"] = 
+		data[which(grepl(stat.mem.suffix,data$STAT)),"VAL"] / 1000
 
 # rename technique labels
 if (exists("tech.rename")) {
@@ -95,6 +100,7 @@ d <- rbind(data,a[,c("DATASET","REPLICA","DIR","FACTORS","STAT","VAL","VAL.sort"
 data= d
 #assign(deparse(substitute(data)), d , envir = .GlobalEnv)
 
+data$DATASET = reorder(data$DATASET, data$VAL.sort)
 
 # draw a simple line plot of the data:
 # X:datasets, Y:metric, color:FACTORS, shape: based on setting shapes.pattern
@@ -103,35 +109,89 @@ lineplot <- function( metric, color.caption = "Techniques") {
 	if (nrow(d) < 1) {
 		return (paste("WARNNING: metric not found:",metric))
 	}
-	stat_sum_df <- function(fun, geom="crossbar", ...) { 
-		   stat_summary(fun.data=fun, geom=geom, width=0.2, ...) 
+	stat_sum_df <- function(geom="errorbar", ...) { 
+		   stat_summary(
+				   fun.ymin = function(x) {mean(x)-sd(x)/sqrt(length(x))}, 
+				   fun.ymax = function(x) {mean(x)+sd(x)/sqrt(length(x))}, 
+				   geom=geom, width=0.05, size = 0.2, linetype=1, ...) 
 		 }
 	p <- qplot(reorder(DATASET,VAL.sort), VAL, data = d, colour=FACTORS, 
-					shape=FACTORS, group=FACTORS, stat="summary", fun.y = "mean", 
-					linetype=FACTORS) +
+					shape=FACTORS,
+					geom=c("line","point"),
+					group=FACTORS, stat="summary", fun.y = "mean", 
+					linetype=FACTORS,
+					fill=FACTORS
+			) +			
+			geom_point(size=3, stat="summary", fun.y="mean")+
 			scale_x_discrete("Datasets",formatter = xformatter) + 			
-			scale_shape_manual(color.caption,values=shapes.pattern)+
-			scale_linetype_manual(color.caption,values=shapes.lt.pattern)+
-			#stat_sum_df("mean_cl_normal", geom = "errorbar", se=T)+
-			labs(colour = color.caption) +			
-			geom_line(stat="summary", fun.y = "mean") 
+			scale_shape_manual(color.caption,values=shapes.pattern)+									
+			#geom_line(stat="summary", fun.y = "mean") +
+			scale_linetype_manual(color.caption,values=shapes.lt.pattern)+			
+			scale_color_manual(color.caption,values=colors)+
+			scale_fill_manual(color.caption,values=colors) +
+			stat_sum_df()
 	return(p)
 }
 
 # draw a simple line plot of the data:
 # X:datasets, Y:metric, color:FACTORS, shape: based on setting shapes.pattern
 barplot <- function( metric, color.caption = "Techniques") {	
+	
 	d = data[which(data$STAT == metric),]
 	if (nrow(d) < 1) {
 		return (paste("WARNNING: metric not found:",metric))
 	}
-	stat_sum_df <- function(fun, geom="crossbar", ...) { 
-		stat_summary(fun.data=fun, geom=geom, width=0.2, ...) 
+	
+	## -- drop levels that are factored out
+	d$FACTORS <- d$FACTORS[, drop = TRUE]
+	d$DATASET <- d$DATASET[, drop = TRUE]
+	
+	
+	stat_sum_df <- function(geom="errorbar", ...) { 
+		stat_summary(				
+				fun.y = function(x) {mean(x)},
+				fun.ymin = function(x) {mean(x)-sd(x)/sqrt(length(x))}, 
+				fun.ymax = function(x) {mean(x)+sd(x)/sqrt(length(x))}, 
+				geom=geom, width=0.5, size = 0.3, linetype=1, ...) 
 	}
-	p <- qplot(reorder(DATASET,VAL.sort), VAL, data = d, fill=FACTORS,
-					group=FACTORS, stat="summary", fun.y = "mean", geom="bar",position="dodge") +
+	dodge <- position_dodge(width=0.9) 
+	p <- qplot(reorder(DATASET,VAL.sort), VAL, data = d, 
+					fill=FACTORS, group=FACTORS, 
+					stat="summary", fun.y = "mean", 
+					geom="bar", position=dodge) +
 			scale_x_discrete("Datasets",formatter = xformatter) + 			
-			#stat_sum_df("mean_cl_normal", geom = "errorbar", se=T)+
-			labs(fill = color.caption)
+			stat_sum_df(geom = "errorbar", position=dodge)+
+			labs(fill = color.caption)+
+			scale_color_manual(values=colors)+
+			scale_fill_manual(values=colors)
+	
+	#if (printdf) {
+	#	print(d)
+	#}
+	return(p)
+}
+
+scatter_plot <- function(x, y, color.caption = "Techniques") {	
+	d = cast(data[which(data$STAT %in% c(x,y)),], DATASET+DIR+FACTORS~STAT,value="VAL",mean)
+
+	stat_sum_df <- function(geom="errorbar", ...) { 
+		stat_summary(				
+				fun.y = function(x) {mean(x)},
+				fun.ymin = function(x) {mean(x)-sd(x)/sqrt(length(x))}, 
+				fun.ymax = function(x) {mean(x)+sd(x)/sqrt(length(x))}, 
+				geom=geom, width=0.5, size = 0.3, linetype=1, ...) 
+	}
+	
+	if (nrow(d) < 1) {
+		return (paste("WARNNING: metric not found:",c(x,y)))
+	}
+	p <- qplot(d[,x],d[,y],data=d,group=FACTORS,fill=FACTORS,colour=FACTORS,shape=FACTORS) +	
+			geom_point(size=3)+
+			facet_grid(DATASET~.)+
+			scale_shape_manual(color.caption,values=shapes.pattern)+
+			labs(colour = color.caption,fill = color.caption)+
+			scale_color_manual(values=colors)+
+			scale_fill_manual(values=colors)
+	
 	return(p)
 }

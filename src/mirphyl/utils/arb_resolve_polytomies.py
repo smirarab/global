@@ -1,4 +1,4 @@
-#!/lusr/bin/python
+#!/lusr/bin/python2.7
 '''
 Created on Jun 3, 2011
 
@@ -6,8 +6,7 @@ Created on Jun 3, 2011
 '''
 import dendropy
 import sys
-import os
-import copy
+
 
 if __name__ == '__main__':
 
@@ -21,7 +20,8 @@ if __name__ == '__main__':
     resultsFile="%s.resolved" % treeName
     
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
-    for tree in trees:                
-        tree.resolve_polytomies()     
+#    for tree in trees:            
+#        print "."    
+#        tree.resolve_polytomies()     
     
-    trees.write(open(resultsFile,'w'),'newick')
+    trees.write(open(resultsFile,'w'),'newick',edge_lengths=True)

@@ -13,7 +13,7 @@ import os
 from shutil import copyfile
 from mirphyl.setup.utilities import require_dir
 
-IGNORE_MISSING_OPTIONAL_FILES = True
+IGNORE_MISSING_OPTIONAL_FILES = twophase_conf.get("default","IGNORE_OPTIONAL_FILES")
 
 config_path = os.path.join(CONFPATH,"config_files")
 CODE_SEQ=0
@@ -30,6 +30,7 @@ condor_temp_def = open(os.path.join(condor_templates_path, "condor.default")).re
 
 use_initial = twophase_conf.getboolean("initial", "use_initial")
 use_initial_alg = twophase_conf.get("initial", "use_initial_alignment")
+use_initial_alg_ml = twophase_conf.get("initial", "use_initial_alignment_ml")
 
 if use_initial and (use_initial is None or use_initial_alg == ''): 
     raise RuntimeError("Using which initial alignment? \n \
@@ -79,7 +80,7 @@ def copy_files_for_replica(ds_path, out_ds_path, rep, names, alg, ds_name):
                           if not use_initial and not is_alignment_available(alg) else 
                           os.path.join(twophase_conf.get("initial", "alignment"), 
                                        ds_name, "R%d" % rep, 
-                                       "%s_%s" %(DUMMY,use_initial_alg), ALIGNED))
+                                       "%s_%s" %(use_initial_alg_ml,use_initial_alg), ALIGNED))
 
     out_seq_path = os.path.join(out_ds_path, INPUT)    
     if IGNORE_MISSING_OPTIONAL_FILES or os.path.exists(reference_seq_name): 
@@ -104,16 +105,17 @@ def copy_files_for_replica(ds_path, out_ds_path, rep, names, alg, ds_name):
             raise RuntimeError("path %s does not exists." %reference_alg_name)
     
     if is_alignment_available(alg):
+        m = twophase_conf.get("initial", "alignment")
         '''copy the spfn file over'''
         if is_data_available(CODE_REFALG):
             copyfile(os.path.join(twophase_conf.get("initial", "alignment"), 
                                   ds_name, "R%d" % rep, 
-                                  "%s_%s" %(DUMMY,use_initial_alg), SPFN_STAT),
+                                  "%s_%s" %(use_initial_alg_ml,use_initial_alg), SPFN_STAT),
                      os.path.join(out_ds_path, SPFN_STAT))
         '''copy the alignment stat over'''
         src_path = os.path.join(twophase_conf.get("initial", "alignment"), 
                               ds_name, "R%d" % rep, 
-                              "%s_%s" %(DUMMY,use_initial_alg), ALG_STAT)
+                              "%s_%s" %(use_initial_alg_ml,use_initial_alg), ALG_STAT)
         if os.path.exists(src_path) or not IGNORE_MISSING_OPTIONAL_FILES:
             copyfile(src_path,
                  os.path.join(out_ds_path, ALG_STAT))        
@@ -122,7 +124,7 @@ def copy_files_for_replica(ds_path, out_ds_path, rep, names, alg, ds_name):
         '''alignment time needs to be added with initial alignment time'''
         inital_stat_file = os.path.join(twophase_conf.get("initial", "alignment"), 
                               ds_name, "R%d" % rep, 
-                              "%s_%s" %(DUMMY,use_initial_alg), ALG_STAT)
+                              "%s_%s" %(use_initial_alg_ml,use_initial_alg), ALG_STAT)
         if os.path.exists(inital_stat_file):                    
             copyfile(inital_stat_file,
                  os.path.join(out_ds_path, "initial_%s"%ALG_STAT))
@@ -249,7 +251,7 @@ def make_ML_condor_file(outpath, ml_tool,ds_name,ml, outgroup):
 def make_mbrate_condor_file(outpath,ml):
     tool_path = get_tool_path("missingbranch")
     input = 'ml'
-    if not ml.startswith('raxml'):
+    if ml.startswith('raxml'):
         input = 'raxml/RAxML_bestTree.ml'    
     condor_st = condor_temp_def.format(exe=tool_path,
                                          input="reference.tre %s"%input,
