@@ -20,8 +20,8 @@ if __name__ == '__main__':
     resultsFile="%s.resolved" % treeName
     
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
-#    for tree in trees:            
-#        print "."    
-#        tree.resolve_polytomies()     
+    for tree in trees:            
+        print "."    
+        tree.resolve_polytomies()     
     
     trees.write(open(resultsFile,'w'),'newick',edge_lengths=True)
