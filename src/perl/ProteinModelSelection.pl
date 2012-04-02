@@ -2,7 +2,6 @@
 
 #print $ARGV[0]." ".$ARGV[1]." ".$#ARGV."\n";
 
-$raxmlHPC = "raxmlHPC-SSE3"
 
 if($#ARGV < 0 || $#ARGV > 1)
   {
@@ -11,6 +10,8 @@ if($#ARGV < 0 || $#ARGV > 1)
   }
 
 $alignmentName = $ARGV[0];
+
+$raxmlHPC = "raxmlHPC-SSE3";
 
 $UNLIKELY = -1.0E300;
 
