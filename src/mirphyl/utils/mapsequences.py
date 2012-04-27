@@ -4,7 +4,7 @@ import os
 import sys
 import re
 
-pattern = re.compile("(?<=[,(])([^,():]+)(?=[,():])")
+pattern = re.compile("(?<=[,(])'?([^,():']+)'?(?=[,():])")
  
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.stderr.write("usage: %s [<tree-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])

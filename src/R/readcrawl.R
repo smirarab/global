@@ -91,6 +91,7 @@ if (exists("tech.rename")) {
 	levels(data$FACTORS)<-tech.rename
 }
 
+
 a = merge(data[data$STAT=="ML_Total_time",],data[data$STAT=="ALG_Total_time",], c("DATASET","REPLICA","DIR","FACTORS","VAL.sort"),all="T")
 a$VAL.x[is.na(a$VAL.x)]<-0
 a$VAL.y[is.na(a$VAL.y)]<-0

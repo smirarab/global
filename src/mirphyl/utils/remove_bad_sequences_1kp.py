@@ -10,9 +10,9 @@ import fnmatch
 import subprocess as sub
 import re
 
-MAX_LENGTH = 6666
-MAX_NNNs = 40
-N_CHAR = "X"
+MAX_LENGTH = 20000
+MAX_NNNs = 120
+N_CHAR = "N"
 N_SEQS= set(["Vitis" , "Carica", "Sorghum"])
 
 pattern = re.compile("%s{%d}" %(N_CHAR,MAX_NNNs))
@@ -27,7 +27,7 @@ def locate(pattern, root=os.curdir):
             yield os.path.join(path, filename)
 
 if __name__ == '__main__':
-    for file in locate("*.pep.original"):
+    for file in locate("*.cds.original"):
         p = sub.Popen(['simplifyfasta.sh',file],stdout=sub.PIPE,stderr=sub.PIPE)
         output, errors = p.communicate()
         if errors is not None and errors != "":

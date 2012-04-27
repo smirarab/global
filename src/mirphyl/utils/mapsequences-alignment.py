@@ -36,8 +36,14 @@ for line in mapfile:
         mapping[m[0]] = m[1]
         
 #print mapping
-for t in src:    
-    t = pattern.sub(lambda m: mapping[m.group(1)],t)
-    dest.write(t)
-
+try:
+    for t in src:    
+        t = pattern.sub(lambda m: mapping[m.group(1)],t)
+        dest.write(t)
+except Exception as e:
+    print >>sys.stderr, "Error: %s "  %src_fpath
+    dest.close()
+    os.remove(dest_fpath)
+    raise e
+        
 dest.close()

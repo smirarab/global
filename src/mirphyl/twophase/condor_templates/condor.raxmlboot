@@ -10,8 +10,8 @@ executable = {exe}
 
 Log = logs/{name}_condor_log
  
-# -f a to turn on rapid bootstraps. -N to give the number of runs. -x to set the seed. 
- Arguments = -f a -m {model} -n {output} -s {input} -N 100 -x 11111 -T 3 -w {options}/raxml {outgroup}
+# -f a and -x to turn on rapid bootstraps with ML. -N to give the number of runs. -p to set the seed. 
+ Arguments = -f a -m {model} -n {output} -s {input} -N 100 -x 11111 -p 11111 -T 2 -w {options}/raxml {outgroup}
  Error=logs/{name}_std.errout
  Output=logs/{name}_std.errout
  Queue
