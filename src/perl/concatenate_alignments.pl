@@ -24,7 +24,7 @@ use Cwd;
 use strict;
 
 # for hi res timing - from Li-San
-use Time::HiRes qw(gettimeofday);
+#use Time::HiRes qw(gettimeofday);
 
 # for temp files
 use File::Temp qw/ tempfile tempdir /;
@@ -165,7 +165,7 @@ sub process {
     close ($fh);
 
     # alphabetize it
-    @inputAlignmentFilenames = sort {$a cmp $b} @inputAlignmentFilenames;
+    #@inputAlignmentFilenames = sort {$a cmp $b} @inputAlignmentFilenames;
 
     # need to map from original input filename to alignment proper
     my %inputAlignmentRefsMap = ();

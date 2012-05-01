@@ -11,7 +11,7 @@ if($#ARGV < 0 || $#ARGV > 1)
 
 $alignmentName = $ARGV[0];
 
-$raxmlHPC = "raxmlHPC-SSE3";
+$raxmlHPC = "/share/home/01721/smirarab/bin/raxmlHPC-SSE3";
 
 $UNLIKELY = -1.0E300;
 
