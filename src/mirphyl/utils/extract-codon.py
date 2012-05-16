@@ -3,6 +3,7 @@
 import os
 import sys
 import re
+import subprocess as sub
  
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 3:
     sys.stderr.write("usage: %s [<alignment-file-path>] [<out-file-path>] [codon]\n"%sys.argv[0])
@@ -18,7 +19,7 @@ dest = open(dest_fpath, "w")
 
 c = int(sys.argv[3]) - 1
 
-p = sub.Popen(['simplifyfasta.sh',src],stdout=sub.PIPE,stderr=sub.PIPE)
+p = sub.Popen(['simplifyfasta.sh',src_fpath],stdout=sub.PIPE,stderr=sub.PIPE)
 output, errors = p.communicate()
 if errors is not None and errors != "":
     print errors

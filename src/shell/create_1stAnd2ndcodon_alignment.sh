@@ -1,10 +1,7 @@
 #!/bin/bash
-set -x
+#set -x
 
-export PERL5LIB="$PERL5LIB:/share/home/01721/smirarab/workspace/global/src/perl"
-
-module load python
-
+export PERL5LIB="$PERL5LIB:$HOME/workspace/global/src/perl"
 
 if [ ! $# == 3 ]; then  
   echo USAGE: $0 alignment_file output_file output_partition_file;
@@ -19,6 +16,6 @@ python $HOME/workspace/global/src/mirphyl/utils/extract-codon.py $1.simp codon2n
 echo "codon1st
 codon2nd" > .codon_files
 
-/usr/bin/perl $HOME/workspace/global/src/perl/concatenate_alignments.pl -i .codon_files -o $2 -p $3
+perl $HOME/workspace/global/src/perl/concatenate_alignments.pl -i .codon_files -o $2 -p $3
 
 rm codon1st codon2nd .codon_files $1.simp
