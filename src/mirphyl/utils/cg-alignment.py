@@ -28,7 +28,7 @@ if len(sys.argv) > 2:
 else:
     dest = sys.stdout
 
-print >>dest, "%s %s %s %s %s %s %s %s %s %s" %("SEQUENCE","TAXON","A_C","C_C","G_C","T_C","A_R","C_R","G_R","T_R")        
+print >>dest, "%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s","%s" %("SEQUENCE","TAXON","A_C","C_C","G_C","T_C","A_R","C_R","G_R","T_R","c1_A_C","c1_C_C","c1_G_C","c1_T_C","c1_A_R","c1_C_R","c1_G_R","c1_T_R","c2_A_C","c2_C_C","c2_G_C","c2_T_C","c2_A_R","c2_C_R","c2_G_R","c2_T_R","c3_A_C","c3_C_C","c3_G_C","c3_T_C","c3_A_R","c3_C_R","c3_G_R","c3_T_R")
 #print mapping
 try:
     seq=""
