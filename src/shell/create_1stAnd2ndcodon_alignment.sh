@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 
-export PERL5LIB="$PERL5LIB:/share/home/01721/smirarab/workspace/global/src/perl"
+export PERL5LIB="$PERL5LIB:$HOME/workspace/global/src/perl"
 
 module load python
 
