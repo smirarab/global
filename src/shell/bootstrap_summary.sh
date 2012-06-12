@@ -18,4 +18,4 @@ BEGIN {sum=0;num=0;min=100;max=0;high=0;}
 	if($1>= '$S') {high++};
 	}
 }
-END {print sum/num " " max " " min " " high}'
+END {print sum/num " " max " " min " " num " " high}'
