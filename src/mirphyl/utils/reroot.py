@@ -57,7 +57,10 @@ and always the mrca of the + delimited list of outgroups is used.
     resultsFile="%s.rooted"%treeName[:-9] if treeName.endswith("unrooted") else "%s.rooted" % treeName
     print "writing results to %s" %resultsFile
     trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
+    i = 0;
     for tree in trees:
+        i+=1
+        print i
         mrca = None
         for outgroup in outgroups:  
             outs = outgroup.split("+")
@@ -70,7 +73,7 @@ and always the mrca of the + delimited list of outgroups is used.
             if len (outns) != 0:
                 mrca = tree.mrca(taxa=outns)
 		#if not mono-phyletic, then use the first
-		if not use_mrca and len (mrca.leaf_nodes()) == len(outns):
+		if not use_mrca and len (mrca.leaf_nodes()) != len(outns):
 		    print "selected set is not mono-phyletic. Using %s instead. " %outns[0]
 		    mrca = tree.find_node_with_taxon_label(outs[0])
                 break                    
