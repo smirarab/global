@@ -16,29 +16,32 @@ The script goes through the list of outgroups.
 If the outgroup is found in the tree, the tree is rooted at that outgroup.
 Otherwise, the next outgroup in the list is used. 
 Each element in the camma-delimited list is itself a + delimited list of taxa.
-By default the script makes sure that this list of taxa are mono-phyletic
-in the tree (if not, an error is generated) and rootss the tree at the parent
-of these taxa.
-Using -mrca this mono-phyletic requirement can be overwritten. 
+By default the script makes sure that the set of outgroups used are mono-phyletic
+in the tree and rootss the tree at the node leading to the clade represented by outgroups.
+If outgroups are not mono-phyletic, the first one is used.
+Using -mrca this mono-phyletic requirement can be relaxed, so that MRCA is always used. 
 '''
 if __name__ == '__main__':
     
     if len (sys.argv) < 2:
-	print '''USAGE: %s [tree_file] [outgroups] [-mrca (optional)]\n
--- tree_file: a path to the newick tree file\n
+	print '''USAGE: %s [tree_file] [outgroups] [-mrca (optional)]
+
+-- tree_file: a path to the newick tree file
+
 -- outgroups: a list of outgroups, separated by camma.
-The script goes through the list of outgroups. 
-If the outgroup is found in the tree, the tree is rooted at that outgroup.
-Otherwise, the next outgroup in the list is used. 
+The script goes through the list of outgroups. If the outgroup is found in the tree, 
+the tree is rooted at that outgroup. Otherwise, the next outgroup in the list is used. 
 Each element in the camma-delimited list is itself a + delimited list of taxa.
 By default the script makes sure that this list of taxa are mono-phyletic
-in the tree (if not, an error is generated) and roots the tree at the parent
-of the outgroups given in the + delimited list.\n
+in the tree and roots the tree at the node leading to the clade represented 
+by outgroups given in the + delimited list.
+
 Example: HUMAN,ANOCA,STRCA+TINMA first tries to root at HUMAN, if not present, 
 tries to use ANOCA, if not present, tries to root at parent of STRCA and TINMA
-which need to be mono-phyletic.\n
--- (optional) -mrca: using this option the mono-phyletic
-requirement is relaxed.
+which need to be mono-phyletic. If not mono-phyletic, roots at STRCA.
+
+-- (optional) -mrca: using this option the mono-phyletic requirement is relaxed 
+and always the mrca of the + delimited list of outgroups is used.
 ''' %sys.argv[0]
         sys.exit(1)
     treeName = sys.argv[1]
@@ -67,11 +70,8 @@ requirement is relaxed.
             if len (outns) != 0:
                 mrca = tree.mrca(taxa=outns)
 		#if not mono-phyletic, then use the first
-		print len(outns)
-		print use_mrca
-		print len (mrca.leaf_nodes())
 		if not use_mrca and len (mrca.leaf_nodes()) == len(outns):
-		    print "selected set is not mono-phyletic. Using %s " %outns[0]
+		    print "selected set is not mono-phyletic. Using %s instead. " %outns[0]
 		    mrca = tree.find_node_with_taxon_label(outs[0])
                 break                    
         if mrca is None:
