@@ -71,6 +71,13 @@ and always the mrca of the + delimited list of outgroups is used.
                     continue            
                 outns.append(n.taxon)  
             if len (outns) != 0:
+                # Find an ingroup and root the tree there
+                for n in tree.leaf_iter():
+                    if n.taxon not in outns:
+                        ingroup=n
+                        break
+                # print "rerooting at ingroup %s" %ingroup.taxon.label
+                tree.reroot_at_edge(ingroup.edge, update_splits=True,length1=ingroup.edge.length/2,length2=ingroup.edge.length/2)
                 mrca = tree.mrca(taxa=outns)
 		#if not mono-phyletic, then use the first
 		if not use_mrca and len (mrca.leaf_nodes()) != len(outns):
