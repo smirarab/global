@@ -1,0 +1,20 @@
+#!/bin/bash
+#$ -cwd
+#$ -j y
+#$ -pe 12way 84
+#$ -N SATE
+#$ -o $JOB_NAME.o$JOB_ID
+#$ -q normal
+#$ -A Avian-Phylogeny
+#$ -l h_rt=24:00:00
+#$ -V
+
+module load python
+module load jdk64
+
+cat genes|xargs -I@ sh -c '[ -s 11korthologs/@/.done.removed.intron.noout ] || ( echo `pwd`/runsate.sh @ removed intron.noout 3 5800 )' > commandline.intron
+cat genes|xargs -I@ sh -c '[ -s 11korthologs/@/.done.removed.intron.original ] || ( echo `pwd`/runsate.sh @ removed intron.original 3 5800 )' >> commandline.intron
+
+cat commandline.intron|shuffle > commandline
+
+python $HOME/bin/runpython.py commandline 3

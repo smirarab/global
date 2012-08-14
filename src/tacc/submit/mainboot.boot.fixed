@@ -1,0 +1,20 @@
+#!/bin/bash
+#$ -cwd
+#$ -j y
+#$ -pe 12way 120
+#$ -N RAxML_INT2
+#$ -o $JOB_NAME.o$JOB_ID
+#$ -q normal
+#$ -A Avian-Phylogeny
+#$ -l h_rt=24:00:00
+#$ -V
+
+
+module load python
+module load jdk64
+module load pylauncher
+
+tac length.noout.sorted|sed -e "s/ .*//g"|xargs -I@ sh -c '[ -s 2500orthologs/@/.done.raxml.sate.removed.intron.original.aligned-allgap.filtered.200 ] || ( echo `pwd`/runraxml-introns-2-fixed.sh @ sate.removed.intron.original.aligned-allgap.filtered 6 )' > commandline.introns.removed.2
+tac length.noout.sorted|sed -e "s/ .*//g"|xargs -I@ sh -c '[ -s 2500orthologs/@/.done.raxml.sate.removed.intron.noout.aligned-allgap.filtered.200 ] || ( echo `pwd`/runraxml-introns-2-fixed.sh @ sate.removed.intron.noout.aligned-allgap.filtered 6 )' >> commandline.introns.removed.2
+
+python $HOME/bin/runpython.py commandline.introns.removed.2 6
