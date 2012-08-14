@@ -1,0 +1,2 @@
+#Find taxon occupancy
+cat allgenes| xargs -I@ awk '!/^>/ {print '@',n,length($0)} /^>/ {sub(/>/,"");n=$0}' FNA/@.FNA |tee taxon.occupancy.csv
