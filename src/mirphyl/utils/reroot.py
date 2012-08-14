@@ -102,10 +102,11 @@ and always the mrca of the + delimited list of outgroups is used.
             else:
                 tree.reroot_at_edge(mrca.edge, update_splits=False)
         '''This is to fix internal node labels when treated as support values''' 
-        while oldroot.parent_node != tree.seed_node:
+        while oldroot.parent_node != tree.seed_node and oldroot.parent_node != None:
             oldroot.label = oldroot.parent_node.label
             oldroot = oldroot.parent_node
-        oldroot.label = oldroot.sister_nodes()[0].label    
+        if len(oldroot.sister_nodes()) > 0:
+            oldroot.label = oldroot.sister_nodes()[0].label    
             #tree.reroot_at_midpoint(update_splits=False)            
     print "writing results to %s" %resultsFile        
     trees.write(open(resultsFile,'w'),'newick',edge_lengths=True, internal_labels=True)
