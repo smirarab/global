@@ -47,7 +47,7 @@ and always the mrca of the + delimited list of outgroups is used.
         sys.exit(1)
     treeName = sys.argv[1]
 
-    outgroups = sys.argv[2].split(",")
+    outgroups = [x.replace("_"," ") for x in sys.argv[2].split(",")]
     
     use_mrca = True if len(sys.argv) > 3 and sys.argv[3] == "-mrca" else False
     #cmd = 'find %s -name "%s" -print' % (treeDir,treeName)
@@ -84,8 +84,13 @@ and always the mrca of the + delimited list of outgroups is used.
                             break
                     # print "rerooting at ingroup %s" %ingroup.taxon.label
                     '''reroot at an ingroup, so that outgroups form monophyletic groups, if possible'''
-                    tree.reroot_at_edge(ingroup.edge, update_splits=True,length1=ingroup.edge.length/2,length2=ingroup.edge.length/2)
+                    if ingroup.edge.length is not None:
+                        tree.reroot_at_edge(ingroup.edge, update_splits=True,length1=ingroup.edge.length/2,length2=ingroup.edge.length/2)
+                    else:
+                        tree.reroot_at_edge(ingroup.edge, update_splits=True)
+
                     mrca = tree.mrca(taxa=outns)
+                    break
             #if not mono-phyletic, then use the first
             if not use_mrca and len (mrca.leaf_nodes()) != len(outns):
                 print "selected set is not mono-phyletic. Using %s instead. " %outns[0]
@@ -98,7 +103,10 @@ and always the mrca of the + delimited list of outgroups is used.
                 #print "rerooting on %s" % [s.label for s in outns]
                 #tree.reroot_at_midpoint()
             elif mrca.edge.length is not None:
-                tree.reroot_at_edge(mrca.edge, update_splits=False,length1=mrca.edge.length/2,length2=mrca.edge.length/2)        
+                if ingroup.edge.length is not None:
+                    tree.reroot_at_edge(mrca.edge, update_splits=False,length1=mrca.edge.length/2,length2=mrca.edge.length/2)        
+                else:
+                    tree.reroot_at_edge(mrca.edge, update_splits=False)        
             else:
                 tree.reroot_at_edge(mrca.edge, update_splits=False)
         '''This is to fix internal node labels when treated as support values''' 

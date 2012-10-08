@@ -1,2 +1,8 @@
 #Find taxon occupancy
 cat allgenes| xargs -I@ awk '!/^>/ {print '@',n,length($0)} /^>/ {sub(/>/,"");n=$0}' FNA/@.FNA |tee taxon.occupancy.csv
+
+#Summarize support for trees with support between 0 and 1
+t=05;in=1231.comp1.noout.out.concordance.parsed; sed -e "s/\(1*\)0*\.\([0-9][0-9]\)[0-9]*/\1\2/g" $in>.tmp; ~/workspace/global/src/perl/calculate_bootstrap_tree_from_bipartitions.pl -i `pwd`/.tmp -o `pwd`/$in.0.$t.tre -t $t
+
+#assert sequence length is 3x+0 (for AA translated to DNA_
+for x in FNA/*.input.FNA; do awk '/^[^>]/ {if (length($0) % 3 != 0) print "'$x'",NR }' $x; done
