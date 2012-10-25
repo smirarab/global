@@ -8,3 +8,6 @@ for x in FAA/raxmlboot.*/RAxML_bipartitions.final.rooted; do echo $x; sed -e "s/
 
 #assert sequence length is 3x+0 (for AA translated to DNA_
 for x in FNA/*.input.FNA; do awk '/^[^>]/ {if (length($0) % 3 != 0) print "'$x'",NR }' $x; done
+
+#calculate distance
+cat 875genes| xargs -I@ sh -c 'distance.sh FNA2AA/FNA2AA.@.aligned .tmp;sed -e "s/^/@ /g" .tmp' |tee distance.stat
