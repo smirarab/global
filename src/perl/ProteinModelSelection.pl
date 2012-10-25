@@ -11,7 +11,7 @@ if($#ARGV < 0 || $#ARGV > 1)
 
 $alignmentName = $ARGV[0];
 
-$raxmlHPC = "/share/home/01721/smirarab/bin/raxmlHPC-SSE3";
+$raxmlHPC = "raxmlHPC-SSE3-7.3.5-64bit";
 
 $UNLIKELY = -1.0E300;
 
@@ -45,6 +45,10 @@ sub getTIME
 @AA_Models = ("DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", 
 	      "DAYHOFFF", "DCMUTF", "JTTF", "MTREVF", "WAGF", "RTREVF", "CPREVF", "VTF", "BLOSUM62F", "MTMAMF");
 
+@AA_Models = ("LG", "MTART",  "PMB", "JTTDCMUT",  "DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", 
+	      "LGF", "MTARTF",  "PMBF", "JTTDCMUTF","DAYHOFFF", "DCMUTF", "JTTF", "MTREVF", "WAGF", "RTREVF", "CPREVF", "VTF", "BLOSUM62F", "MTMAMF");
+
+my $seed = int(rand(1000));
 
 if($#ARGV == 1)
   {
@@ -66,15 +70,16 @@ else
   {
     #print "Determining AA model data\n";
     #print "Computing randomized stepwise addition starting tree number :".$i."\n";
-    $cmd = "$raxmlHPC -y -m PROTCATJTT -s ".$alignmentName." -n ST_".$alignmentName." \> ST_".$alignmentName."_out";
+    $cmd = "$raxmlHPC -p ".$seed." -y -m PROTCATJTT -s ".$alignmentName." -n ST_".$alignmentName." \> ST_".$alignmentName."_out";
     system($cmd);
     
     $numberOfModels = @AA_Models;
-    
+    #print "Number of models: $numberOfModels \n" ;
+
     for($i = 0; $i < $numberOfModels; $i++)
       {
 	$aa = "PROTGAMMA".$AA_Models[$i];
-	$cmd = "$raxmlHPC -f e -m ".$aa." -s ".$alignmentName." -t RAxML_parsimonyTree.ST_".$alignmentName." -n ".$AA_Models[$i]."_".$alignmentName."_EVAL \> ".$AA_Models[$i]."_".$alignmentName."_EVAL.out\n";  
+	$cmd = "$raxmlHPC -p ".$seed." -f e -m ".$aa." -s ".$alignmentName." -t RAxML_parsimonyTree.ST_".$alignmentName." -n ".$AA_Models[$i]."_".$alignmentName."_EVAL \> ".$AA_Models[$i]."_".$alignmentName."_EVAL.out\n";  
 	#print($cmd);
 	system($cmd);
       }
@@ -100,7 +105,7 @@ else
 	  }
       }
     
-    print "Best Model : ".$AA_Models[$bestI]."\n\n";
+    print "Best Model : ".$AA_Models[$bestI]."\n";
     $bestModel = $AA_Models[$bestI]; 
   }
     

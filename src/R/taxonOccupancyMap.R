@@ -19,8 +19,22 @@ png("taxon.occupancy.heatmap.png",
 ggplot(ocs, aes(ID,Taxon)) + geom_tile(aes(fill = rescale),colour = "white") + 
 		scale_fill_gradient(low = "white",high = "steelblue")+
 		scale_x_discrete(expand = c(0, 0)) +
-		scale_y_discrete(expand = c(0, 0)) + 
-		opts(legend.position = "none",axis.ticks = theme_blank(), 
+		scale_y_discrete(expand = c(0, 0)) +
+		opts(legend.position = "none",axis.ticks = theme_blank(),
 				axis.text.x = theme_text(size=4,angle = 90, hjust = 0, colour = "grey50"))
 
 dev.off()
+
+png("taxon.occupancy.heatmap.2.png", 
+		width=1760,
+		height=1280,res=125)
+
+ggplot(ocs, aes(ID,Taxon)) + geom_tile(aes(fill = rescale),colour = "white") + 
+		scale_fill_gradient(low = "white",high = "steelblue")+
+		scale_x_discrete(expand = c(0, 0)) +
+		scale_y_discrete(expand = c(0, 0) )+
+		opts(legend.position = "none",axis.ticks = theme_blank(),
+				axis.text.x = theme_text(size=4,angle = 90, hjust = 0, colour = "grey50"))
+
+dev.off()
+
