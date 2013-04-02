@@ -1,0 +1,74 @@
+[prank]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/prank
+
+[faketree]
+path = 
+
+[raxml]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/raxml
+model = {rxmodel}
+
+[randtree]
+path = 
+
+[commandline]
+keepalignmenttemps = False
+multilocus = False
+datatype = protein
+temporaries = tmp
+keeptemp = True
+aligned = True 
+
+[fakealigner]
+path = 
+
+[fasttree]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/fasttree
+model = 
+options = {ftmodel} -nosupport
+
+[cobalt]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/cobalt
+db_path = /projects/sate7/tools/ncbi-cobalt-2.0.1/db/cdd_clique_0.75 
+
+[sate]
+time_limit = -1
+iter_without_imp_limit = -1
+time_without_imp_limit = -1.0
+break_strategy = longest
+start_tree_search_from_current = True
+blind_after_iter_without_imp = -1
+blind_mode_is_final = True
+blind_after_time_without_imp = -1.0
+max_subproblem_size = 100
+num_cpus = 1 
+after_blind_time_without_imp_limit = -1.0
+max_subproblem_frac = 0.0
+blind_after_total_time = -1.0
+after_blind_time_term_limit = -1.0
+output_directory = results
+iter_limit = -1
+blind_after_total_iter = -1
+tree_estimator = fasttree
+merger = cobalt
+aligner = cobalt
+after_blind_iter_term_limit = -1
+return_final_tree_and_alignment = False
+move_to_blind_on_worse_score = True
+after_blind_iter_without_imp_limit = 1 
+
+[padaligner]
+path = 
+
+[clustalw2]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/clustalw2
+
+[muscle]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/muscle
+
+[opal]
+path = /projects/sate7/tools/sate.1.3.0.smir/bin_linux/opal.jar
+
+[mafft]
+path = /projects/sate7/tools/bin/mafft.6.857-64bit
+

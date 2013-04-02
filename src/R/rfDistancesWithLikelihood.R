@@ -430,14 +430,16 @@ coerce= function(row)
 ## sed "s/\(.*\) \(.*\): \(.*\) \(.*\)/\1\t\2\t\3\t\4/"
 
 rfDistancesWithLikelihood  = function(rfDistFile, lnlFile, lnlCol, catCol, findML = TRUE, clustmethod="complete",sys=TRUE)
-  {
-    rfFile = paste(rfDistFile, ".forR", sep="")
+  {    
 	if (sys){
+	rfFile = paste(rfDistFile, ".forR", sep="")
     	system( paste("cat " , rfDistFile ,
                  " | sed 's/\\(.*\\) \\(.*\\): \\(.*\\) \\(.*\\)/\\1\\t\\2\\t\\3\\t\\4/' > "
                  ,rfFile ) )
-    	tab <<- read.table(rfFile)
+	} else {
+		rfFile = rfDistFile
 	}
+	tab <<- read.table(rfFile)
     size= max(tab[,c(1,2)]) + 1
 	print(size)
     ## matrixify 
@@ -456,11 +458,12 @@ rfDistancesWithLikelihood  = function(rfDistFile, lnlFile, lnlCol, catCol, findM
     ## of columns you must adjust accordingly. Tree n in this table is
     ## tree n in the RF-distances. So make sure, the order is correct.
     lnl = read.table(lnlFile)
-    names = apply(lnl,1,coerce)
+    names = lnl[,1]
 
     colnames(mat) = names
     rownames(mat) = names
 
+    write.csv(file="pairwise",mat)
 
     ## mark trees with maximum likelihood per category in red. In my case
     ## the second column indicates different partitioning schemes
@@ -484,7 +487,7 @@ rfDistancesWithLikelihood  = function(rfDistFile, lnlFile, lnlCol, catCol, findM
                        RowSideColor = categoryColors[lnl[,catCol]],
                        ColSideColor =   isItMl ,
                        keysize = 1,
-                       cexRow=.55, cexCol=.55 ,
+                       cexRow=.45, cexCol=.45 ,
                        lnl = relativeLnl,
                        catCol =  categoryColors[lnl[,catCol]],
                        catNames = levels(lnl[,catCol]),
@@ -494,7 +497,7 @@ rfDistancesWithLikelihood  = function(rfDistFile, lnlFile, lnlCol, catCol, findM
     else
       {
         par(oma=c(1,0,0,1))
-        heatmap.2(mat,  symm=T, revC = T, na.color = "black", Colv = T, cexRow = .6, cexCol = .6, trace = "none" )
+        heatmap.2(mat,  symm=F, revC = T, na.color = "black", Colv = T, cexRow = .5, cexCol = .5, trace = "none" , dendrogram = "row")
       }
     
   }

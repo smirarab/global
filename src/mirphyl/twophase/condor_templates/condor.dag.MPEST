@@ -1,0 +1,5 @@
+JOB  REP  condor.rep
+JOB  ST  condor.st
+JOB  SUM condor.sum
+PARENT REP CHILD ST
+PARENT ST CHILD SUM

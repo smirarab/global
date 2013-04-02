@@ -1,14 +1,14 @@
 require(ggplot2)
 
 
-oc <- read.csv('taxon.occupancy.csv',header=T,sep=' ')
+oc <- read.csv('taxon.occupancy.2.csv',header=T,sep=' ')
 if (length(names(oc)) == 4) {
 	oc <- cast(oc,GENE_ID+Taxon~.,fun.aggregate=sum,value="Len")
 	names(oc) <- c("ID","Taxon", "Len")
 }
 oc$ID<-paste(oc$ID,"",sep="")
 
-ocs <- ddply(oc, .(ID), transform, rescale= scale(Len))
+ocs <- ddply(oc, .(ID), transform, rescale= scale(Len,center=F))
 ocs$Taxon <- with(ocs, reorder(Taxon, Len, FUN = function(x) {return(length(which(x>0)))}))
 ocs$ID <- with(ocs, reorder(ID, Len,FUN = length))
 

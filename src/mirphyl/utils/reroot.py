@@ -55,14 +55,16 @@ and always the mrca of the + delimited list of outgroups is used.
     #for file in os.popen(cmd).readlines():     # run find command        
     #    name = file[:-1]                       # strip '\n'                
     #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
-    resultsFile="%s.rooted"%treeName[:-9] if treeName.endswith("unrooted") else "%s.rooted" % treeName
-    print "Reading input trees ..."
+    #print len(sys.argv)
+    resultsFile= sys.argv[4] if len(sys.argv) > 4 else ("%s.rooted"%treeName[:-9] if treeName.endswith("unrooted") else "%s.rooted" % treeName)
+    print "Reading input trees %s ..." %treeName, 
     trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
+    print "%d tree(s) found" %len(trees)
     i = 0;    
     for tree in trees:        
         i+=1
         oldroot = tree.seed_node
-        print "Tree %d:" %i
+        #print "Tree %d:" %i
         if outgroups[0] == "-m":            
             print "Midpoint rooting ... "
             tree.reroot_at_midpoint(update_splits=False)
@@ -117,4 +119,4 @@ and always the mrca of the + delimited list of outgroups is used.
             oldroot.label = oldroot.sister_nodes()[0].label    
             #tree.reroot_at_midpoint(update_splits=False)            
     print "writing results to %s" %resultsFile        
-    trees.write(open(resultsFile,'w'),'newick',edge_lengths=True, internal_labels=True)
+    trees.write(open(resultsFile,'w'),'newick',edge_lengths=True, internal_labels=True,write_rooting=False)

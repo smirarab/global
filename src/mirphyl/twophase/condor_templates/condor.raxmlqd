@@ -1,0 +1,20 @@
++Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "two phase method"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" && Memory >= 4000 && InMastodon 
+
+executable = {exe}
+
+Log = logs/{name}_condor_log
+ 
+
+ Arguments = -m {model} -n {output} -s {input} -F E -w {options}/raxml {outgroup}
+ Error=logs/{name}_std.errout
+ Output=logs/{name}_std.errout
+ Queue
+
+# To manually run use the following
+# nohup memusg --o ml.stat {exe} -m {model} -n {output} -s {input} -F E -w {options}/raxml 1>logs/{name}_std.errout 2>logs/{name}_std.errout &

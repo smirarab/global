@@ -9,6 +9,13 @@ import sys
 import os
 import copy
 
+def is_number(s):
+    try:
+        float(s)
+        return True
+    except ValueError:
+        return False
+    
 if __name__ == '__main__':
 
     treeName = sys.argv[1]
@@ -18,14 +25,11 @@ if __name__ == '__main__':
     #for file in os.popen(cmd).readlines():     # run find command        
     #    name = file[:-1]                       # strip '\n'                
     #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
-    resultsFile="%s.allbirds" % treeName
-        
-    trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
-    filt = lambda node: True if (node.taxon is not None and node.taxon.label in ["ANOCA","HUMAN","ALLIG","CHEMY"]) else False
+            
+    resultsFile="%s.nobs" % treeName if len (sys.argv) == 2 else sys.argv[2]
+    trees = dendropy.TreeList.get_from_path(treeName, 'newick')
     for tree in trees:
-        nodes = tree.get_node_set(filt)
-        tree.prune_taxa([n.taxon for n in nodes])
-        tree.deroot()
-        #tree.reroot_at_midpoint(update_splits=False)
-        
+        for n in tree.internal_nodes():            
+            n.label = None    
+                    
     trees.write(open(resultsFile,'w'),'newick',write_rooting=False)
