@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+	echo usage: $0 referencetree estimatedtree
+	exit
+fi
+s=( `compareTrees $* 2>&1|grep Frac|sed -e "s/.*Found\t//g" -e "s/Total\t//g" -e "s/Frac\t//g" -e "s/Max.*//g" -e "s/\t| //g"` ) 
+mis=`expr ${s[1]} - ${s[0]}`
+f=`echo 1 - ${s[2]}|bc`
+echo ${s[1]} $mis $f
+#Splits  Found   497     Total   498     Frac    0.998   MaxLnDf         Ratio           Ma

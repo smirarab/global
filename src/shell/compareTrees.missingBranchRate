@@ -1,0 +1,8 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+	echo usage: $0 referencetree estimatedtree
+	exit
+fi
+echo 1 - `compareTrees $* 2>&1|grep Frac|sed -e "s/.*Frac\t//g" -e "s/\t.*//g" -e "s/\t| //g"`|bc 
