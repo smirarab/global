@@ -8,7 +8,10 @@ S=$2
 if [ -z $S ] || [ $S -gt 100 ] || [ $S -lt 0 ]; then
 	S=75
 fi
+pattern="s/[^)]*[);]\([0-9]*\)/\1 /g"
 for x in `cat $1`; do 
+  echo $x| sed -e "s/[^)]*[);]\([0-9]*\)/\1 /g"|tr " " "\n"|awk '/^[0-9]/ {print "'$1'",$1;}' >&2
+  echo -n $1" "
   echo $x| sed -e "s/[^)]*[);]\([0-9]*\)/\1 /g"|tr " " "\n"|awk '
     BEGIN {sum=0;num=0;min=100;max=0;high=0;}
           {if ($1 >=0 && $1 <=100) {
@@ -18,5 +21,5 @@ for x in `cat $1`; do
 	      if($1>= '$S') {high++};
 	    }
           }
-   END    {print sum/num " " max " " min " " num " " high}'
+   END    {print sum/num " " max " " min " " num " " high}' 2>/dev/null
 done

@@ -1,4 +1,4 @@
-#!/lusr/bin/python2.7
+#!/lusr/bin/python
 '''
 Created on Jun 3, 2011
 

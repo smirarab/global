@@ -1,0 +1,85 @@
+#!/usr/bin/env sage -python
+
+import sys
+import os
+
+#cmd = 'find %s -name "%s" -print' % (treeDir,treeName)
+#print cmd
+#for file in os.popen(cmd).readlines():     # run find command        
+#    name = file[:-1]                       # strip '\n'                
+#    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
+
+GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code/"
+
+def locate(pattern, root=os.curdir):
+    '''Locate all files matching supplied filename pattern in and below
+    supplied root directory.'''
+    if not os.path.exists(root):
+       raise RuntimeError ("path not found: %s" % root)    
+    for path, dirs, files in os.walk(os.path.abspath(root)):
+       for filename in fnmatch.filter(files, pattern):
+           yield os.path.join(path, filename)
+
+def gene_name(filename):
+    return filename.split(".")[0]
+
+def stat_filename(g,ths):
+    return "%s.%d" %(g,ths)
+
+def subsets(genes,ths):
+    genetoi = {}
+    itogene = {}
+    grows=[]
+    for i, gn in enumerate(genes):
+        genetoi[gn] = i
+        itogene[i] = gn
+    edges = 0
+    for i in range(0,len(genes)):
+       gn = itogene[i]
+       row = ["0"]*len(genes) 
+       #row = [] 
+       f = stat_filename(gn,ths)
+       nb = []
+       for line in open(f):
+           r = line.split()
+           if genetoi.has_key(r[1]):
+               herid = genetoi[r[1]]
+               incompatible = grows[herid][i] == "1" if herid < len(grows) else False
+               incompatible = incompatible or int(r[2]) != 0 or int(r[3]) != 0
+               row[herid] = "1" if incompatible else "0"
+               edges += 1 if incompatible else 0
+               if herid < len(grows):
+                   grows[herid][i] = row[herid]
+       grows.append(row)
+    gr="%d\n%s" %(len(genes),'\n'.join((' '.join(x) for x in grows)))
+    gr="p edge %d %d\n%s" %(len(genes),edges,'\n'.join(("\n".join(("e %d %d"%(j+1,i+1) for i,x in enumerate(r) if x!="0")) for j,r in enumerate(grows))))
+    #print gr
+    from subprocess import Popen, PIPE, STDOUT
+    p = Popen(['/u/smirarab/workspace/graphcoloring/vertex_coloring/vc2'], stdout=PIPE, stdin=PIPE, stderr=None)
+    #p = Popen(['java','-classpath',GRAPHCOLORINGJAVA,'GraphColoring'], stdout=PIPE, stdin=PIPE, stderr=None)
+    stdout = p.communicate(input=gr)[0]
+    print stdout
+    res = [[itogene[int(y)] for y in x.split()] for x in stdout[1:-1].replace("||","|").split("|") if x.strip() !=""]
+    return res
+
+if __name__ == '__main__':
+    thresholds = [75]
+    allgenenames=sys.argv[1]
+    maxsize = int(sys.argv[2])
+    genesets = [filter(lambda x: x is not None and x.strip() != '', open(allgenenames).read().split('\n'))]
+    for t in thresholds:
+        newgenesets = []
+        for gs in genesets:
+            if len(gs) > maxsize:
+                s = subsets(gs,t)
+                print "Number of subsets:", len(s)
+                newgenesets.extend(s)
+            else:
+                newgenesets.append(gs)
+        genesets = newgenesets
+        print "%d:\n%s" %(t,",".join((str(gs) for gs in genesets)))
+    for i,gs in enumerate(genesets):
+        fo = open('subest.%d.txt' %i,'w')
+        fo.write('\n'.join(gs))
+        fo.write('\n')
+        fo.close()
