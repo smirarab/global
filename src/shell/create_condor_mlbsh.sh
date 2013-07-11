@@ -9,11 +9,11 @@ outgroup=$6
 binsize=$7
 
 BH="/projects/sate7/tools/bin"
-WH="/u/smirarab/workspace/global"
+WH="$WS_HOME/global"
 
 HEADER="+Group = \"GRAD\"
 +Project = \"COMPUTATIONAL_BIOLOGY\"
-+ProjectDescription = \"two phase method\"
++ProjectDescription = \"Binning\"
 
 Universe = vanilla
 "
