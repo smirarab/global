@@ -19,7 +19,7 @@ dest = open(dest_fpath, "w")
 
 c = int(sys.argv[3]) - 1
 
-p = sub.Popen(['simplifyfasta.sh',src_fpath],stdout=sub.PIPE,stderr=sub.PIPE)
+p = sub.Popen(['/projects/sate8/bayzid-siavash-results/codes/global/src/shell/simplifyfasta.sh',src_fpath],stdout=sub.PIPE,stderr=sub.PIPE)
 output, errors = p.communicate()
 if errors is not None and errors != "":
     print errors
