@@ -85,10 +85,10 @@ opts=""
 if [ "$method" == "mpest" ]; then
    head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/[(,);]/ /g" -e "s/ /\n/g" |sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
    opts=$outdir/species.list
-   out=""
 elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method
-   out=""
+elif [ "$method" == "greedy" ]; then
+   opts=0
 fi
 echo "$HEADER
 executable = $BH/$method
