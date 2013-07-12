@@ -168,7 +168,7 @@ echo "JOB  REP  condor.rep" >$outdir/condor/dagfile
 
 if [ "$outgroup" != "-" ]; then
 echo "JOB  ROOT condor.reroot
-PARENT ROOT CHILD REP" >$outdir/condor/dagfile
+PARENT ROOT CHILD REP" >>$outdir/condor/dagfile
 fi
 
 for method in $methods; do
