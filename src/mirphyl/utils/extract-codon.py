@@ -4,7 +4,8 @@ import os
 import sys
 import re
 import subprocess as sub
- 
+from mirphyl.setup import WS_HOME
+
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 3:
     sys.stderr.write("usage: %s [<alignment-file-path>] [<out-file-path>] [codon]\n"%sys.argv[0])
     sys.exit(1)
@@ -19,7 +20,11 @@ dest = open(dest_fpath, "w")
 
 c = int(sys.argv[3]) - 1
 
+<<<<<<< HEAD
 p = sub.Popen(['/projects/sate8/bayzid-siavash-results/codes/global/src/shell/simplifyfasta.sh',src_fpath],stdout=sub.PIPE,stderr=sub.PIPE)
+=======
+p = sub.Popen(['%s/global/src/shell/simplifyfasta.sh'%WS_HOME,src_fpath],stdout=sub.PIPE,stderr=sub.PIPE)
+>>>>>>> 430161fb022a75dac1b0a2117caa0099831bb4de
 output, errors = p.communicate()
 if errors is not None and errors != "":
     print errors

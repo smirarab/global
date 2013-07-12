@@ -26,7 +26,9 @@ for tree_file in [src_fpath]:
     trees.read_from_path(
             tree_file,
             'newick')
-con_tree = trees.consensus()
+con_tree = trees.consensus(min_freq=0.5, trees_splits_encoded=False)
+for e in con_tree.postorder_internal_node_iter():
+    e.label = int(round(float(e.label) * 6)) if e.label is not None else None
 con = con_tree.as_string('newick')
 dest.write(con)
 

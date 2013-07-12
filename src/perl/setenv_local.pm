@@ -11,7 +11,7 @@ use strict;
 
 # mutable depending on installation directory - so all simstudy code
 # knows how to access all components used
-use constant RESEARCH_DIR_LOCAL => "/projects/sate7/namphuon/repository/";
+use constant RESEARCH_DIR_LOCAL => "/projects/sate7/smirarab/kevinrep/repository/trunk/code/";
 # kliu - remove java local dependency - just ship it along with code
 # repository
 # crap - 32-bit vs. 64-bit java important for performance 
@@ -24,8 +24,8 @@ use constant ARCHITECTURE_64_BIT_FLAG => 0;
 
 # java availability
 use constant JAVA_HOME_32_BIT => RESEARCH_DIR_LOCAL . "/jdk1.6.0_02_32_bit";
-use constant JAVA_HOME_64_BIT => RESEARCH_DIR_LOCAL . "/jdk1.6.0_02_64_bit";
-use constant JAVA_HOME => JAVA_HOME_32_BIT;
+use constant JAVA_HOME_64_BIT => "/usr";
+use constant JAVA_HOME => JAVA_HOME_64_BIT;
 
 # perl availability
 # need this too - due to older perl interpreter only on TACC

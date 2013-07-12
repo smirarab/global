@@ -17,7 +17,7 @@ printUsage() unless(defined($tree));
 
 my $output = "$tree.100";
 my $tree_contents = `cat $tree`;
-$tree_contents =~ s/\)(\d\.\d\d)\d*:/scale_br($1);/ge;
+$tree_contents =~ s/\)(\d\.?\d*)/scale_br($1);/ge;
 open(OUT, ">", $output) or die "can't open $output: $!";
  print OUT $tree_contents;
 close(OUT);
@@ -27,5 +27,5 @@ print "output at $output\n";
 
 sub scale_br {
  my ($br) = @_;
- return ")".($br*100).":";
+ return ")".(int($br*100));
 }

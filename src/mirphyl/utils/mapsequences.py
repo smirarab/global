@@ -4,7 +4,7 @@ import os
 import sys
 import re
 
-pattern = re.compile("(?<=[,(])'?([^,():']+)'?(?=[,():])")
+pattern = re.compile("(?<=[,(])'([^']+)'(?=[,():])")
  
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.stderr.write("usage: %s [<tree-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])
@@ -15,7 +15,10 @@ if not os.path.exists(src_fpath):
     sys.stderr.write('Not found: "%s"' % src_fpath)
 src = open(src_fpath,"r")        
  
-dest_fpath = os.path.expanduser(os.path.expandvars(sys.argv[3]))
+outfile = sys.argv[3]
+if outfile == "-auto":
+    outfile = "%s.longname.tre" %sys.argv[1]
+dest_fpath = os.path.expanduser(os.path.expandvars(outfile))
 dest = open(dest_fpath, "w")
 
 map_fpath = os.path.expanduser(os.path.expandvars(sys.argv[2]))
@@ -36,7 +39,7 @@ for line in mapfile:
         mapping[m[0].split(" ")[0]] = m[1]
         
 for t in src:    
-    t = pattern.sub(lambda m: '"%s"' % mapping[m.group(1)],t)
+    t = pattern.sub(lambda m: '%s' % mapping[m.group(1)],t)
     dest.write(t)
 
 dest.close()

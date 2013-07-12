@@ -1,0 +1,14 @@
+[commandline]
+keepalignmenttemps = False
+multilocus = False
+datatype = dna
+temporaries = tmp
+keeptemp = True
+
+[fasttree]
+model = 
+options = -nosupport {ftmodel}
+
+[sate]
+num_cpus = 1 
+output_directory = results
