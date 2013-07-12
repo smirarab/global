@@ -85,6 +85,10 @@ opts=""
 if [ "$method" == "mpest" ]; then
    head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/[(,);]/ /g" -e "s/ /\n/g" |sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
    opts=$outdir/species.list
+elif [ "$method" == "mrp" ]; then
+   opts=$outdir/$method
+elif [ "$method" == "greedy" ]; then
+   opts=0
 fi
 echo "$HEADER
 executable = $BH/$method
@@ -98,8 +102,9 @@ initialdir = $outdir/$method
 
 for x in  $(seq 1 1 $reps); do
 b=BS.$x
+out=BS.$x.tre
 echo "
- Arguments = ../Reps/$b $opts
+ Arguments = ../Reps/$b $opts $out
  Error = $outdir/logs/$method.$b.err
  Output = $outdir/logs/$method.$b.out
  Queue">>$outdir/condor/condor.$method
@@ -108,29 +113,52 @@ done
 
 ######################################## Summarize MPEST bootstrap replicates to get one final tree
 if [ "$method" == "mpest" ]; then
+
 echo "$HEADER
 executable = $WH/src/mirphyl/utils/sumarize_mpest.py
 
-Log = $outdir/logs/sum.log
+Log = $outdir/logs/sum.$method.log
 
 getEnv=True
 
- Arguments = $outdir/mpest/mpest.all_greedy.newich.with.support ` seq -s " " -f "$outdir/Reps/BS.%g.tre" 1 $reps`
- Error = $outdir/logs/sum.err
- Output = $outdir/logs/sum.out
+ Arguments = $outdir/mpest/mpest.all_greedy.newick.with.support ` seq -s " " -f "$outdir/$method/BS.%g.tre" 1 $reps`
+ Error = $outdir/logs/sum.$method.err
+ Output = $outdir/logs/sum.$method.out
  Queue
-">$outdir/condor/condor.sum
+">$outdir/condor/condor.sum.$method
+
+else
+
+echo "$HEADER
+executable = $WH/src/mirphyl/utils/greedy_consensus.py
+
+Log = $outdir/logs/sum.$method.log
+
+getEnv=True
+
+ Arguments = 0 $outdir/$method/$method.all_greedy.newick.with.support ` seq -s " " -f "$outdir/$method/BS.%g.tre" 1 $reps`
+ Error = $outdir/logs/sum.$method.err
+ Output = $outdir/logs/sum.$method.out
+ Queue
+">$outdir/condor/condor.sum.$method
+
 fi
 done
 
 ######################################## Create DAG file
-echo "JOB  REP  condor.rep
-JOB  ST  condor.$method
-JOB  SUM condor.sum
-JOB  ROOT condor.reroot
-PARENT ROOT CHILD REP
-PARENT REP CHILD ST
-PARENT ST CHILD SUM
-" >$outdir/condor/dagfile
+echo "JOB  REP  condor.rep" >$outdir/condor/dagfile
+
+if [ "$outgroup" != "-" ]; then
+echo "JOB  ROOT condor.reroot
+PARENT ROOT CHILD REP" >$outdir/condor/dagfile
+fi
+
+for method in $methods; do 
+ echo "
+JOB  ST.$method  condor.$method
+JOB  SUM.$method condor.sum.$method
+PARENT REP CHILD ST.$method
+PARENT ST.$method CHILD SUM.$method" >>$outdir/condor/dagfile
+done 
 
 
