@@ -7,6 +7,7 @@ methods=$4
 outdir=$5
 outgroup=$6
 binsize=$7
+bestfilen=$8
 
 BH="/projects/sate7/tools/bin"
 WH="$WS_HOME/global"
@@ -18,7 +19,7 @@ HEADER="+Group = \"GRAD\"
 Universe = vanilla
 "
 
-############### Prepare directory structure 
+############### Prepare directory structure
 
 mkdir $outdir
 mkdir $outdir/logs
@@ -46,7 +47,7 @@ done
 filen=$filen.rooted
 fi
 
-##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat. 
+##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
 if [ "$binsize" != "-" ]; then
 echo "$HEADER
 executable = $BH/multilocus_bootstrap.sh
@@ -59,6 +60,12 @@ getEnv=True
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
+
+ Arguments = 1 $dir $bestfilen $binsize $outdir/Reps Best
+ Error = $outdir/logs/rep.best.err
+ Output = $outdir/logs/rep.best.out
+ Queue
+
 ">$outdir/condor/condor.rep
 
 else
@@ -66,13 +73,18 @@ else
 echo "$HEADER
 executable = $BH/multilocus_bootstrap.sh
 
-Log = $outdir/logs/norep.log
+Log = $outdir/logs/rep.log
 
 getEnv=True
 
  Arguments = $reps $dir $filen somerandomdummyname$RANDOM $outdir/Reps
- Error = $outdir/logs/norep.err
- Output = $outdir/logs/norep.out
+ Error = $outdir/logs/rep.err
+ Output = $outdir/logs/rep.out
+ Queue
+
+ Arguments = 1 $dir $bestfilen somerandomdummyname$RANDOM $outdir/Reps Best
+ Error = $outdir/logs/rep.best.err
+ Output = $outdir/logs/rep.best.out
  Queue
 ">$outdir/condor/condor.rep
 fi
@@ -110,6 +122,12 @@ echo "
  Queue">>$outdir/condor/condor.$method
 
 done
+
+echo "
+ Arguments = ../Reps/Best.1 $opts Best.tre
+ Error = $outdir/logs/$method.best.err
+ Output = $outdir/logs/$method.best.out
+ Queue">>$outdir/condor/condor.$method
 
 ######################################## Summarize MPEST bootstrap replicates to get one final tree
 if [ "$method" == "mpest" ]; then
@@ -150,15 +168,15 @@ echo "JOB  REP  condor.rep" >$outdir/condor/dagfile
 
 if [ "$outgroup" != "-" ]; then
 echo "JOB  ROOT condor.reroot
-PARENT ROOT CHILD REP" >$outdir/condor/dagfile
+PARENT ROOT CHILD REP" >>$outdir/condor/dagfile
 fi
 
-for method in $methods; do 
+for method in $methods; do
  echo "
 JOB  ST.$method  condor.$method
 JOB  SUM.$method condor.sum.$method
 PARENT REP CHILD ST.$method
 PARENT ST.$method CHILD SUM.$method" >>$outdir/condor/dagfile
-done 
+done
 
 
