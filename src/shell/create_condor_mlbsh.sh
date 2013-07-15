@@ -44,7 +44,14 @@ for x in $dir/*/$filen; do
  Output = $outdir/logs/reroot.out
  Queue">>$outdir/condor/condor.reroot
 done
-filen=$filen.rooted
+for x in $dir/*/$bestfilen; do
+ echo "
+ Arguments = $x $outgroup
+ Error = $outdir/logs/reroot.err
+ Output = $outdir/logs/reroot.out
+ Queue">>$outdir/condor/condor.reroot
+done
+bestfilen=$filen.rooted
 fi
 
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.

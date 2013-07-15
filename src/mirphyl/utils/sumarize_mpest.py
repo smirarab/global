@@ -39,7 +39,6 @@ for e in con_tree.postorder_node_iter():
     if hasattr(e,"support"):
     	e.support=e.support*100
         e.label=str(e.support)
-con = con_tree.as_string('newick')
-dest.write(con)
+con_tree.write(dest,'newick', edge_lengths=True, internal_labels=True, write_rooting=False )
 
 dest.close()
