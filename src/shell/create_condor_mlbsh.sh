@@ -137,7 +137,7 @@ echo "
  Queue">>$outdir/condor/condor.$method
 
 ######################################## Summarize MPEST bootstrap replicates to get one final tree
-if [ "$method" == "mpest" ]; then
+if [ "$method" == "mpest ghadimi" ]; then
 
 echo "$HEADER
 executable = $WH/src/mirphyl/utils/sumarize_mpest.py
