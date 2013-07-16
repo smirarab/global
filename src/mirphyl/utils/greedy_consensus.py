@@ -27,5 +27,10 @@ if __name__ == '__main__':
         #tree.reroot_at_edge(n.edge, update_splits=False)
         #tree.reroot_at_midpoint(update_splits=False)
         
+    for e in con_tree.postorder_node_iter():
+        if hasattr(e,"support"):
+    	    e.support=e.support*100
+            e.label=str(e.support)
+
     con_tree.write(open(resultsFile,'w'),'newick',write_rooting=False)
     
