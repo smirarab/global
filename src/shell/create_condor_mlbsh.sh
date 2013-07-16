@@ -9,8 +9,8 @@ outgroup=$6
 binsize=$7
 bestfilen=$8
 
-BH="/projects/sate7/tools/bin"
 WH="$WS_HOME/global"
+BH="$WH/src/shell"
 
 HEADER="+Group = \"GRAD\"
 +Project = \"COMPUTATIONAL_BIOLOGY\"
@@ -44,7 +44,14 @@ for x in $dir/*/$filen; do
  Output = $outdir/logs/reroot.out
  Queue">>$outdir/condor/condor.reroot
 done
-filen=$filen.rooted
+for x in $dir/*/$bestfilen; do
+ echo "
+ Arguments = $x $outgroup
+ Error = $outdir/logs/reroot.err
+ Output = $outdir/logs/reroot.out
+ Queue">>$outdir/condor/condor.reroot
+done
+bestfilen=$filen.rooted
 fi
 
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
@@ -130,7 +137,7 @@ echo "
  Queue">>$outdir/condor/condor.$method
 
 ######################################## Summarize MPEST bootstrap replicates to get one final tree
-if [ "$method" == "mpest" ]; then
+if [ "$method" == "mpest ghadimi" ]; then
 
 echo "$HEADER
 executable = $WH/src/mirphyl/utils/sumarize_mpest.py
