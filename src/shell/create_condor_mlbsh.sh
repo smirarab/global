@@ -9,8 +9,8 @@ outgroup=$6
 binsize=$7
 bestfilen=$8
 
-BH="/projects/sate7/tools/bin"
 WH="$WS_HOME/global"
+BH="$WH/src/shell"
 
 HEADER="+Group = \"GRAD\"
 +Project = \"COMPUTATIONAL_BIOLOGY\"

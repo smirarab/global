@@ -1,0 +1,5 @@
+#!/bin/bash
+
+export FASTMRP="/projects/sate8/bayzid-siavash-results/scripts"
+
+python /projects/sate8/bayzid-siavash-results/scripts/runWMRP_nam.py -i $1 -o $3 -d $2 -r true

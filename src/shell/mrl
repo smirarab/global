@@ -1,0 +1,20 @@
+#!/bin/bash
+
+export FASTMRP="/projects/sate8/bayzid-siavash-results/scripts"
+export raxml_new="/projects/sate7/tools/bin/raxmlHPC-SSE3-7.3.5-64bit"
+
+out=$2
+
+tmp=`mktemp -p .`
+java -jar $FASTMRP/mrp.jar $1 $tmp  PHYLIP
+
+rm RAxML_*$3
+$raxml_new -m BINCAT -s $tmp -n $out -N 5 -p $RANDOM
+
+test "$?" != "0" && exit 1
+
+mv RAxML_bestTree.$out* $out
+
+tar cvfj logs.$out.tar.bz --remove-files RAxML_*$out $tmp
+
+echo MRL Done. Output at: $out
