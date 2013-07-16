@@ -15,6 +15,6 @@ test "$?" != "0" && exit 1
 
 mv RAxML_bestTree.$out* $out
 
-tar cvfj logs.$out.tar.bz --remove-files RAxML_*$out $tmp
+tar cvfj logs.$out.tar.bz --remove-files RAxML_*$out* $tmp
 
 echo MRL Done. Output at: $out
