@@ -1,31 +1,39 @@
 #!/bin/bash
 #set -x
-tmp=`mktemp "control_XXXXX"`
 
 fn=`basename $1`
 ln -s $1 ./$fn
 
-echo "$fn
-0
-12345$RANDOM
+REP=10
+
+for x in `seq 1 $REP`; do
+ tmp=`mktemp "control-$fn-XXXXX"`
+ echo "$fn
+ 0
+-1
 `cat $1|wc -l` `cat $2|wc -l` 
 `cat $2`
 0
 "> $tmp
 
-/projects/sate7/tools/bin/mpest.1.2.64bit $tmp
+ /projects/sate7/tools/bin/mpest.1.2.64bit $tmp 1>$fn.$x.mpest.out
 
-test $? == 1 || exit 1
+ test $? == 1 || exit 1
 
-mv $fn.tre $fn.tre.mpest
-grep "tree mpest" $fn.tre.mpest
-test $? == 0 || exit 1
+ mv $fn.tre $fn.tre.mpest.$x
+ grep "tree mpest" $fn.tre.mpest.$x
+ test $? == 0 || exit 1
+done
+
+bestrep=`grep "tree mpest" $fn.tre.mpest.*|sed -e "s/ .*\[/ /g" -e "s/\].*//g"|sort -n -k 2|tail -n1|sed -e "s/:.*//g"`
+ln -s $bestrep $fn.tre.mpest.best
+
 python -c '
 import os
 import sys
 import dendropy
  
-src_fpath = os.path.expanduser(os.path.expandvars("'$fn.tre.mpest'"))
+src_fpath = os.path.expanduser(os.path.expandvars("'$fn.tre.mpest.best'"))
 if not os.path.exists(src_fpath):
     sys.stderr.write("Not found: %s" % src_fpath) 
     sys.exit(1)     
@@ -36,4 +44,4 @@ trees = dendropy.TreeList.get_from_path(src_fpath, "nexus")
 trees[-1].write_to_path(dest_fpath, "newick",write_rooting=False)'
 test $? == 0 || exit 1
 
-tar cvfj logs.$fn.tar.bz --remove-files $tmp $fn.tre.mpest 
+tar cvfj logs.$fn.tar.bz --remove-files control-$fn-* $fn.tre.mpest.* $fn.*.mpest.out
