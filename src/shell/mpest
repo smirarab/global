@@ -10,13 +10,13 @@ for x in `seq 1 $REP`; do
  tmp=`mktemp "control-$fn-XXXXX"`
  echo "$fn
  0
--1
+`expr $RANDOM$RANDOM % 1000000000`
 `cat $1|wc -l` `cat $2|wc -l` 
 `cat $2`
 0
 "> $tmp
 
- /projects/sate7/tools/bin/mpest.1.2.64bit $tmp 1>$fn.$x.mpest.out
+ /projects/sate7/tools/bin/mpest.1.2.64bit-20k1M $tmp 1>$fn.$x.mpest.out
 
  test $? == 1 || exit 1
 
