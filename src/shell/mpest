@@ -7,7 +7,7 @@ ln -s $1 ./$fn
 
 echo "$fn
 0
-$RANDOM
+12345$RANDOM
 `cat $1|wc -l` `cat $2|wc -l` 
 `cat $2`
 0
@@ -18,6 +18,22 @@ $RANDOM
 test $? == 1 || exit 1
 
 mv $fn.tre $fn.tre.mpest
-grep "tree mpest" $fn.tre.mpest |sed -e "s/.* //g" > $fn.tre
+grep "tree mpest" $fn.tre.mpest
+test $? == 0 || exit 1
+python -c '
+import os
+import sys
+import dendropy
+ 
+src_fpath = os.path.expanduser(os.path.expandvars("'$fn.tre.mpest'"))
+if not os.path.exists(src_fpath):
+    sys.stderr.write("Not found: %s" % src_fpath) 
+    sys.exit(1)     
+ 
+dest_fpath = os.path.expanduser("'$fn.tre'")
+
+trees = dendropy.TreeList.get_from_path(src_fpath, "nexus")
+trees[-1].write_to_path(dest_fpath, "newick",write_rooting=False)'
+test $? == 0 || exit 1
 
 tar cvfj logs.$fn.tar.bz --remove-files $tmp $fn.tre.mpest 
