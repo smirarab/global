@@ -9,7 +9,7 @@ tmp=`mktemp -p .`
 java -jar $FASTMRP/mrp.jar $1 $tmp  PHYLIP
 
 rm RAxML_*$3
-$raxml_new -m BINCAT -s $tmp -n $out -N 5 -p $RANDOM
+$raxml_new -m BINCAT -s $tmp -n $out -N 10 -p $RANDOM
 
 test "$?" != "0" && exit 1
 
