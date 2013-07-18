@@ -1,5 +1,10 @@
 #!/bin/bash
 
+if [ $# != 9 ]; then 
+ echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file"; 
+ exit 1;
+fi
+
 reps=$1
 dir=$2
 filen=$3
@@ -8,6 +13,7 @@ outdir=$5
 outgroup=$6
 binsize=$7
 bestfilen=$8
+rootpostfix=$9
 
 WH="$WS_HOME/global"
 BH="$WH/src/shell"
@@ -39,43 +45,31 @@ getEnv=True
 ">$outdir/condor/condor.reroot
 for x in $dir/*/$filen; do
  echo "
- Arguments = $x $outgroup
+ Arguments = $x $outgroup - $x.$rootpostfix
  Error = $outdir/logs/reroot.err
  Output = $outdir/logs/reroot.out
  Queue">>$outdir/condor/condor.reroot
 done
+filen=$filen.$rootpostfix
+
+if [ "$bestfilen" != "-" ]; then
 for x in $dir/*/$bestfilen; do
  echo "
- Arguments = $x $outgroup
+ Arguments = $x $outgroup - $x.$rootpostfix
  Error = $outdir/logs/reroot.err
  Output = $outdir/logs/reroot.out
  Queue">>$outdir/condor/condor.reroot
 done
-bestfilen=$filen.rooted
+bestfilen=$bestfilen.$rootpostfix
+fi
+
 fi
 
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
-if [ "$binsize" != "-" ]; then
-echo "$HEADER
-executable = $BH/multilocus_bootstrap.sh
-
-Log = $outdir/logs/rep.log
-
-getEnv=True
-
- Arguments = $reps $dir $filen $binsize $outdir/Reps
- Error = $outdir/logs/rep.err
- Output = $outdir/logs/rep.out
- Queue
-
- Arguments = 1 $dir $bestfilen $binsize $outdir/Reps Best
- Error = $outdir/logs/rep.best.err
- Output = $outdir/logs/rep.best.out
- Queue
-
-">$outdir/condor/condor.rep
-
-else
+binfile=$binsize
+if [ "$binsize" == "-" ]; then
+ binfile=somerandomdummyname$RANDOM
+fi
 
 echo "$HEADER
 executable = $BH/multilocus_bootstrap.sh
@@ -84,16 +78,19 @@ Log = $outdir/logs/rep.log
 
 getEnv=True
 
- Arguments = $reps $dir $filen somerandomdummyname$RANDOM $outdir/Reps
+ Arguments = $reps $dir $filen $binfile $outdir/Reps
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
+">$outdir/condor/condor.rep
 
- Arguments = 1 $dir $bestfilen somerandomdummyname$RANDOM $outdir/Reps Best
+if [ "$bestfilen" != "-" ]; then
+echo "
+ Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best
  Error = $outdir/logs/rep.best.err
  Output = $outdir/logs/rep.best.out
  Queue
-">$outdir/condor/condor.rep
+">>$outdir/condor/condor.rep
 fi
 
 ########################################## Create the condor file for each method
@@ -130,12 +127,13 @@ echo "
 
 done
 
+if [ "$bestfilen" != "-" ]; then
 echo "
  Arguments = ../Reps/Best.1 $opts Best.tre
  Error = $outdir/logs/$method.best.err
  Output = $outdir/logs/$method.best.out
  Queue">>$outdir/condor/condor.$method
-
+fi
 ######################################## Summarize MPEST bootstrap replicates to get one final tree
 if [ "$method" == "mpest ghadimi" ]; then
 
