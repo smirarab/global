@@ -16,6 +16,7 @@ bins=`ls $2|sort`
 
 for x in $(seq 1 1 $1); do
     echo $x;
+    >$outdir/$outname.$x
     for b in $bins; do
         yd=$2/$b
         y=$yd/$3
