@@ -24,7 +24,7 @@ Using -mrca this monophyletic requirement can be relaxed, so that MRCA is always
 
 def main(args):    
     if len (args) < 2:
-        print '''USAGE: %s [tree_file] [outgroups] [-mrca (optional)]
+        print '''USAGE: %s [tree_file] [outgroups] [-mrca (optional)] [output name (optional)]
 
 -- tree_file: a path to the newick tree file
 
@@ -49,13 +49,7 @@ and always the mrca of the + delimited list of outgroups is used.
 
     outgroups = [x.replace("_"," ") for x in args[2].split(",")]
     
-    use_mrca = True if len(args) > 3 and args[3] == "-mrca" else False
-    #cmd = 'find %s -name "%s" -print' % (treeDir,treeName)
-    #print cmd
-    #for file in os.popen(cmd).readlines():     # run find command        
-    #    name = file[:-1]                       # strip '\n'                
-    #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
-    #print len(sys.argv)
+    use_mrca = True if len(args) > 3 and args[3] == "-mrca" else False    
     resultsFile= args[4] if len(args) > 4 else ("%s.rooted"%treeName[:-9] if treeName.endswith("unrooted") else "%s.rooted" % treeName)
     print "Reading input trees %s ..." %treeName, 
     trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
