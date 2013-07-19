@@ -5,9 +5,22 @@ fn=`basename $1`
 ln -s $1 ./$fn
 
 REP=10
+test $# == 3 && REP=$3
+echo "$REP runs of MP-EST will be performed"
 
 for x in `seq 1 $REP`; do
- tmp=`mktemp "control-$fn-XXXXX"`
+  grep "tree mpest" $fn.tre.mpest.$x
+  test $? == 0 || break
+done
+
+grep "tree mpest" $fn.tre.mpest.$x
+
+if [ $? != 0 ]; then
+echo "`expr $x - 1` runs are already done. Starting from run $x ..."
+
+for x in `seq $x $REP`; do
+ echo ""
+ tmp=`mktemp "control-$fn-$x-XXXXX"`
  echo "$fn
  0
 `expr $RANDOM$RANDOM % 1000000000`
@@ -24,6 +37,10 @@ for x in `seq 1 $REP`; do
  grep "tree mpest" $fn.tre.mpest.$x
  test $? == 0 || exit 1
 done
+
+else
+ echo "All $x runs already finished. No more runs needed."
+fi
 
 bestrep=`grep "tree mpest" $fn.tre.mpest.*|sed -e "s/ .*\[/ /g" -e "s/\].*//g"|sort -n -k 2|tail -n1|sed -e "s/:.*//g"`
 ln -s $bestrep $fn.tre.mpest.best
