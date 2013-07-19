@@ -15,6 +15,8 @@ binsize=$7
 bestfilen=$8
 rootpostfix=$9
 
+MPESTREP=10
+
 WH="$WS_HOME/global"
 BH="$WH/src/shell"
 
@@ -100,7 +102,7 @@ mkdir $outdir/$method
 opts=""
 if [ "$method" == "mpest" ]; then
    head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/[(,);]/ /g" -e "s/ /\n/g" |sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
-   opts=$outdir/species.list
+   opts="$outdir/species.list $MPESTREP"
 elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method
 elif [ "$method" == "greedy" ]; then
