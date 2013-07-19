@@ -23,8 +23,8 @@ for x in $(seq 1 1 $1); do
         c=`test -s $yd/$4 && cat $yd/$4|wc -l || echo 1`
         #echo count is set to $c
         if [ -f $y ]; then
-         t=`head -n$x $y | tail -n1`
-         test "$t" != "" && seq 1 $c| xargs -I@ -n1 echo $t >> $outdir/$outname.$x;
+         t=`head -n$x $y | tail -n1| sed -e "s/)[0-9]*/)/g`
+         test "$t" != "" && seq 1 $c| xargs -I@ -n1 echo $t" >> $outdir/$outname.$x;
         fi
     done;
     test `cat $outdir/$outname.$x|wc -l` != 0 || exit 1
