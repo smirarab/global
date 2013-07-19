@@ -19,10 +19,10 @@ if [ $? != 0 ]; then
 echo "`expr $x - 1` runs are already done. Starting from run $x ..."
 
 for x in `seq $x $REP`; do
- echo ""
+ echo "running $x"
  tmp=`mktemp "control-$fn-$x-XXXXX"`
  echo "$fn
- 0
+0
 `expr $RANDOM$RANDOM % 1000000000`
 `cat $1|wc -l` `cat $2|wc -l` 
 `cat $2`
