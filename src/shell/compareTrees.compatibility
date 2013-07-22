@@ -3,4 +3,4 @@ if [ $# -ne 2 ]; then
 	echo USAGE: $0 tree_file1 tree_file2
 	exit 1
 fi
-java -jar /u/smirarab/programs/phylo/phylonet_v2_4/phylonet_v2_4.jar compat $1 $2 b
+java -jar /projects/sate7/tools/bin/phylonet_v2_5_compat.jar compat $1 $2 b

@@ -29,7 +29,7 @@ if __name__ == '__main__':
         
     for e in con_tree.postorder_node_iter():
         if hasattr(e,"support"):
-    	    e.support=e.support*100
+            e.support=e.support*100
             e.label=str(e.support)
 
     con_tree.write(open(resultsFile,'w'),'newick',write_rooting=False)

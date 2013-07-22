@@ -76,7 +76,7 @@ if (! exists("xformatter")){
 print (xformatter(levels(data$DATASET)))
 
 # print the count of rows in each dataset - to be eye balled
-print (table(data[which(data$STAT=="SPFN_Compression"),c("DATASET","FACTORS")])) 
+print (table(data[which(data$STAT=="SPFN_SPFN"),c("DATASET","FACTORS")])) 
 
 # adjust running times to be in hours
 data[which(grepl(stat.time.suffix,data$STAT)),"VAL"] = 
@@ -116,6 +116,7 @@ lineplot <- function( metric, color.caption = "Techniques") {
 				   fun.ymax = function(x) {mean(x)+sd(x)/sqrt(length(x))}, 
 				   geom=geom, width=0.05, size = 0.2, linetype=1, ...) 
 		 }
+	#print (d$FACTORS)
 	p <- qplot(reorder(DATASET,VAL.sort), VAL, data = d, colour=FACTORS, 
 					shape=FACTORS,
 					geom=c("line","point"),
@@ -147,6 +148,7 @@ barplot <- function( metric, color.caption = "Techniques") {
 	d$FACTORS <- d$FACTORS[, drop = TRUE]
 	d$DATASET <- d$DATASET[, drop = TRUE]
 	
+	#print (d$FACTORS)
 	
 	stat_sum_df <- function(geom="errorbar", ...) { 
 		stat_summary(				

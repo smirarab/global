@@ -9,5 +9,7 @@ sed -e "s/>\(.*\)/@>\1@/g" $1|tr -d "\n"|tr "@" "\n"|tail -n+2> $tmp
 len=`cat $tmp|grep -v ">"| wc -L`
 count=`grep ">" $tmp|wc -l`
 
-echo "$count $len"
-cat $tmp|tr "\n" ";"|sed -e "s/;>/\n/g" -e "s/;/ /g" -e "s/>//g"
+echo $count $len >$2
+cat $tmp|tr "\n" ";"|sed -e "s/;>/\n/g" -e "s/;/ /g" -e "s/>//g" >>$2
+
+rm $tmp
