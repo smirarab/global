@@ -5,7 +5,7 @@ fn=`basename $1`
 ln -s $1 ./$fn
 
 REP=10
-test $# == 3 && REP=$3
+test $# -gt 3 && REP=$3
 echo "$REP runs of MP-EST will be performed"
 
 for x in `seq 1 $REP`; do
@@ -16,41 +16,43 @@ done
 grep "tree mpest" $fn.tre.mpest.$x
 
 if [ $? != 0 ]; then
-echo "`expr $x - 1` runs are already done. Starting from run $x ..."
 
-for x in `seq $x $REP`; do
- echo ""
- tmp=`mktemp "control-$fn-$x-XXXXX"`
- echo "$fn
- 0
+  echo "`expr $x - 1` runs are already done. Starting from run $x ..."
+
+  for x in `seq $x $REP`; do
+   echo "run $x of MPEST"
+   tmp=`mktemp "control-$fn-$x-XXXXX"`
+   echo "$fn
+0
 `expr $RANDOM$RANDOM % 1000000000`
 `cat $1|wc -l` `cat $2|wc -l` 
 `cat $2`
 0
 "> $tmp
 
- /projects/sate7/tools/bin/mpest.1.2.64bit-20k1M $tmp 1>$fn.$x.mpest.out
+   /projects/sate7/tools/bin/mpest.1.2.64bit-20k1M $tmp 1>$fn.$x.mpest.out
 
- test $? == 1 || exit 1
+   test $? == 1 || exit 1
 
- mv $fn.tre $fn.tre.mpest.$x
- grep "tree mpest" $fn.tre.mpest.$x
- test $? == 0 || exit 1
-done
+   mv $fn.tre $fn.tre.mpest.$x
+   grep "tree mpest" $fn.tre.mpest.$x
+   test $? == 0 || exit 1
+  done
 
 else
- echo "All $x runs already finished. No more runs needed."
+  echo "All $x runs already finished. No more runs needed."
 fi
 
 bestrep=`grep "tree mpest" $fn.tre.mpest.*|sed -e "s/ .*\[/ /g" -e "s/\].*//g"|sort -n -k 2|tail -n1|sed -e "s/:.*//g"`
-ln -s $bestrep $fn.tre.mpest.best
+test -s $bestrep || exit 1
+ln -fs $bestrep $fn.tre.best.mpest
 
 python -c '
 import os
 import sys
 import dendropy
  
-src_fpath = os.path.expanduser(os.path.expandvars("'$fn.tre.mpest.best'"))
+src_fpath = os.path.expanduser(os.path.expandvars("'$fn.tre.best.mpest'"))
 if not os.path.exists(src_fpath):
     sys.stderr.write("Not found: %s" % src_fpath) 
     sys.exit(1)     
@@ -61,4 +63,4 @@ trees = dendropy.TreeList.get_from_path(src_fpath, "nexus")
 trees[-1].write_to_path(dest_fpath, "newick",write_rooting=False)'
 test $? == 0 || exit 1
 
-tar cvfj logs.$fn.tar.bz --remove-files control-$fn-* $fn.tre.mpest.* $fn.*.mpest.out
+tar cvfj logs.$fn.tar.bz --remove-files control-$fn-* $fn.tre.mpest.* $fn.*.mpest.out $fn.tre.best.mpest
