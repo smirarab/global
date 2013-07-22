@@ -13,7 +13,7 @@ Log = logs/{name}_condor_log
  
 getEnv=True 
 
- Arguments = -i {input} -o sateout -j {output} -c checkpoint.dump {options}
+ Arguments = -i {input} -o sateout -j {output}  {options}
  Error=logs/{name}_std.err
  Output=logs/{name}_std.out
  Queue

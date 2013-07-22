@@ -12,7 +12,7 @@ qplot(variable,value,data=fdall,geom="boxplot", color=variable)+facet_grid(DATAS
 dev.off()
 
 pdf("pT_ACGT_point.pdf",width=12,height=8)
-qplot(reorder(TAXON,value),value,data=fdall,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="taxon")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")
+qplot(reorder(SEQUENCE,value),value,data=fdall,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")
 dev.off()
 
 
@@ -37,11 +37,11 @@ qplot(variable,value,data=fcg,geom="boxplot", color=variable,ylab="GC Content")
 dev.off()
 
 pdf("pTpP_GC_point.pdf",width=12,height=8)
-qplot(reorder(TAXON,value),value,data=fcg,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="taxon")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")
+qplot(reorder(SEQUENCE,value),value,data=fcg,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")
 dev.off()
 
 pdf("pTpP_GC_box.pdf",width=14,height=12)
-qplot(reorder(TAXON,value),value,data=fcg,geom="boxplot",xlab="taxon",ylab="GC content",outlier.size=0.4)+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(variable~., scales = "free")
+qplot(reorder(SEQUENCE,value),value,data=fcg,geom="boxplot",xlab="",ylab="GC content",outlier.size=0.4)+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(variable~., scales = "free")
 dev.off()
 
 quit()

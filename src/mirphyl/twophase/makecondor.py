@@ -162,13 +162,13 @@ def make_alignment_condor_file(outpath, alg_tool, ds_name, alg):
          
 
 def make_conversion_condor_file(outpath, alg,mapped):
-    conv_tool_path = get_tool_path("readseq")    
+    conv_tool_path = get_tool_path("convert_to_phylip")    
     condor_conv = condor_temp_def.format(exe=conv_tool_path,
-                                         options="-f12",
+                                         options="",
                                          input="aligned.mapped" if mapped else INPUT if is_alignment_available(alg) else ALIGNED,
-                                         output="-o aligned.phylip",
+                                         output="aligned.phylip",
                                          home=HOME,
-                                         name="readseq")
+                                         name="convert")
     out = open(os.path.join(outpath, "condor.convert"), "w")
     out.write(condor_conv)
     out.close()
