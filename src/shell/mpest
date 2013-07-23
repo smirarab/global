@@ -1,5 +1,5 @@
 #!/bin/bash
-#set -x
+set -x
 
 fn=`basename $1`
 ln -s $1 ./$fn
@@ -7,6 +7,11 @@ ln -s $1 ./$fn
 REP=10
 test $# -gt 3 && REP=$3
 echo "$REP runs of MP-EST will be performed"
+
+if [ -s $fn.best.of.$REP.tre ]; then
+  echo "Final results file $fn.best.of.$REP.tre is already generated. Terminating without rerunning MP-EST."
+  exit 0;
+fi
 
 for x in `seq 1 $REP`; do
   grep "tree mpest" $fn.tre.mpest.$x
@@ -57,10 +62,14 @@ if not os.path.exists(src_fpath):
     sys.stderr.write("Not found: %s" % src_fpath) 
     sys.exit(1)     
  
-dest_fpath = os.path.expanduser("'$fn.tre'")
+dest_fpath = os.path.expanduser("'$fn.best.of.$REP.tre'")
 
 trees = dendropy.TreeList.get_from_path(src_fpath, "nexus")
 trees[-1].write_to_path(dest_fpath, "newick",write_rooting=False)'
 test $? == 0 || exit 1
 
+ln -sf $fn.best.of.$REP.tre $fn.tre
+
 tar cvfj logs.$fn.tar.bz --remove-files control-$fn-* $fn.tre.mpest.* $fn.*.mpest.out $fn.tre.best.mpest
+
+exit 0

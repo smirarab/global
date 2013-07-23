@@ -1,4 +1,4 @@
-#!/usr/bin/env sage -python
+#!/usr/bin/env python
 
 import sys
 import os
@@ -10,6 +10,10 @@ import os
 #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
 
 GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code/"
+GRAPHCOLORONGCODE1="/u/smirarab/workspace/graphcoloring/vertex_coloring/vc2"
+CODE=2
+rep=""
+MAXSIZE=10
 
 def locate(pattern, root=os.curdir):
     '''Locate all files matching supplied filename pattern in and below
@@ -24,7 +28,7 @@ def gene_name(filename):
     return filename.split(".")[0]
 
 def stat_filename(g,ths):
-    return "%s.%d" %(g,ths)
+    return "%s%s.%d" %(rep,g,ths)
 
 def subsets(genes,ths):
     genetoi = {}
@@ -40,7 +44,8 @@ def subsets(genes,ths):
        #row = [] 
        f = stat_filename(gn,ths)
        nb = []
-       for line in open(f):
+       for line in open(f,'r'):
+           #print line
            r = line.split()
            if genetoi.has_key(r[1]):
                herid = genetoi[r[1]]
@@ -51,21 +56,27 @@ def subsets(genes,ths):
                if herid < len(grows):
                    grows[herid][i] = row[herid]
        grows.append(row)
-    gr="%d\n%s" %(len(genes),'\n'.join((' '.join(x) for x in grows)))
-    gr="p edge %d %d\n%s" %(len(genes),edges,'\n'.join(("\n".join(("e %d %d"%(j+1,i+1) for i,x in enumerate(r) if x!="0")) for j,r in enumerate(grows))))
+    if CODE == 1:
+        gr="%d\n%s" %(len(genes),'\n'.join((' '.join(x) for x in grows)))
+    else:
+        gr="p edge %d %d\n%s" %(len(genes),edges,'\n'.join(filter(lambda y: y!="",("\n".join(("e %d %d"%(j+1,i+1) for i,x in enumerate(r) if x!="0")) for j,r in enumerate(grows)))))
     #print gr
     from subprocess import Popen, PIPE, STDOUT
-    p = Popen(['/u/smirarab/workspace/graphcoloring/vertex_coloring/vc2'], stdout=PIPE, stdin=PIPE, stderr=None)
-    #p = Popen(['java','-classpath',GRAPHCOLORINGJAVA,'GraphColoring'], stdout=PIPE, stdin=PIPE, stderr=None)
+    if CODE == 1:
+        p = Popen([GRAPHCOLORONGCODE1,str(MAXSIZE)], stdout=PIPE, stdin=PIPE, stderr=None)
+    else:
+        p = Popen(['java','-Xmx12000M','-classpath',GRAPHCOLORINGJAVA,'GraphColoring'], stdout=PIPE, stdin=PIPE, stderr=None)
     stdout = p.communicate(input=gr)[0]
     print stdout
     res = [[itogene[int(y)] for y in x.split()] for x in stdout[1:-1].replace("||","|").split("|") if x.strip() !=""]
     return res
 
 if __name__ == '__main__':
-    thresholds = [75]
+    thresholds = [int(sys.argv[2])]
     allgenenames=sys.argv[1]
-    maxsize = int(sys.argv[2])
+    global rep
+    rep=sys.argv[3] if len(sys.argv) > 3 else ""
+    maxsize = 1
     genesets = [filter(lambda x: x is not None and x.strip() != '', open(allgenenames).read().split('\n'))]
     for t in thresholds:
         newgenesets = []
@@ -79,7 +90,7 @@ if __name__ == '__main__':
         genesets = newgenesets
         print "%d:\n%s" %(t,",".join((str(gs) for gs in genesets)))
     for i,gs in enumerate(genesets):
-        fo = open('subest.%d.txt' %i,'w')
+        fo = open('%sbin.%d.txt' %(rep,i),'w')
         fo.write('\n'.join(gs))
         fo.write('\n')
         fo.close()
