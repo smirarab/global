@@ -6,8 +6,7 @@ Created on Jun 3, 2011
 '''
 import dendropy
 import sys
-import os
-import copy
+from dendropy.dataobject.taxon import Taxon
 ''' roots the tree on the given outgroups. Input is:
 -- first argument: a path to the tree file
 -- second argument: a list of outgroups, separated by comma. 
@@ -24,7 +23,7 @@ Using -mrca this monophyletic requirement can be relaxed, so that MRCA is always
 
 def main(args):    
     if len (args) < 2:
-        print '''USAGE: %s [tree_file] [outgroups] [-mrca (optional)] [output name (optional)]
+        print '''USAGE: %s [tree_file] [outgroups] [-mrca -mrca-dummy (optional)] [output name (optional)]
 
 -- tree_file: a path to the newick tree file
 
@@ -43,13 +42,15 @@ which need to be monophyletic. If not monophyletic, roots at STRCA.
 
 -- (optional) -mrca: using this option the mono-phyletic requirement is relaxed 
 and always the mrca of the + delimited list of outgroups is used.
+-- (optional) -mrca-dummy: is like -mrca, but also adds a dummy taxon as outgroup to the root. 
 ''' %args[0]
         sys.exit(1)
     treeName = args[1]
 
     outgroups = [x.replace("_"," ") for x in args[2].split(",")]
     
-    use_mrca = True if len(args) > 3 and args[3] == "-mrca" else False    
+    use_mrca = True if len(args) > 3 and (args[3] == "-mrca" or args[3] == "-mrca-dummy") else False
+    add_dummy = True if len(args) > 3 and (args[3] == "-mrca-dummy") else False
     resultsFile= args[4] if len(args) > 4 else ("%s.rooted"%treeName[:-9] if treeName.endswith("unrooted") else "%s.rooted" % treeName)
     print "Reading input trees %s ..." %treeName, 
     trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
@@ -86,14 +87,14 @@ and always the mrca of the + delimited list of outgroups is used.
                         tree.reroot_at_edge(ingroup.edge, update_splits=True)
 
                     mrca = tree.mrca(taxa=outns)
-                    break
-            #if not mono-phyletic, then use the first
+                    break            
             if mrca is None:
                 raise KeyError("Outgroups not found: %s" %outgroups)
+            #print mrca.leaf_nodes()
+            #if not mono-phyletic, then use the first
             if not use_mrca and len (mrca.leaf_nodes()) != len(outns):
-                print "selected set is not mono-phyletic. Using %s instead. " %outns[0]
-                mrca = tree.find_node_with_taxon_label(outs[0])
-                break                    
+                print "selected set is not monophyletic. Using %s instead. " %outns[0]
+                mrca = tree.find_node_with_taxon_label(outs[0])                
             if mrca.parent_node is None:
                 print "Already rooted at the root."
                 #print "rerooting on %s" % [s.label for s in outns]
@@ -105,13 +106,18 @@ and always the mrca of the + delimited list of outgroups is used.
                     tree.reroot_at_edge(mrca.edge, update_splits=False)        
             else:
                 tree.reroot_at_edge(mrca.edge, update_splits=False)
+            if add_dummy:
+                dummy = tree.seed_node.new_child(taxon=Taxon(label="outgroup"))
+                tree.reroot_at_edge(dummy.edge, update_splits=False)
+
         '''This is to fix internal node labels when treated as support values''' 
         while oldroot.parent_node != tree.seed_node and oldroot.parent_node != None:
             oldroot.label = oldroot.parent_node.label
             oldroot = oldroot.parent_node
         if len(oldroot.sister_nodes()) > 0:
             oldroot.label = oldroot.sister_nodes()[0].label    
-            #tree.reroot_at_midpoint(update_splits=False)            
+            #tree.reroot_at_midpoint(update_splits=False)
+
     print "writing results to %s" %resultsFile        
     trees.write(open(resultsFile,'w'),'newick',edge_lengths=True, internal_labels=True,write_rooting=False)
 
