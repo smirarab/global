@@ -9,6 +9,8 @@ import os
 #    name = file[:-1]                       # strip '\n'                
 #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
 
+global rep
+
 GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code/"
 GRAPHCOLORONGCODE1="/u/smirarab/workspace/graphcoloring/vertex_coloring/vc2"
 CODE=2
@@ -74,7 +76,6 @@ def subsets(genes,ths):
 if __name__ == '__main__':
     thresholds = [int(sys.argv[2])]
     allgenenames=sys.argv[1]
-    global rep
     rep=sys.argv[3] if len(sys.argv) > 3 else ""
     maxsize = 1
     genesets = [filter(lambda x: x is not None and x.strip() != '', open(allgenenames).read().split('\n'))]
