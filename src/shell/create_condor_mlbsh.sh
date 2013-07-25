@@ -47,7 +47,7 @@ getEnv=True
 ">$outdir/condor/condor.reroot
 for x in $dir/*/$filen; do
  echo "
- Arguments = $x $outgroup - $x.$rootpostfix
+ Arguments = $x $outgroup $x.$rootpostfix
  Error = $outdir/logs/reroot.err
  Output = $outdir/logs/reroot.out
  Queue">>$outdir/condor/condor.reroot
@@ -57,7 +57,7 @@ filen=$filen.$rootpostfix
 if [ "$bestfilen" != "-" ]; then
 for x in $dir/*/$bestfilen; do
  echo "
- Arguments = $x $outgroup - $x.$rootpostfix
+ Arguments = $x $outgroup $x.$rootpostfix
  Error = $outdir/logs/reroot.err
  Output = $outdir/logs/reroot.out
  Queue">>$outdir/condor/condor.reroot
