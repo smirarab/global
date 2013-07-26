@@ -1,0 +1,32 @@
+#!/bin/bash
+
+dir=scaledup2.10reps.supergenes-$1bp-$2/R$3
+
+echo '+Group = "GRAD"
++Project = "COMPUTATIONAL_BIOLOGY"
++ProjectDescription = "Binning"
+
+Universe = vanilla
+
+Requirements = Arch == "X86_64" 
+
+executable = '`pwd`'/runraxml-introns-1.sh
+
+Log = logs/supergene-'$1'-'$2'-R'$3'-condor.log
+
+getEnv=True 
+'>condor.$1.$2.R$3
+
+for x in `ls $dir`; do
+  if [ -f `pwd`/$dir/$x/.done.raxml.gtrgamma.1 ]; then
+    echo $x is done
+  else
+    echo "
+ Arguments = $x 1 `pwd`/$dir supergene.fasta
+ Error=logs/$x-$1-$2-$3-std.err
+ Output=logs/$x-$1-$2-$3-std.out
+ Queue">>condor.$1.$2.R$3
+ fi
+done
+
+echo condor_submit condor.$1.$2.R$3

@@ -1,0 +1,37 @@
+#!/bin/bash
+
+dir=$1
+support=$2
+out=$3
+f=$4.$support; 
+
+mkdir $out
+
+pd=`pwd`
+all=`mktemp -p $pd`
+ls $dir/*/$f>$all.order
+cat $all.order|xargs cat > $all
+
+
+echo "+Group = \"GRAD\"
++Project = \"COMPUTATIONAL_BIOLOGY\"
++ProjectDescription = \"Binning\"
+
+Universe = vanilla
+
+Requirements = Arch == \"X86_64\" 
+
+executable = $WS_HOME/global/src/shell/runcompat.sh
+
+Log = logs/compatibility-$dir-$support.log
+
+getEnv=True 
+">condor.compat.$dir.$support
+
+for x in `ls $dir`; do
+    echo "
+ Arguments = $dir $f $x $all
+ Error=/dev/null
+ Output=$out/$x.$support
+ Queue">>condor.compat.$dir.$support
+done
