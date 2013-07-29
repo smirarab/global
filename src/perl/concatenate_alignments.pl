@@ -11,7 +11,7 @@
 
 # pick up global settings
 #use FindBin qw($Bin);
-#use lib "$Bin/../global";
+use lib "$ENV{WS_HOME}/../global";
 use setenv;
 use framework;
 # also make environment changes

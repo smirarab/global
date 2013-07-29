@@ -3,8 +3,8 @@
 # calculate bootstrap tree from bipartitions output
 
 # pick up global settings
-use FindBin qw($Bin);
-use lib "$Bin/../global";
+#use FindBin qw($WS_HOME);
+use lib "$ENV{WS_HOME}/global/src/perl";
 use setenv;
 use framework;
 # also make environment changes

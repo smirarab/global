@@ -26,7 +26,7 @@ if [ ! -s $in.phylip ] || [ "`head -n1 $in.phylip`" == "0 0" ] ; then
 fi
 
 # In case this is a re-run, rename outputs from the old runs
-tar cfz `mktemp ./best.backup.XXXXX.tgz` *best*
+tar cfz `mktemp ./BEST.backup.XXXXX.tgz` --remove-files *best*
 
 # Estimate the RAxML best tree
 if [ $C -gt 1 ]; then
