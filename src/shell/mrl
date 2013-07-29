@@ -5,10 +5,15 @@ export raxml_new="/projects/sate7/tools/bin/raxmlHPC-SSE3-7.3.5-64bit"
 
 out=$2
 
-tmp=`mktemp -p .`
+if [ -s $out ]; then
+  echo "Ouput files exists. Refusing to rerun. "
+  exit 0;
+fi
+
+tmp=`mktemp -p . mrpmaptrix.$out.XXXXX`
 java -jar $FASTMRP/mrp.jar $1 $tmp  PHYLIP
 
-rm RAxML_*$3
+rm RAxML_*$out*
 $raxml_new -m BINCAT -s $tmp -n $out -N 10 -p $RANDOM
 
 test "$?" != "0" && exit 1
