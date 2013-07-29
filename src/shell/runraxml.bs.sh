@@ -61,7 +61,7 @@ else
   echo "Done">.done.raxml.$T.$rep.2
   cd $dirn
   cat  RAxML_bootstrap.ml* > .tmp
-  tar cfj boot.$rep.run.logs.tar.bz --remove-files RAxML_bootstrap.ml* RAxML_*back* 
+  tar cfj boot.$rep.run.logs.tar.bz --remove-files RAxML_bootstrap.ml* RAxML_*back* RAxML_info.ml.*
   mv .tmp RAxML_bootstrap.ml.$rep
  else
   echo Sorry, Failed!
