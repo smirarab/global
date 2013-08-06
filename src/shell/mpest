@@ -29,7 +29,7 @@ if [ $? != 0 ]; then
    tmp=`mktemp "control-$fn-$x-XXXXX"`
    echo "$fn
 0
-`expr $RANDOM$RANDOM % 1000000000`
+`expr $RANDOM$RANDOM % 10000000`
 `cat $1|wc -l` `cat $2|wc -l` 
 `cat $2`
 0
