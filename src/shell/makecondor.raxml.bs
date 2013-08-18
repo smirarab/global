@@ -2,6 +2,8 @@
 
 echo "USAGE: $0 [dir name] [rep number]"
 
+test $# == 2 || exit 1
+
 dir=$1/R$2
 REP=200
 

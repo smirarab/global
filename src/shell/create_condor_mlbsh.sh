@@ -111,6 +111,8 @@ fi
 echo "$HEADER
 executable = $BH/$method
 
+Requirements = InMastodon
+
 Log = $outdir/logs/$method.log
 
 getEnv=True

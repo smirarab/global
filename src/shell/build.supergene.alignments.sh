@@ -1,5 +1,8 @@
 #!/bin/bash
 
+echo "USAGE: bp support rep"
+test $# == 3 || exit 1
+
 bp=$1
 support=$2
 rep=$3
@@ -13,7 +16,7 @@ support=$2
 rep=$3
 BINHOME="pairwise/R$rep"
 ALIGNHOME="R$rep"
-OUTDIR="supergenes-100genes-$support/R$rep"
+OUTDIR="supergenes-200genes-$support/R$rep"
 OUTFILE="supergene"
 
 EXT=fasta
@@ -25,8 +28,8 @@ for y in `wc -l $BINHOME/bin*txt|grep -v total|awk '{if ($1==1)print $2}'`; do
   x=`echo $y|sed -e "s/.*bin/bin/g"`
   g=`cat $y`
   mkdir $OUTDIR/$x
-  #ln -s `pwd`/$ALIGNHOME/$g/raxmlboot.gtrgamma/ $OUTDIR/$x  # this is for avian simulated
-  ln -s `pwd`/$ALIGNHOME/$g/ $OUTDIR/$x
+  ln -s `pwd`/$ALIGNHOME/$g/raxmlboot.gtrgamma/ $OUTDIR/$x  # this is for avian simulated
+  #ln -s `pwd`/$ALIGNHOME/$g/ $OUTDIR/$x/
   echo "Done" > $OUTDIR/$x/.done.raxml.gtrgamma.1
   echo "Done" > $OUTDIR/$x/.done.raxml.gtrgamma.200.2
   echo $g > $OUTDIR/$x/$OUTFILE.part

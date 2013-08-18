@@ -1,5 +1,7 @@
 #!/bin/bash
 
+test $# == 5 || echo USAGE: directory filename gene versus support
+
 dir=$1
 f=$2
 x=$3

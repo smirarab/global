@@ -6,7 +6,7 @@ Created on Jun 3, 2011
 '''
 import dendropy
 import sys
-LIMIT = 30
+LIMIT = 25
 
 def meanstdv(x):
     from math import sqrt
@@ -57,13 +57,17 @@ if __name__ == '__main__':
         #print hm_avg, sehm
         # Find long edges
         l = hm_avg + sdhm * LIMIT
+        l = mid * LIMIT
+        #print l, mid
         torem=[]
-        for k,v in elen.items():
+        for k,v in elen.items():            
             if v > l:
+                #print v
                 if len(k.head_node.leaf_nodes()) < N/2:
                     r = [n.taxon for n in k.head_node.leaf_nodes()]
                 else:
-                    r = [n.taxon for n in tree.leaf_nodes() if n not in k.head_node.leaf_nodes()]                    
+                    r = [n.taxon for n in tree.leaf_nodes() if n not in k.head_node.leaf_nodes()]       
+                #print r             
                 torem.append(r)
 
         torem2=[]
@@ -75,7 +79,7 @@ if __name__ == '__main__':
                 if set(o).issuperset(nl):
                     skipthis = True
             if not skipthis:
-                if len(r) == 1:
+                if len(r) != -1:
                     torem2.append(r)
                     print [n.label for n in r],
                 
