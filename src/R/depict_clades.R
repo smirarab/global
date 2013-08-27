@@ -1,12 +1,12 @@
 require(ggplot2)
 require(reshape)
 
-rm(list=ls())
+#rm(list=ls())
 
-clade.colors <- c("Strong Support"=rgb(51, 160, 44, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
-		"Weak Support"=rgb(31, 120, 180, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
-		"Compatible (Weak Rejection)"=rgb(240, 220, 130, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
-		"Strong Rejection"=rgb(227, 26, 28, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
+		"Weak Support"=rgb(128, 205, 193, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
+		"Compatible (Weak Rejection)"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
+		"Strong Rejection"=rgb(166, 97, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
 rename.c <- list(
 		"Strong Support"="IS_MONO-IS_MONO", "Strong Support (partially missing)"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
 		"Weak Support"="IS_MONO-CAN_MONO", "Weak Support (partially missing)"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
@@ -16,20 +16,31 @@ rename.c <- list(
 
 #Read Raw files
 read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.order = NULL, techs.order = NULL) {
-	raw.all = read.csv(file.all,sep=" ", header=T)
-	raw.highsupport = read.csv(file.hs,sep=" ", header=T)
+	raw.all = read.csv(file.all,sep="\t", header=T)
+	raw.highsupport = read.csv(file.hs,sep="\t", header=T)
 	if (! is.null(techs.order)) {
+		print("tech renaming...")
 		raw.all$ID=factor(raw.all$ID,levels=techs.order)
 		raw.highsupport$ID=factor(raw.highsupport$ID,levels=techs.order)
+		print (nrow(raw.all))
+		print (nrow(raw.highsupport))
+		print("techs renamed!")
 	}
 	if (! is.null(clade.order)) {
+		print("choosing clades...")
+		print(levels(raw.all$CLADE))
+		print(clade.order)
 		raw.all = raw.all[which (raw.all$CLADE %in% clade.order),]
 		raw.highsupport = raw.highsupport[which (raw.highsupport$CLADE %in% clade.order),]
+		print (nrow(raw.all))
+		print (nrow(raw.highsupport))
+		print("clades chosen!")
 	}
 	
 	if (! is.numeric(raw.all$BOOT)){
-		raw.all$BOOT <- as.numeric(levels(raw.all$BOOT))[raw.all$BOOT]
+		raw.all$BOOT <- as.numeric(levels(raw.all$BOOT))[raw.all$BOOT]		
 	}
+	print("bootstrap is numeric")
 	raw.highsupport=raw.highsupport[,c(1,2,3,5)]
 	# Merge 75% results and all results
 	if (FALSE) {
@@ -39,8 +50,11 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	}
 	names(merged)[4]<-"MONO"
 	names(merged)[6]<-"MONO.75"
+    print ("merging finished!")
+	print (nrow(merged))
 	# Create counts table
 	clade.counts=recast(merged,MONO+MONO.75~CLADE~DS,id.var=c("DS", "CLADE", "MONO", "BOOT", "MONO.75"))
+	print (clade.counts)
 	#d.c=d.c/sum(d.c[,1,1])
 	countes.melted <- melt(clade.counts)
 	names(countes.melted)[1] <- "Classification"
@@ -122,6 +136,7 @@ metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
 	for ( ds in levels(y$DS)) {
 		
 		pdf(paste(ds,"block","pdf",sep="."),width=figuresizes[1],height=figuresizes[2])
+		#png(paste(ds,"block","png",sep="."),width=2000,height=2000)#,width=figuresizes[1],height=figuresizes[2])
 		
 		op <- opts(axis.text.x = theme_text(size=10,angle = 90,hjust=1),legend.position=c(-.15,-.15),axis.text.y = theme_text(hjust=1))
 		
