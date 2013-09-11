@@ -1,4 +1,4 @@
-#!/lusr/bin/python
+#!/usr/bin/env python
 '''
 Created on Jun 3, 2011
 
@@ -6,7 +6,7 @@ Created on Jun 3, 2011
 '''
 import dendropy
 import sys
-LIMIT = 25
+LIMIT = 10
 
 def meanstdv(x):
     from math import sqrt
@@ -41,10 +41,7 @@ if __name__ == '__main__':
         #sdhm =   sqrt(sum([ pow(1./x - 1./hm_avg,2) for x in elensort]))*pow(hm_avg,2) / sqrt(n-1)                 
         #print hm_avg, sehm
         # Find long edges
-        #l = hm_avg + sdhm * LIMIT
-        
         l = mid * LIMIT
-        #print l, mid
         torem=[]
         for k,v in elen.items():            
             if v > l:

@@ -27,9 +27,11 @@ HEADER="+Group = \"GRAD\"
 Universe = vanilla
 "
 
+echo Number of input files: `ls $dir/*/$filen|wc -l`
+
 ############### Prepare directory structure
 
-mkdir $outdir
+mkdir -p $outdir
 mkdir $outdir/logs
 mkdir $outdir/condor
 
@@ -110,8 +112,6 @@ elif [ "$method" == "greedy" ]; then
 fi
 echo "$HEADER
 executable = $BH/$method
-
-Requirements = InMastodon
 
 Log = $outdir/logs/$method.log
 

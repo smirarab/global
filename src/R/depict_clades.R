@@ -3,6 +3,18 @@ require(reshape)
 
 #rm(list=ls())
 
+if (ST) {
+clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Weak Support"=rgb(128, 205, 193, max = 255), 
+		"Compatible (Weak Rejection)"=rgb(223, 194, 125, max = 255), "Strong Rejection"=rgb(166, 97, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+rename.c <- list(
+		"Strong Support"="IS_MONO-IS_MONO","Weak Support"="IS_MONO-CAN_MONO",
+		"Compatible (Weak Rejection)"="CAN_MONO-CAN_MONO", 
+		"Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO", 
+		"Strong Rejection"="NOT_MONO-NOT_MONO",
+                "Missing"="IS_MONO_INCOMPLETE-CAN_MONO","Missing"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE","Missing"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE","Missing"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE", "Missing"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE"
+)
+
+} else {
 clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
 		"Weak Support"=rgb(128, 205, 193, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
 		"Compatible (Weak Rejection)"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
@@ -13,7 +25,7 @@ rename.c <- list(
 		"Compatible (Weak Rejection)"="CAN_MONO-CAN_MONO", "Compatible (Weak Rejection)"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
 		"Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO", "Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE" ,
 		"Strong Rejection"="NOT_MONO-NOT_MONO")
-
+}
 #Read Raw files
 read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.order = NULL, techs.order = NULL) {
 	raw.all = read.csv(file.all,sep="\t", header=T)
@@ -130,7 +142,7 @@ metahistograms<- function (d.boot) {
 	dev.off()	
 }
 
-metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
+metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13),raw.all){
 	print(levels(y$DS))
 	# Draw the block driagram
 	for ( ds in levels(y$DS)) {
@@ -139,14 +151,12 @@ metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
 		#png(paste(ds,"block","png",sep="."),width=2000,height=2000)#,width=figuresizes[1],height=figuresizes[2])
 		
 		op <- opts(axis.text.x = theme_text(size=10,angle = 90,hjust=1),legend.position=c(-.15,-.15),axis.text.y = theme_text(hjust=1))
-		
-		print (y$colors)
-		
 		if (1 %in% pages) {			
 			p1 <- qplot(ID,CLADE,data=y,fill=Classification,geom="tile",xlab="",ylab="")+ 
                         scale_x_discrete(drop=FALSE) + scale_y_discrete(drop=FALSE) +
 			scale_fill_manual(name="Classification", values=y.colors) + theme_bw() + op
 			print(p1)
+			
 		}
 		
 		if (2 %in% pages){
@@ -175,6 +185,21 @@ metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
 			
 			print(p3)
 		}
+		dev.off()
+		db=raw.all[raw.all$MONO=="IS_MONO",]
+                dbc=y[which(y$Classification=="Compatible (Weak Rejection)"),1:3]
+		dbn=y[which(y$Classification=="Strong Rejection"),1:3]
+                dbc$BOOT=-100; 
+		dbn$BOOT=-200;		
+                db2=rbind(dbn[,cols],dbc[,cols],db[,cols]);
+                db2$CLADE <- factor(db2$CLADE, levels=rev(clade.order)) 
+		nrow(db2)
+		pdf(paste(ds,"block-shades","pdf",sep="."),width=figuresizes[1],height=figuresizes[2]) 
+                p1 <- qplot(ID,CLADE,data=db2,fill=BOOT,geom="tile",xlab="",ylab="")+
+		      scale_x_discrete(drop=FALSE) + scale_y_discrete(drop=FALSE)+
+		      scale_fill_gradient2(high="green4",mid="lightgreen",low="tomato",na.value="steelblue3")+ 
+		      theme_bw() + theme(axis.text.x = theme_text(size=10,angle = 90,hjust=1),axis.text.y = theme_text(hjust=1),legend.position="None")
+		print(p1)
 		dev.off()
 		write.csv(file=paste(ds,"metatable.results","csv",sep="."),cast(y,ID~CLADE))		
 	}
