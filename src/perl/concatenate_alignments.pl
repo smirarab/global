@@ -11,7 +11,7 @@
 
 # pick up global settings
 #use FindBin qw($Bin);
-#use lib "$Bin/../global";
+use lib "$ENV{WS_HOME}/global/src/perl";
 use setenv;
 use framework;
 # also make environment changes

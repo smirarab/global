@@ -18,16 +18,16 @@ def is_number(s):
     
 if __name__ == '__main__':
 
-    treeName = sys.argv[1]
+    if (len(sys.argv) < 2):
+        print "USAGE: %s tree_file [threshold - default 75] [outfile name; ~ uses default] [-strip-internal|-strip-bl|strip-both|-nostrip; default: nostrip]" %sys.argv[0]
+
+    treeName = sys.argv[1]            
+    t = 75 if len (sys.argv) < 3 else float(sys.argv[2])
+    resultsFile="%s.%d" % (treeName,t) if len (sys.argv) < 4 or sys.argv[3]=="?" else sys.argv[3]
+    #print "outputting to", resultsFile    
+    strip_internal=True if len (sys.argv) > 4 and sys.argv[4]=="-strip-internal" or sys.argv[4]=="-strip-both" else False 
+    strip_bl=True if len (sys.argv) > 4 and sys.argv[4]=="-strip-bl" or sys.argv[4]=="-strip-both" else False
     
-    #cmd = 'find %s -name "%s" -print' % (treeDir,treeName)
-    #print cmd
-    #for file in os.popen(cmd).readlines():     # run find command        
-    #    name = file[:-1]                       # strip '\n'                
-    #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
-            
-    resultsFile="%s.contracted" % treeName if len (sys.argv) < 3 else sys.argv[2]
-    t = 75 if len (sys.argv) < 4 else float(sys.argv[3])    
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
     filt = lambda edge: False if (edge.label is None or (is_number(edge.label) and float(edge.label) >= t)) else True
     for tree in trees:
@@ -40,6 +40,13 @@ if __name__ == '__main__':
         edges = tree.get_edge_set(filt)
         for e in edges:
             e.collapse()
+        if strip_internal:
+            for n in tree.internal_nodes():
+                n.label = None
+        if strip_bl:
+            for e in tree.get_edge_set():
+                e.length = None
+
         #tree.reroot_at_midpoint(update_splits=False)
         
     trees.write(open(resultsFile,'w'),'newick',write_rooting=False)

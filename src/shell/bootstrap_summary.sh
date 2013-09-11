@@ -5,7 +5,7 @@ if [ $# -lt 1 ]; then
   exit 1
 fi
 S=$2
-if [ -z $S ] || [ $S -gt 100 ] || [ $S -lt 0 ]; then
+if [ -z $S ] || [ $S -gt 1000 ] || [ $S -lt 0 ]; then
 	S=75
 fi
 pattern="s/[^)]*[);]\([0-9]*\)/\1 /g"
@@ -13,8 +13,8 @@ for x in `cat $1`; do
   echo $x| sed -e "s/[^)]*[);]\([0-9]*\)/\1 /g"|tr " " "\n"|awk '/^[0-9]/ {print "'$1'",$1;}' >&2
   echo -n $1" "
   echo $x| sed -e "s/[^)]*[);]\([0-9]*\)/\1 /g"|tr " " "\n"|awk '
-    BEGIN {sum=0;num=0;min=100;max=0;high=0;}
-          {if ($1 >=0 && $1 <=100) {
+    BEGIN {sum=0;num=0;min=1000;max=0;high=0;}
+          {if ($1 >=0 && $1 <=1000) {
 	      sum+=$1;num++; 
 	      if ($1>max) {max=$1}; 
 	      if($1<min) {min=$1};

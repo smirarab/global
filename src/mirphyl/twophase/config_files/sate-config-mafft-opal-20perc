@@ -12,7 +12,8 @@ keepalignmenttemps = False
 multilocus = False
 datatype = dna
 temporaries = tmp
-keeptemp = True
+timesfile=times
+keeptemp = False
 
 [fakealigner]
 path = 

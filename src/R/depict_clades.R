@@ -1,10 +1,12 @@
 require(ggplot2)
-rm(list=ls())
+require(reshape)
 
-clade.colors <- c("Strong Support"=rgb(51, 160, 44, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
-		"Weak Support"=rgb(31, 120, 180, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
-		"Compatible (Weak Rejection)"=rgb(240, 220, 130, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
-		"Strong Rejection"=rgb(227, 26, 28, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+#rm(list=ls())
+
+clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
+		"Weak Support"=rgb(128, 205, 193, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
+		"Compatible (Weak Rejection)"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
+		"Strong Rejection"=rgb(166, 97, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
 rename.c <- list(
 		"Strong Support"="IS_MONO-IS_MONO", "Strong Support (partially missing)"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
 		"Weak Support"="IS_MONO-CAN_MONO", "Weak Support (partially missing)"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
@@ -14,20 +16,31 @@ rename.c <- list(
 
 #Read Raw files
 read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.order = NULL, techs.order = NULL) {
-	raw.all = read.csv(file.all,sep=" ", header=T)
-	raw.highsupport = read.csv(file.hs,sep=" ", header=T)
+	raw.all = read.csv(file.all,sep="\t", header=T)
+	raw.highsupport = read.csv(file.hs,sep="\t", header=T)
 	if (! is.null(techs.order)) {
+		print("tech renaming...")
 		raw.all$ID=factor(raw.all$ID,levels=techs.order)
 		raw.highsupport$ID=factor(raw.highsupport$ID,levels=techs.order)
+		print (nrow(raw.all))
+		print (nrow(raw.highsupport))
+		print("techs renamed!")
 	}
 	if (! is.null(clade.order)) {
+		print("choosing clades...")
+		print(levels(raw.all$CLADE))
+		print(clade.order)
 		raw.all = raw.all[which (raw.all$CLADE %in% clade.order),]
 		raw.highsupport = raw.highsupport[which (raw.highsupport$CLADE %in% clade.order),]
+		print (nrow(raw.all))
+		print (nrow(raw.highsupport))
+		print("clades chosen!")
 	}
 	
 	if (! is.numeric(raw.all$BOOT)){
-		raw.all$BOOT <- as.numeric(levels(raw.all$BOOT))[raw.all$BOOT]
+		raw.all$BOOT <- as.numeric(levels(raw.all$BOOT))[raw.all$BOOT]		
 	}
+	print("bootstrap is numeric")
 	raw.highsupport=raw.highsupport[,c(1,2,3,5)]
 	# Merge 75% results and all results
 	if (FALSE) {
@@ -37,8 +50,11 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	}
 	names(merged)[4]<-"MONO"
 	names(merged)[6]<-"MONO.75"
+    print ("merging finished!")
+	print (nrow(merged))
 	# Create counts table
 	clade.counts=recast(merged,MONO+MONO.75~CLADE~DS,id.var=c("DS", "CLADE", "MONO", "BOOT", "MONO.75"))
+	print (clade.counts)
 	#d.c=d.c/sum(d.c[,1,1])
 	countes.melted <- melt(clade.counts)
 	names(countes.melted)[1] <- "Classification"
@@ -67,7 +83,7 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	y.colors <- array(clade.colors[levels(y$Classification)])
 	y$CLADE <- factor(y$CLADE, levels=rev(clade.order))
 	
-	return (list (y=y, countes=clade.counts, countes.melted=countes.melted, raw.all = raw.all))
+	return (list (y=y, countes=clade.counts, countes.melted=countes.melted, raw.all = raw.all, y.colors=y.colors))
 }
 
 metabargraph <- function (d.c.m, y){
@@ -114,18 +130,22 @@ metahistograms<- function (d.boot) {
 	dev.off()	
 }
 
-metatable <- function (y,c.counts,pages=1:3, figuresizes=c(15,13)){
+metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
 	print(levels(y$DS))
 	# Draw the block driagram
 	for ( ds in levels(y$DS)) {
 		
 		pdf(paste(ds,"block","pdf",sep="."),width=figuresizes[1],height=figuresizes[2])
+		#png(paste(ds,"block","png",sep="."),width=2000,height=2000)#,width=figuresizes[1],height=figuresizes[2])
 		
-		op <- theme_bw()+opts(axis.text.x = theme_text(size=10,angle = 90,hjust=1),legend.position=c(0.09,0.1),axis.text.y = theme_text(hjust=1))
+		op <- opts(axis.text.x = theme_text(size=10,angle = 90,hjust=1),legend.position=c(-.15,-.15),axis.text.y = theme_text(hjust=1))
 		
-		if (1 %in% pages) {
-			p1 <- qplot(ID,CLADE,data=y.d,fill=Classification,geom="tile",xlab="",ylab="") 
-			scale_fill_manual(name="Classification", values=y.colors) + op
+		print (y$colors)
+		
+		if (1 %in% pages) {			
+			p1 <- qplot(ID,CLADE,data=y,fill=Classification,geom="tile",xlab="",ylab="")+ 
+                        scale_x_discrete(drop=FALSE) + scale_y_discrete(drop=FALSE) +
+			scale_fill_manual(name="Classification", values=y.colors) + theme_bw() + op
 			print(p1)
 		}
 		
@@ -137,7 +157,7 @@ metatable <- function (y,c.counts,pages=1:3, figuresizes=c(15,13)){
 			y.d.r = y.d[which (!y.d$CLADE %in% nosup),]
 			y.d.r$CLADE = factor(y.d.r$CLADE)
 			p2 <- qplot(ID,CLADE,data=y.d.r,fill=Classification,geom="tile",xlab="",ylab="")+ 
-					scale_fill_manual(name="Classification", values=y.colors) + op
+					scale_fill_manual(name="Classification", values=y.colors) + theme_bw() + op
 			
 			
 			print(p2)
@@ -150,7 +170,7 @@ metatable <- function (y,c.counts,pages=1:3, figuresizes=c(15,13)){
 			y.d.rr$CLADE = factor(y.d.rr$CLADE)
 			
 			p3 <- qplot(ID,CLADE,data=y.d.rr,fill=Classification,geom="tile",xlab="",ylab="")+ 
-					scale_fill_manual(name="Classification", values=y.colors) + op
+					scale_fill_manual(name="Classification", values=y.colors)+ theme_bw() + op 
 			
 			
 			print(p3)
@@ -159,24 +179,6 @@ metatable <- function (y,c.counts,pages=1:3, figuresizes=c(15,13)){
 		write.csv(file=paste(ds,"metatable.results","csv",sep="."),cast(y,ID~CLADE))		
 	}
 }
-
-
-#1kp:
-'techs = c(
-		"[Supermatrix; Amino Acid]:","FAA.untrimmed.unpartitioned","FAA.trim50genes.unpartitioned","FAA.trim50genes50sites.partitioned","FAA.trim50genes50sites.unpartitioned","FAA.trim50genesChara.allPos.unpartitioned","FAA.trim50genes50sites25Xbranches.unpartitioned","FAA.604genes.trimExtensively.unpartitioned","FAA.604genes.trimExtensively.phylobayes.CATGTR","FAA.604genes.trimExtensively.phylobayes.CAT",
-		"[Supermatrix; Codon - 1st and 2nd]:","FNA2AA.untrimmed.no3rd.unpartitioned","FNA2AA.trim50genes.no3rd.unpartitioned","FNA2AA.trim50genes50sites.no3rd.unpartitioned","FNA2AA.trim50genes50sites.no3rd.partitioned","FNA2AA.trim50genesChara.no3rd.unpartitioned","FNA2AA.trim50genes50sites25Xbranches.no3rd.unpartitioned","FNA2AA.604genes.trimExtensively.no3rd.unpartitioned","FNA2AA.604genes.trimExtensively.no3rd.phylobayes.CATGTR",
-		"[Supertree; Amino Acid + Codon 1st and 2nd]:","supertree.FAA.untrimmed","supertree.FAA.trim50genes","supertree.FAA.trim50genes25Xbranches","supertree.FNA2AA.untrimmed.no3rd","supertree.FNA2AA.trim50genes.no3rd","supertree.FNA2AA.trim50genes25Xbranches.no3rd",
-		"[Supertree; All 3 Codon + DNA]:","supertree.FNA2AA.untrimmed.allPos","supertree.FNA2AA.trim50genes.allPos","supertree.FNA2AA.trim50genes25Xbranches.allPos","supertree.FNA.untrimmed","supertree.FNA.trim50genes","supertree.FNA.trim50genes25Xbranches",
-		"[Supermatrix; Codon - all 3 positions]:","FNA2AA.untrimmed.allPos.unpartitioned","FNA2AA.trim50genes.allPos.unpartitioned","FNA2AA.trim50genes50sites.allPos.unpartitioned","FNA2AA.trim50genes50sites.allPos.partitioned","FNA2AA.trim50genesChara.allPos.unpartitioned","FNA2AA.trim50genes50sites25Xbranches.allPos.unpartitioned","FNA2AA.604genes.trimExtensively.allPos.unpartitioned",
-		"[Supermatrix; DNA alignment]","FNA.trim50genes50sites.unpartitioned","FNA.trim50genes50sites25Xbranches.unpartitioned")
-		
-clade.order= c(
-		"Sister to Land Plants:","Zygnemophyceae","LandPlants","Coleochaetales","CharaColeochaetales","ColeochaetalesZygnemophyceae","ZygnemophyceaeLandPlants","CharaLandPlants","ColeochaetalesLandPlants","ColeochaetalesZygnemophyceaeLandPlants","CharaColeochaetalesLandPlants",
-		"Bryophyte Relations:", "Anthocerophyta","Bryophyta","Marchantiophyta","Tracheophytes","BryophytaMarchantiophyta","BryophytaMarchantiophytaAnthocerophyta","AnthocerophytaTracheophytes","BryophytaTracheophytes","BryophytaTracheophytesAnthocerophyta","BryophytaMarchantiophytaTracheophytes",
-		"GymnoSperm:","Gnetales","Pinaceae","ConiferalesNoPinaceae","Cycads","GnetalesPinaceae","Coniferales","ConiferalesGnetales","GinkgoCycads","GinkgoCycadsConiferales","GinkgoCycadsConiferalesGnetales",
-		"Angiosperms: ","Eudicots","Magnoliids","Monocots","EudicotsMagnoliids","EudicotsMagnoliidsChloranthales","MagnoliidsChloranthales","MagnoliidsChloranthalesMonocots","MonocotsEudicots","MonocotsMagnoliids",
-		"Basal Angiosperms: ","AmborelaNuphar","AngioSperms","AngioSpermsNoAmborela","AngioSpermsNoAmborelaNuphar")
-'
 
 #ggplot(d.c.m, aes(x = CLADE, y = value)) + geom_bar() + aes(fill = variable)+
 #	scale_x_discrete("Techniques",labels=inTechs.rename,breaks=inTechs)+					

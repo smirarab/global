@@ -26,7 +26,8 @@ for fpath in sys.argv[2:]:
     src = open(src_fpath,"r")
     tree_str = "".join(line for line in src if not line.lstrip().startswith("tree ") or line.find("tree mpest")>=0)
     if tree_str.find("tree mpest") < 0:
-        continue              
+        print  "Not All input mpest runs have finished properly"
+        sys.exit(2) 
     print tree_str
     
     trees.read_from_string(tree_str, 'nexus')
@@ -34,7 +35,10 @@ for fpath in sys.argv[2:]:
 print len(trees)
 
 con_tree = trees.consensus(min_freq=0, trees_splits_encoded=False)
-con = con_tree.as_string('newick')
-dest.write(con)
+for e in con_tree.postorder_node_iter():
+    if hasattr(e,"support"):
+    	e.support=e.support*100
+        e.label=str(e.support)
+con_tree.write(dest,'newick', edge_lengths=True, internal_labels=True, write_rooting=False )
 
 dest.close()

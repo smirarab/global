@@ -11,7 +11,7 @@ executable = {exe}
 Log = logs/{name}_condor_log
  
 
- Arguments = -m {model} -n {output} -s {input} -T 2 -w {options}/raxml {outgroup}
+ Arguments = -m {model} -n {output} -s {input} -T 2 -w {options}/raxml {outgroup} -p 101000
  Error=logs/{name}_std.errout
  Output=logs/{name}_std.errout
  Queue

@@ -16,7 +16,8 @@ keepalignmenttemps = False
 multilocus = False
 datatype = protein
 temporaries = tmp
-keeptemp = True
+timesfile=times
+keeptemp = False
 aligned = True 
 
 [fakealigner]

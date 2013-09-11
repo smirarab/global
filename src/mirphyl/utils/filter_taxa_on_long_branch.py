@@ -58,12 +58,14 @@ if __name__ == '__main__':
         # Find long edges
         l = mid * LIMIT
         torem=[]
-        for k,v in elen.items():
+        for k,v in elen.items():            
             if v > l:
+                #print v
                 if len(k.head_node.leaf_nodes()) < N/2:
                     r = [n.taxon for n in k.head_node.leaf_nodes()]
                 else:
-                    r = [n.taxon for n in tree.leaf_nodes() if n not in k.head_node.leaf_nodes()]                    
+                    r = [n.taxon for n in tree.leaf_nodes() if n not in k.head_node.leaf_nodes()]       
+                #print r             
                 torem.append(r)
 
         torem2=[]
@@ -75,7 +77,7 @@ if __name__ == '__main__':
                 if set(o).issuperset(nl):
                     skipthis = True
             if not skipthis:
-                if len(r) == 1:
+                if len(r) != -1:
                     torem2.append(r)
                     print [n.label for n in r],
                 

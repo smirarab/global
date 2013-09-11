@@ -12,7 +12,7 @@ if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 3:
  
 src_fpath = os.path.expanduser(os.path.expandvars(sys.argv[1]))
 if not os.path.exists(src_fpath):
-    sys.stderr.write('Not found: "%s"' % src_fpath)      
+    sys.stderr.write("Not found: \"%s\"" % src_fpath)      
  
 dest_fpath = os.path.expanduser(os.path.expandvars(sys.argv[2]))
 
