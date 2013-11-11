@@ -49,6 +49,7 @@ else
 fi
 
 bestrep=`grep "tree mpest" $fn.tre.mpest.*|sed -e "s/ .*\[/ /g" -e "s/\].*//g"|sort -n -k 2|tail -n1|sed -e "s/:.*//g"`
+echo $bestrep
 test -s $bestrep || exit 1
 ln -fs $bestrep $fn.tre.best.mpest
 

@@ -38,6 +38,7 @@ print "writing to file %s" %os.path.abspath(dest_fpath)
 mapping = {}
 for line in mapfile:
     m = line.replace("\n","").replace("\r","").split("\t")
+    print m
     if not reverse:
         mapping[m[1].split(" ")[0]] = m[0]
     else: 

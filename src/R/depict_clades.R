@@ -102,8 +102,9 @@ metabargraph <- function (d.c.m, y){
 	
 	pdf("Monophyletic_Bargraphs.pdf",width=15,height=10)
 	d.c.m.colors <- array(clade.colors[levels(d.c.m$Classification)])
-	p1 <- ggplot(d.c.m, aes(x=CLADE, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Porportion of Trees") + 
-			geom_bar(aes(y = value)) + facet_wrap(~DS,scales="free_y",ncol=1) + opts(axis.text.x = theme_text(size=8,angle = 90,hjust=1),legend.position=c(0.5,0.03), legend.direction="horizontal") + 
+	p1 <- ggplot(d.c.m, aes(x=CLADE, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Number of Gene Trees") + 
+			geom_bar(aes(y = value),stat="identity") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
+			theme(axis.text.x = element_text(size=9,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
 			scale_fill_manual(name="Classification", values=d.c.m.colors)
 	
 	print(p1)
