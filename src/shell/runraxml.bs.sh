@@ -9,6 +9,8 @@ rep=$5 # Number of replicates
 model="GTRGAMMA" # DNA Model to use
 T=`echo $model|sed -e "s/\(.*\)/\L\1/g"`
 dirn=raxmlboot.$T # output raxml directory
+part=""
+[ $# == 6 ] && part="-q $6"
 
 out="" # give the  outgroup name with -o
 echo Rooting at $out
@@ -24,6 +26,7 @@ if [ ! -s $in.phylip ] || [ "`head -n1 $in.phylip`" == "0 0" ] ; then
  $WS_HOME/global/src/shell/convert_to_phylip.sh ../$in $in.phylip
  rm $in.phylip.reduced
 fi
+[ $# == 6 ] && ln -s ../$6 .
 
 #Figure out if bootstrapping has already finished
 donebs=`grep "Overall Time" RAxML_info.ml`
@@ -38,9 +41,9 @@ if [ "$donebs" == "" ]; then
   mv RAxML_info.ml RAxML_info.ml.$l
   if [ $crep -gt 0 ]; then
    if [ $C -gt 1 ]; then
-      raxmlHPC-PTHREADS-SSE3-7.3.5-64bit $out -m $model -n ml -s $in.phylip -N $crep -b $RANDOM -T $C  -p $RANDOM &>$H/$id/logs/ml_std.errout.$T
+      raxmlHPC-PTHREADS-SSE3-7.3.5-64bit $out -m $model -n ml -s $in.phylip -N $crep -b $RANDOM -T $C  -p $RANDOM $part &>$H/$id/logs/ml_std.errout.$T
    else 
-      raxmlHPC-SSE3-7.3.5-64bit $out -m $model -n ml -s $in.phylip -N $crep -b $RANDOM -p $RANDOM &>$H/$id/logs/ml_std.errout.$T
+      raxmlHPC-SSE3-7.3.5-64bit $out -m $model -n ml -s $in.phylip -N $crep -b $RANDOM -p $RANDOM $part &>$H/$id/logs/ml_std.errout.$T
    fi
   fi
 fi
