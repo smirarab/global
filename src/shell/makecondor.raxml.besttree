@@ -1,14 +1,18 @@
 #!/bin/bash
 
-echo "USAGE: $0 [dir name] [rep number]"
-test $# == 2 || exit 1
+echo "USAGE: $0 dir_name [rep number]"
+test $# -gt 0 || exit 1
 
-dir=$1/R$2
-REP=20
+dir=$1
+test $# == 1 || dir=$1/R$2
+name=$1
+test $# == 1 || name=$1-R$2
+
+REP=10
 
 echo '+Group = "GRAD"
 +Project = "COMPUTATIONAL_BIOLOGY"
-+ProjectDescription = "Binning"
++ProjectDescription = "Gene Tree"
 
 Universe = vanilla
 
@@ -16,10 +20,10 @@ Requirements = Arch == "X86_64"
 
 executable = '$WS_HOME'/global/src/shell/runraxml.best.sh
 
-Log = logs/supergene-'$1'-R'$2'-condor.log
+Log = logs/supergene-'$name'-condor.log
 
 getEnv=True 
-'>condor.$1.R$2
+'>condor.$name
 
 for x in `ls $dir`; do
   if [ -f `pwd`/$dir/$x/.done.raxml.gtrgamma.1 ]; then
@@ -27,10 +31,10 @@ for x in `ls $dir`; do
   else
     echo "
  Arguments = $x 1 `pwd`/$dir supergene.fasta $REP
- Error=logs/$x-$1-$2-std.err
- Output=logs/$x-$1-$2-std.out
- Queue">>condor.$1.R$2
+ Error=logs/$x-$name-std.err
+ Output=logs/$x-$name-std.out
+ Queue">>condor.$name
  fi
 done
 
-echo condor_submit condor.$1.R$2
+echo condor_submit condor.$name
