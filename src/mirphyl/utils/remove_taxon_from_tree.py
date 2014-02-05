@@ -12,10 +12,16 @@ import os.path
 
 if __name__ == '__main__':
 
+    if len(sys.argv) < 3: 
+        print "USAGE: treefile species_list_file [output]"
+        sys.exit(1)
     treeName = sys.argv[1]
     sample = open(sys.argv[2])
     included = [s[:-1] for s in sample.readlines()]
-    resultsFile="%s.%s" % (treeName, os.path.basename(sample.name))
+    if len(sys.argv ) == 4:
+        resultsFile=sys.argv[3]
+    else:
+        resultsFile="%s.%s" % (treeName, os.path.basename(sample.name))
     trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
     filt = lambda node: True if (node.taxon is not None and node.taxon.label not in included) else False
     for tree in trees:

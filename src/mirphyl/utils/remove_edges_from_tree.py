@@ -25,8 +25,8 @@ if __name__ == '__main__':
     t = 75 if len (sys.argv) < 3 else float(sys.argv[2])
     resultsFile="%s.%d" % (treeName,t) if len (sys.argv) < 4 or sys.argv[3]=="?" else sys.argv[3]
     #print "outputting to", resultsFile    
-    strip_internal=True if len (sys.argv) > 4 and sys.argv[4]=="-strip-internal" or sys.argv[4]=="-strip-both" else False 
-    strip_bl=True if len (sys.argv) > 4 and sys.argv[4]=="-strip-bl" or sys.argv[4]=="-strip-both" else False
+    strip_internal=True if len (sys.argv) > 4 and ( sys.argv[4]=="-strip-internal" or sys.argv[4]=="-strip-both" ) else False 
+    strip_bl=True if len (sys.argv) > 4 and ( sys.argv[4]=="-strip-bl" or sys.argv[4]=="-strip-both" ) else False
     
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
     filt = lambda edge: False if (edge.label is None or (is_number(edge.label) and float(edge.label) >= t)) else True
