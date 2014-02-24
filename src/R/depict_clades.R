@@ -17,15 +17,18 @@ rename.c <- list(
 } else {
 clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
 		"Weak Support"=rgb(128, 205, 193, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
-		"Compatible (Weak Rejection)"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
+		"Weak Rejection"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
 		"Strong Rejection"=rgb(166, 97, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
 rename.c <- list(
 		"Strong Support"="IS_MONO-IS_MONO", "Strong Support (partially missing)"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
 		"Weak Support"="IS_MONO-CAN_MONO", "Weak Support (partially missing)"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
-		"Compatible (Weak Rejection)"="CAN_MONO-CAN_MONO", "Compatible (Weak Rejection)"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
-		"Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO", "Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE" ,
-		"Strong Rejection"="NOT_MONO-NOT_MONO")
+		"Weak Rejection"="CAN_MONO-CAN_MONO", "Weak Rejection"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Weak Rejection"="NOT_MONO-CAN_MONO", "Weak Rejection"="NOT_MONO-CAN_MONO_INCOMPLETE",
+		"Strong Rejection"="NOT_MONO-NOT_MONO",
+		"Missing"="NO_CLADE-NO_CLADE")
 }
+
+cols <- c( "ID" ,   "CLADE", "BOOT")
 #Read Raw files
 read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.order = NULL, techs.order = NULL) {
 	raw.all = read.csv(file.all,sep="\t", header=T)
@@ -76,7 +79,6 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	countes.melted <- melt(recast(countes.melted, Classification ~ CLADE ~ DS, fun.aggregate=sum))
 	countes.melted <- subset(countes.melted, countes.melted$value != 0)
 	countes.melted$Classification <- factor(countes.melted$Classification,levels=lo)
-	
 	# order clades based on support
 	if (is.null(clade.order)) {
 		all.monophyletic  <- raw.all[which(raw.all$MONO %in% c("IS_MONO","IS_MONO_INCOMPLETE") ),]
@@ -84,6 +86,7 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 		clade.order = c(levels(d.boot.mono$CLADE), setdiff(levels(countes.melted$CLADE), levels(d.boot.mono$CLADE)))
 	}
 	countes.melted$CLADE <- factor(countes.melted$CLADE, levels=clade.order)
+   print ("working on counts ...")	
 	
 	
 	# Add 75% and normal classifications, and reorder column
@@ -98,14 +101,14 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	return (list (y=y, countes=clade.counts, countes.melted=countes.melted, raw.all = raw.all, y.colors=y.colors))
 }
 
-metabargraph <- function (d.c.m, y){
+metabargraph <- function (d.c.m, y,sizes=c(15,19)){
 	
-	pdf("Monophyletic_Bargraphs.pdf",width=15,height=10)
-	d.c.m.colors <- array(clade.colors[levels(d.c.m$Classification)])
+	pdf("Monophyletic_Bargraphs.pdf",width=sizes[1],height=sizes[2])
+	d.c.m.colors <- array(clade.colors[levels(droplevels(d.c.m$Classification))])
 	p1 <- ggplot(d.c.m, aes(x=CLADE, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Number of Gene Trees") + 
 			geom_bar(aes(y = value),stat="identity") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
-			theme(axis.text.x = element_text(size=9,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
-			scale_fill_manual(name="Classification", values=d.c.m.colors)
+			theme(axis.text.x = element_text(size=10,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
+			scale_fill_manual(name=element_blank(), values=d.c.m.colors)
 	
 	print(p1)
 	dev.off()
@@ -115,7 +118,7 @@ metabargraph <- function (d.c.m, y){
 		for ( clade in levels(y$CLADE)) {
 			q <- y[which(y$CLADE == clade & y$DS ==ds),] 
 			#print(nrow(q))
-			write.csv(file=paste("finegrained/clades",ds,clade,"csv",sep="."),q, row.names=F)
+			write.csv(file=paste("finegrained/clades",ds,gsub("/",",",clade),"csv",sep="."),q, row.names=F)
 		}
 	} 
 	
@@ -198,8 +201,8 @@ metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13),raw.a
 		pdf(paste(ds,"block-shades","pdf",sep="."),width=figuresizes[1],height=figuresizes[2]) 
                 p1 <- qplot(ID,CLADE,data=db2,fill=BOOT,geom="tile",xlab="",ylab="")+
 		      scale_x_discrete(drop=FALSE) + scale_y_discrete(drop=FALSE)+
-		      scale_fill_gradient2(high="green4",mid="lightgreen",low="tomato",na.value="steelblue3")+ 
-		      theme_bw() + theme(axis.text.x = theme_text(size=10,angle = 90,hjust=1),axis.text.y = theme_text(hjust=1),legend.position="None")
+		      scale_fill_gradient2(high="#056525",mid="#66FFAA",low="tomato",na.value="steelblue3")+ 
+		      theme_bw() + theme(axis.text.x = theme_text(size=10,angle = 90,hjust=1),axis.text.y = theme_text(hjust=1))#+theme(legend.position="bottom")
 		print(p1)
 		dev.off()
 		write.csv(file=paste(ds,"metatable.results","csv",sep="."),cast(y,ID~CLADE))		

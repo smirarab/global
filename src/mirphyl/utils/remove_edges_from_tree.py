@@ -19,11 +19,11 @@ def is_number(s):
 if __name__ == '__main__':
 
     if (len(sys.argv) < 2):
-        print "USAGE: %s tree_file [threshold - default 75] [outfile name; ~ uses default] [-strip-internal|-strip-bl|strip-both|-nostrip; default: nostrip]" %sys.argv[0]
+        print "USAGE: %s tree_file [threshold - default 75] [outfile name; - uses default] [-strip-internal|-strip-bl|strip-both|-nostrip; default: nostrip]" %sys.argv[0]
 
     treeName = sys.argv[1]            
     t = 75 if len (sys.argv) < 3 else float(sys.argv[2])
-    resultsFile="%s.%d" % (treeName,t) if len (sys.argv) < 4 or sys.argv[3]=="?" else sys.argv[3]
+    resultsFile="%s.%d" % (treeName,t) if len (sys.argv) < 4 or sys.argv[3]=="-" else sys.argv[3]
     #print "outputting to", resultsFile    
     strip_internal=True if len (sys.argv) > 4 and ( sys.argv[4]=="-strip-internal" or sys.argv[4]=="-strip-both" ) else False 
     strip_bl=True if len (sys.argv) > 4 and ( sys.argv[4]=="-strip-bl" or sys.argv[4]=="-strip-both" ) else False

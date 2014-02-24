@@ -45,7 +45,8 @@ for line in mapfile:
         mapping[m[0].split(" ")[0]] = m[1]
         
 for t in src:    
-    t = pattern.sub(lambda m: '"%s"' % mapping[m.group(1)],t)
+    print "tree is",t
+    t = pattern.sub(lambda m: '%s' % mapping[m.group(1)],t)
     dest.write(t)
 
 dest.close()

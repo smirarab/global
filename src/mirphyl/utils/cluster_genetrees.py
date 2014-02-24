@@ -11,7 +11,7 @@ import os
 
 global rep
 
-GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code/"
+GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code"
 GRAPHCOLORONGCODE1="/u/smirarab/workspace/graphcoloring/vertex_coloring/vc2"
 CODE=2
 rep=""
