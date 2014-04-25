@@ -94,7 +94,7 @@ and always the mrca of the + delimited list of outgroups is used.
             #if not mono-phyletic, then use the first
             if not use_mrca and len (mrca.leaf_nodes()) != len(outns):
                 print "selected set is not monophyletic. Using %s instead. " %outns[0]
-                mrca = tree.find_node_with_taxon_label(outs[0])                
+                mrca = tree.find_node_with_taxon_label(outns[0].label)
             if mrca.parent_node is None:
                 print "Already rooted at the root."
                 #print "rerooting on %s" % [s.label for s in outns]
