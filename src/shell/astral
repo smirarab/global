@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export j="/projects/sate7/tools/bin/astral.3.0.0.jar"
+export j="/projects/sate7/tools/bin/astral.3.1.1.jar"
 
 out=$2
 
@@ -9,7 +9,12 @@ if [ -s $out ]; then
   exit 0;
 fi
 
-java -jar $j -i $1 -wq -o $out 1>$out.astral.out 2>$out.astral.err
+ext=""
+if [ $# == 3 ]; then
+  ext="-ex $3"
+fi
+
+java -jar $j -i $1 -wq -o $out $ext 1>$out.astral.out 2>$out.astral.err
 
 test "$?" != "0" && exit 1
 

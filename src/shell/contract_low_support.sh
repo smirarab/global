@@ -1,9 +1,13 @@
 #!/bin/bash
 
+if [ $# != 2 ]; then
+  echo USAGE: $0 threshold tree_file;
+  exit 1
+fi
 
-case $1 in
-     /*) f=$1;;
-     *) f=`pwd`/$1 ;;
+case $2 in
+     /*) f=$2;;
+     *) f=`pwd`/$2 ;;
 esac
 
-$WS_HOME/global/src/perl/calculate_bootstrap_tree_from_bipartitions.pl -i $f -o $f.$2 -t $2
+$WS_HOME/global/src/perl/calculate_bootstrap_tree_from_bipartitions.pl -i $f -o $f.$1 -t $1

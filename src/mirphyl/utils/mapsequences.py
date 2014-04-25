@@ -46,7 +46,7 @@ for line in mapfile:
         
 for t in src:    
     print "tree is",t
-    t = pattern.sub(lambda m: '%s' % mapping[m.group(1)],t)
+    t = pattern.sub(lambda m: '"%s"' % mapping[m.group(1)],t)
     dest.write(t)
 
 dest.close()
