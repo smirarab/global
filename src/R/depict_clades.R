@@ -11,21 +11,21 @@ rename.c <- list(
 		"Compatible (Weak Rejection)"="CAN_MONO-CAN_MONO", 
 		"Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO", 
 		"Strong Rejection"="NOT_MONO-NOT_MONO",
-                "Missing"="IS_MONO_INCOMPLETE-CAN_MONO","Missing"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE","Missing"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE","Missing"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE", "Missing"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE"
+                "Missing"="IS_MONO_INCOMPLETE-CAN_MONO","Missing"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE","Missing"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE","Missing"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE", "Missing"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE","Missing"="COMP_MISSING-COMP_MISSING"
 )
 
 } else {
-clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
-		"Weak Support"=rgb(128, 205, 193, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
-		"Weak Rejection"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
-		"Strong Rejection"=rgb(166, 97, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+clade.colors <- c("Strongly Supported/Complete"=rgb(50, 160, 45, max = 255), "Strongly Supported/Incomplete"=rgb(178, 223, 138, max = 255),
+		"Weakly Supported/Complete"=rgb(30, 120, 180, max = 255), "Weakly Supported/Incomplete"=rgb(160, 190, 225, max = 255),
+		"Weakly Reject"=rgb(255, 240, 170, max = 255),
+		"Strongly Reject"=rgb(230, 25, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
 rename.c <- list(
-		"Strong Support"="IS_MONO-IS_MONO", "Strong Support (partially missing)"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
-		"Weak Support"="IS_MONO-CAN_MONO", "Weak Support (partially missing)"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
-		"Weak Rejection"="CAN_MONO-CAN_MONO", "Weak Rejection"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
-		"Weak Rejection"="NOT_MONO-CAN_MONO", "Weak Rejection"="NOT_MONO-CAN_MONO_INCOMPLETE",
-		"Strong Rejection"="NOT_MONO-NOT_MONO",
-		"Missing"="NO_CLADE-NO_CLADE")
+		"Strongly Supported/Complete"="IS_MONO-IS_MONO", "Strongly Supported/Incomplete"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
+		"Weakly Supported/Complete"="IS_MONO-CAN_MONO", "Weakly Supported/Incomplete"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Missing"="NO_CLADE-NO_CLADE","Missing"="COMP_MISSING-COMP_MISSING",
+		"Weakly Reject"="CAN_MONO-CAN_MONO", "Weakly Reject"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Weakly Reject"="NOT_MONO-CAN_MONO", "Weakly Reject"="NOT_MONO-CAN_MONO_INCOMPLETE",
+		"Strongly Reject"="NOT_MONO-NOT_MONO")
 }
 
 cols <- c( "ID" ,   "CLADE", "BOOT")
@@ -100,15 +100,28 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	
 	return (list (y=y, countes=clade.counts, countes.melted=countes.melted, raw.all = raw.all, y.colors=y.colors))
 }
+metabargraph2 <- function (d.c.m, y,sizes=c(15,19)){
+	
+	pdf("Monophyletic_Bargraphs_Porportion.pdf",width=sizes[1],height=sizes[2])
+        x = d.c.m[d.c.m$Classification != "Missing",]
+	d.c.m.colors <- array(clade.colors[levels(droplevels(x$Classification))])
+	p1 <- ggplot(x, aes(x=CLADE, y = value, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Proportion of relevant gene trees") + 
+			geom_bar(position="fill",stat="identity",colour="black") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
+			theme(axis.text.x = element_text(size=10,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
+			scale_fill_manual(name=element_blank(), values=d.c.m.colors)  + scale_x_discrete(drop=FALSE)
+	
+	print(p1)
+	dev.off()
+}
 
 metabargraph <- function (d.c.m, y,sizes=c(15,19)){
 	
 	pdf("Monophyletic_Bargraphs.pdf",width=sizes[1],height=sizes[2])
 	d.c.m.colors <- array(clade.colors[levels(droplevels(d.c.m$Classification))])
 	p1 <- ggplot(d.c.m, aes(x=CLADE, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Number of Gene Trees") + 
-			geom_bar(aes(y = value),stat="identity") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
+			geom_bar(aes(y = value),stat="identity",colour="black") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
 			theme(axis.text.x = element_text(size=10,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
-			scale_fill_manual(name=element_blank(), values=d.c.m.colors)
+			scale_fill_manual(name=element_blank(), values=d.c.m.colors)  + scale_x_discrete(drop=FALSE)
 	
 	print(p1)
 	dev.off()
@@ -143,6 +156,19 @@ metahistograms<- function (d.boot) {
 		p1 <- qplot(BOOT,data=d.boot.mono,binwidth=5, main = paste(Main," (", l, ")"), xlab="Bootstrap Support")+facet_wrap(~CLADE,scales="free_y") + o
 		print(p1)
 	}
+	dev.off()	
+}
+
+metahistograms2<- function (d.boot) {
+	print(levels(d.boot$DS))
+	pdf("Monophyletic_Bootstrap_Support_2.pdf",width=18,height=18)
+	o <- theme_bw()+theme(strip.text.x = theme_text(size = 9),legend.position="bottom")
+	
+	Main="Distribution of Support for each Clade When Monophyletic but Potentially Incomplete"
+		d.boot.mono  <- d.boot[which(d.boot$MONO %in% c("IS_MONO","IS_MONO_INCOMPLETE")  & !is.na(d.boot$BOOT)),]
+		#d.boot.mono$CLADE = reorder(d.boot.mono$CLADE, d.boot.mono$MONO, FUN = function (x) {return (-length(x))})
+		p1 <- qplot(DS,BOOT,data=d.boot.mono,geom="jitter", alpha=0.5, colour=DS,  main = Main, xlab="Bootstrap Support")+facet_wrap(~CLADE,scales="free_y") + o
+		print(p1)
 	dev.off()	
 }
 
