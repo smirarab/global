@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# != 9 ]; then 
- echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file"; 
+if [ $# != 10 ]; then 
+ echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file site|genesite"; 
  exit 1;
 fi
 
@@ -14,6 +14,7 @@ outgroup=$6
 binsize=$7
 bestfilen=$8
 rootpostfix=$9
+sampling=${10}
 
 MPESTREP=10
 
@@ -72,17 +73,17 @@ fi
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
 binfile=$binsize
 if [ "$binsize" == "-" ]; then
- binfile=somerandomdummyname$RANDOM
+ binfile=""
 fi
 
 echo "$HEADER
-executable = $BH/multilocus_bootstrap.sh
+executable = $BH/multilocus_bootstrap_new.sh
 
 Log = $outdir/logs/rep.log
 
 getEnv=True
 
- Arguments = $reps $dir $filen $binfile $outdir/Reps
+ Arguments = $reps $dir $filen $binfile $outdir/Reps BS $sampling
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
@@ -90,7 +91,7 @@ getEnv=True
 
 if [ "$bestfilen" != "-" ]; then
 echo "
- Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best
+ Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best "site"
  Error = $outdir/logs/rep.best.err
  Output = $outdir/logs/rep.best.out
  Queue
