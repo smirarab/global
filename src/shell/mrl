@@ -11,7 +11,7 @@ if [ -s $out ]; then
 fi
 
 tmp=`mktemp -p . mrpmaptrix.$out.XXXXX`
-java -jar $FASTMRP/mrp.jar $1 $tmp  PHYLIP
+java -jar $FASTMRP/mrp.jar $1 $tmp  PHYLIP -randomize
 
 rm RAxML_*$out*
 $raxml_new -m BINCAT -s $tmp -n $out -N 10 -p $RANDOM

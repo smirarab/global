@@ -1,23 +1,21 @@
 #!/bin/bash
 
-echo "USAGE: bp support rep"
-test $# == 3 || exit 1
+echo "USAGE: support align_home [rep]"
+test $# -gt 1 || exit 1
 
-bp=$1
-support=$2
-rep=$3
-BINHOME="pairwise/scaledup2.10reps.$[bp]bp.$support/R$rep"
-ALIGNHOME="NewSimulatedSequencesFromIntrons4000Scaled2Up_$[bp]b/R$rep"
-OUTDIR="scaledup2.10reps.supergenes-$[bp]bp-$support/R$rep"
+support=$1
 OUTFILE="supergene"
 
-bp=$1
-support=$2
+if [ $# == 3 ]; then
 rep=$3
-BINHOME="pairwise/R$rep"
-ALIGNHOME="R$rep"
-OUTDIR="supergenes-200genes-$support/R$rep"
-OUTFILE="supergene"
+BINHOME="pairwise/R$rep/$support"
+ALIGNHOME="$2/R$rep"
+OUTDIR="supergenes-$support/R$rep"
+else
+BINHOME="pairwise/$support"
+ALIGNHOME="$2"
+OUTDIR="supergenes-$support"
+fi
 
 EXT=fasta
 

@@ -38,13 +38,15 @@ print "writing to file %s" %os.path.abspath(dest_fpath)
 mapping = {}
 for line in mapfile:
     m = line.replace("\n","").replace("\r","").split("\t")
+    print m
     if not reverse:
         mapping[m[1].split(" ")[0]] = m[0]
     else: 
         mapping[m[0].split(" ")[0]] = m[1]
         
 for t in src:    
-    t = pattern.sub(lambda m: '%s' % mapping[m.group(1)],t)
+    print "tree is",t
+    t = pattern.sub(lambda m: '"%s"' % mapping[m.group(1)],t)
     dest.write(t)
 
 dest.close()
