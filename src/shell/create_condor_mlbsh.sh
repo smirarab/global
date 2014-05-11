@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# != 9 ]; then 
- echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file"; 
+if [ $# != 10 ]; then 
+ echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file site|genesite"; 
  exit 1;
 fi
 
@@ -14,6 +14,7 @@ outgroup=$6
 binsize=$7
 bestfilen=$8
 rootpostfix=$9
+sampling=${10}
 
 MPESTREP=10
 
@@ -27,9 +28,11 @@ HEADER="+Group = \"GRAD\"
 Universe = vanilla
 "
 
+echo Number of input files: `ls $dir/*/$filen|wc -l`
+
 ############### Prepare directory structure
 
-mkdir $outdir
+mkdir -p $outdir
 mkdir $outdir/logs
 mkdir $outdir/condor
 
@@ -70,17 +73,17 @@ fi
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
 binfile=$binsize
 if [ "$binsize" == "-" ]; then
- binfile=somerandomdummyname$RANDOM
+ binfile=""
 fi
 
 echo "$HEADER
-executable = $BH/multilocus_bootstrap.sh
+executable = $BH/multilocus_bootstrap_new.sh
 
 Log = $outdir/logs/rep.log
 
 getEnv=True
 
- Arguments = $reps $dir $filen $binfile $outdir/Reps
+ Arguments = $reps $dir $filen $binfile $outdir/Reps BS $sampling
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
@@ -88,7 +91,7 @@ getEnv=True
 
 if [ "$bestfilen" != "-" ]; then
 echo "
- Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best
+ Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best "site"
  Error = $outdir/logs/rep.best.err
  Output = $outdir/logs/rep.best.out
  Queue
@@ -101,7 +104,7 @@ for method in $methods; do
 mkdir $outdir/$method
 opts=""
 if [ "$method" == "mpest" ]; then
-   head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/[(,);]/ /g" -e "s/ /\n/g" |sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
+   head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/:[0-9.e-]*//g" -e "s/[(,);]/ /g" -e "s/ /\n/g"|sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
    opts="$outdir/species.list $MPESTREP"
 elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method
@@ -110,8 +113,6 @@ elif [ "$method" == "greedy" ]; then
 fi
 echo "$HEADER
 executable = $BH/$method
-
-Requirements = InMastodon
 
 Log = $outdir/logs/$method.log
 

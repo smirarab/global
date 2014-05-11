@@ -1,27 +1,17 @@
 #!/bin/bash
 
-if [ $# -ne 2 ]
+if [ $# -lt 2 ]
 then
-	echo usage: $0 referencetree estimatedtree
+	echo usage: $0 referencetree estimatedtree [-simplify]
 	exit
 fi
 
-if [ `cat $2|wc -l` == 1 ]; then
- s=( `compareTrees $1 $2 2>&1|grep Frac|sed -e "s/.*Found\t//g" -e "s/Total\t//g" -e "s/Frac\t//g" -e "s/Max.*//g" -e "s/\t| //g"` )                                                                       
- mis=`expr ${s[1]} - ${s[0]}`                                                                                                                                                                                
- f=`echo 1 - ${s[2]}|bc`                                                                                                                                                                                     
- echo ${s[1]} $mis $f       
-
-else
- tmp=`mktemp`
  for x in `cat $2`; do 
-  echo "$x" > $tmp
-  s=( `compareTrees $1 $tmp 2>&1|grep Frac|sed -e "s/.*Found\t//g" -e "s/Total\t//g" -e "s/Frac\t//g" -e "s/Max.*//g" -e "s/\t| //g"` ) 
+  s=( `echo "$x" |compareTrees $1 /dev/stdin $3 2>&1|grep Frac|sed -e "s/.*Found\t//g" -e "s/Total\t//g" -e "s/Frac\t//g" -e "s/Max.*//g" -e "s/\t| //g"` ) 
   mis=`expr ${s[1]} - ${s[0]}`
   f=`echo 1 - ${s[2]}|bc`
   echo ${s[1]} $mis $f
  done
 
-fi
 #Splits  Found   497     Total   498     Frac    0.998   MaxLnDf         Ratio           Ma
 

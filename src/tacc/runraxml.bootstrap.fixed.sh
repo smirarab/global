@@ -50,15 +50,14 @@ if [ "$donebs" == "" ]; then
   if [ `ls RAxML_bootstrap.ml*|wc -l` -ne 0 ]; then 
    l=`cat RAxML_bootstrap.ml*|wc -l|sed -e "s/ .*//g"`
    crep=`expr $rep - $l`
-   boot=$boot$crep
   fi
   mv RAxML_bootstrap.ml RAxML_bootstrap.ml.$l
   mv RAxML_info.ml RAxML_info.ml.$l
   if [ $crep -gt 0 ]; then
    if [ $C -gt 1 ]; then
-      $HOME/bin/raxmlHPC-PTHREADS-SSE3-git-July6 $out -m $model -n ml -s $in.phylip -N $crep $boot$crep -T $C  -p 100$crep &>$H/$id/logs/ml_std.errout.$T
+      $HOME/bin/raxmlHPC-PTHREADS-SSE3-git-July6 $out -m $model -n ml -s $in.phylip -N $crep -b $RANDOM -T $C  -p $RANDOM &>$H/$id/logs/ml_std.errout.$T
    else 
-      $HOME/bin/raxmlHPC-SSE3-git-July6 $out -m $model -n ml -s $in.phylip -N $crep $boot$crep -p 100$crep &>$H/$id/logs/ml_std.errout.$T
+      $HOME/bin/raxmlHPC-SSE3-git-July6 $out -m $model -n ml -s $in.phylip -N $crep -b $RANDOM -p $RANDOM &>$H/$id/logs/ml_std.errout.$T
    fi
   fi
 fi

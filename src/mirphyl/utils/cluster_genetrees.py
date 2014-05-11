@@ -11,7 +11,7 @@ import os
 
 global rep
 
-GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code/"
+GRAPHCOLORINGJAVA="/projects/sate7/tools/graphColoring/code"
 GRAPHCOLORONGCODE1="/u/smirarab/workspace/graphcoloring/vertex_coloring/vc2"
 CODE=2
 rep=""
@@ -52,12 +52,17 @@ def subsets(genes,ths):
            if genetoi.has_key(r[1]):
                herid = genetoi[r[1]]
                incompatible = grows[herid][i] == "1" if herid < len(grows) else False
+               if len(r) < 3:
+                  print r
                incompatible = incompatible or int(r[2]) != 0 or int(r[3]) != 0
                row[herid] = "1" if incompatible else "0"
                edges += 1 if incompatible else 0
                if herid < len(grows):
                    grows[herid][i] = row[herid]
        grows.append(row)
+    print "Total number of edges: ",edges
+    if edges == 0:
+        raise Exception("All genes are fully compatible. No binning required. Just run concatenation.")
     if CODE == 1:
         gr="%d\n%s" %(len(genes),'\n'.join((' '.join(x) for x in grows)))
     else:
