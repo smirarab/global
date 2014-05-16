@@ -53,8 +53,8 @@ for x in $dir/*/$filen; do
  y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err.$x
- Output = $outdir/logs/reroot.out.$x
+ Error = $outdir/logs/reroot.err.$y
+ Output = $outdir/logs/reroot.out.$y
  Queue">>$outdir/condor/condor.reroot
 done
 filen=$filen.$rootpostfix
@@ -65,8 +65,8 @@ for x in $dir/*/$bestfilen; do
  y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err.$x
- Output = $outdir/logs/reroot.out.$x
+ Error = $outdir/logs/reroot.err.$y
+ Output = $outdir/logs/reroot.out.$y
  Queue">>$outdir/condor/condor.reroot
 done
 bestfilen=$bestfilen.$rootpostfix
