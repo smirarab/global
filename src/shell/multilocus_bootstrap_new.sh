@@ -15,7 +15,7 @@ mkdir $outdir
 
 for x in $(seq 1 1 $1); do >$outdir/$outname.$x; done
 
-assign=`python ~/workspace/global/src/mirphyl/utils/mlbs-gene-sampling.py $1 12 $3 @.fasta $sampling $2/*`
+assign=`python $WS_HOME/global/src/mirphyl/utils/mlbs-gene-sampling.py $1 12 $3 @.fasta $sampling $2/*`
 test $? == 0 || exit 1
 echo "${assign}"| while read b c; do
    n=0
