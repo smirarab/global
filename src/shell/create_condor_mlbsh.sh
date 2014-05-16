@@ -51,8 +51,8 @@ getEnv=True
 for x in $dir/*/$filen; do
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err
- Output = $outdir/logs/reroot.out
+ Error = $outdir/logs/reroot.err.$x
+ Output = $outdir/logs/reroot.out.$x
  Queue">>$outdir/condor/condor.reroot
 done
 filen=$filen.$rootpostfix
@@ -61,8 +61,8 @@ if [ "$bestfilen" != "-" ]; then
 for x in $dir/*/$bestfilen; do
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err
- Output = $outdir/logs/reroot.out
+ Error = $outdir/logs/reroot.err.$x
+ Output = $outdir/logs/reroot.out.$x
  Queue">>$outdir/condor/condor.reroot
 done
 bestfilen=$bestfilen.$rootpostfix
@@ -103,6 +103,7 @@ for method in $methods; do
 
 mkdir $outdir/$method
 opts=""
+MHEADER=$HEADER
 if [ "$method" == "mpest" ]; then
    head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/:[0-9.e-]*//g" -e "s/[(,);]/ /g" -e "s/ /\n/g"|sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
    opts="$outdir/species.list $MPESTREP"
@@ -110,8 +111,12 @@ elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method
 elif [ "$method" == "greedy" ]; then
    opts=0
+elif [ "$method" == "astral" ]; then
+   MHEADER="$MHEADER
+Requirements = Memory >= 5000 && InMastodon
+"
 fi
-echo "$HEADER
+echo "$MHEADER
 executable = $BH/$method
 
 Log = $outdir/logs/$method.log
