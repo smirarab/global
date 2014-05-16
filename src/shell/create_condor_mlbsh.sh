@@ -50,6 +50,7 @@ getEnv=True
 ">$outdir/condor/condor.reroot
 for x in $dir/*/$filen; do
  y=`dirname $x`
+ y=`dirname $y`
  y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
@@ -62,6 +63,7 @@ filen=$filen.$rootpostfix
 if [ "$bestfilen" != "-" ]; then
 for x in $dir/*/$bestfilen; do
  y=`dirname $x`
+ y=`dirname $y`
  y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
