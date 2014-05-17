@@ -42,7 +42,7 @@ ofilen=$filen
 
 if [ "$outgroup" != "-" ]; then
 echo "$HEADER
-executable = $WH/src/mirphyl/utils/reroot.noerr.py
+executable = $WH/src/mirphyl/utils/reroot.py
 
 Log = $outdir/logs/reroot.log
 
@@ -67,8 +67,8 @@ for x in $dir/*/$bestfilen; do
  y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err.$y
- Output = $outdir/logs/reroot.out.$y
+ Error = $outdir/logs/reroot.best.err.$y
+ Output = $outdir/logs/reroot.best.out.$y
  Queue">>$outdir/condor/condor.reroot
 done
 bestfilen=$bestfilen.$rootpostfix
