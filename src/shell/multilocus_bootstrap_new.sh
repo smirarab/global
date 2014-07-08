@@ -1,21 +1,21 @@
 #!/bin/bash
 
 if [ $# -lt 4 ]; then  
-  echo "USAGE: $0 [number of bootstraps] [dir] [FILENAME] [outdir] [outname] [sampling]"
+  echo "USAGE: $0 [number of bootstraps] [dir] [FILENAME] [outdir] [outname] [sampling] [weights]"
   exit 1
 fi
 
-outname="$5"
-#echo $outname
 outdir=$4
+outname="$5"
 sampling=$6
+weights=$7
 
 mkdir $outdir
 
 
 for x in $(seq 1 1 $1); do >$outdir/$outname.$x; done
 
-assign=`python $WS_HOME/global/src/mirphyl/utils/mlbs-gene-sampling.py $1 12 $3 @.fasta $sampling $2/*`
+assign=`python $WS_HOME/global/src/mirphyl/utils/mlbs-gene-sampling.py $1 12 $3 $sampling $2/*`
 test $? == 0 || exit 1
 echo "${assign}"| while read b c; do
    n=0

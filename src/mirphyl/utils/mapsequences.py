@@ -11,6 +11,9 @@ if QUOTE:
 else:
     pattern = re.compile("(?<=[,(])([^(,:)]+)(?=[,():])")
 
+QUOTEOUT = True
+UNDEROUT= False
+
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.stderr.write("usage: %s [<tree-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])
     sys.exit(1)
@@ -38,15 +41,16 @@ print "writing to file %s" %os.path.abspath(dest_fpath)
 mapping = {}
 for line in mapfile:
     m = line.replace("\n","").replace("\r","").split("\t")
-    print m
+    #print m
     if not reverse:
         mapping[m[1].split(" ")[0]] = m[0]
     else: 
         mapping[m[0].split(" ")[0]] = m[1]
-        
+
+template = "'%s'" if QUOTEOUT else "%s"      
 for t in src:    
-    print "tree is",t
-    t = pattern.sub(lambda m: '"%s"' % mapping[m.group(1)],t)
+    #print "tree is",t
+    t = pattern.sub(lambda m: template % mapping[m.group(1)].replace(' ','_') if UNDEROUT else template % mapping[m.group(1)] ,t)
     dest.write(t)
 
 dest.close()
