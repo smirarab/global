@@ -4,6 +4,9 @@ from collections import Counter
 import os
 import os.path
 
+usage="%s reps seed bootstrap_file_name [genesite/site] dir1 dir2 dir3 ..." %(sys.argv[0])
+print >>sys.stderr, usage
+ 
 gene_count = len(sys.argv) - 5
 
 reps = int(sys.argv[1])
@@ -21,9 +24,6 @@ for rep in xrange(0,reps):
     else:
         gene_samples = dict(zip(range(0,gene_count),[1]*gene_count))
     for i,g in enumerate(sys.argv[6:]):
-        #base_name = os.path.basename(g)
-        #dir_name = os.path.abspath(os.path.dirname(g))
-        #print i, all_samples.get(i,[])
         all_samples[i] = all_samples.get(i,[]) + [gene_samples.get(i,0)]
 
 for i,g in enumerate(sys.argv[5:]):
