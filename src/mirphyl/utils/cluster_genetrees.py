@@ -96,7 +96,7 @@ if __name__ == '__main__':
         genesets = newgenesets
         print "%d:\n%s" %(t,",".join((str(gs) for gs in genesets)))
     for i,gs in enumerate(genesets):
-        fo = open('%sbin.%d.txt' %(rep,i),'w')
+        fo = open(os.path.join(os.path.dirname(allgenenames),'bin.%d.txt' %i),'w')
         fo.write('\n'.join(gs))
         fo.write('\n')
         fo.close()
