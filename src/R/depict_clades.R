@@ -26,6 +26,17 @@ rename.c <- list(
 		"Weakly Reject"="CAN_MONO-CAN_MONO", "Weakly Reject"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
 		"Weakly Reject"="NOT_MONO-CAN_MONO", "Weakly Reject"="NOT_MONO-CAN_MONO_INCOMPLETE",
 		"Strongly Reject"="NOT_MONO-NOT_MONO")
+clade.colors <- c("Strongly Supported"=rgb(50, 100, 130, max = 255), #"Strongly Supported"=rgb(178, 223, 138, max = 255),
+		"Weakly Supported"=rgb(100, 160, 250, max = 255), #"Weakly Supported"=rgb(160, 190, 225, max = 255),
+		"Weakly Reject"=rgb(255, 240, 170, max = 255),
+		"Strongly Reject"=rgb(230, 25, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+rename.c <- list(
+		"Strongly Supported"="IS_MONO-IS_MONO", "Strongly Supported"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
+		"Weakly Supported"="IS_MONO-CAN_MONO", "Weakly Supported"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Missing"="NO_CLADE-NO_CLADE","Missing"="COMP_MISSING-COMP_MISSING",
+		"Weakly Reject"="CAN_MONO-CAN_MONO", "Weakly Reject"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Weakly Reject"="NOT_MONO-CAN_MONO", "Weakly Reject"="NOT_MONO-CAN_MONO_INCOMPLETE",
+		"Strongly Reject"="NOT_MONO-NOT_MONO")
 }
 
 cols <- c( "ID" ,   "CLADE", "BOOT")
@@ -100,6 +111,7 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	
 	return (list (y=y, countes=clade.counts, countes.melted=countes.melted, raw.all = raw.all, y.colors=y.colors))
 }
+
 metabargraph2 <- function (d.c.m, y,sizes=c(15,19)){
 	
 	pdf("Monophyletic_Bargraphs_Porportion.pdf",width=sizes[1],height=sizes[2])
@@ -126,11 +138,11 @@ metabargraph <- function (d.c.m, y,sizes=c(15,19)){
 	print(p1)
 	dev.off()
 	
-	for ( ds in levels(y$DS)) {
+	for ( ds in levels(droplevels(y$DS))) {
 		write.csv(file=paste(ds,"counts","csv",sep="."),cast(d.c.m[which(d.c.m$DS == ds),c(1,2,4)],CLADE~Classification))
+		print(ds)
 		for ( clade in levels(y$CLADE)) {
 			q <- y[which(y$CLADE == clade & y$DS ==ds),] 
-			#print(nrow(q))
 			write.csv(file=paste("finegrained/clades",ds,gsub("/",",",clade),"csv",sep="."),q, row.names=F)
 		}
 	} 
