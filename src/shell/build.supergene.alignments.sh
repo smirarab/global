@@ -26,7 +26,8 @@ for y in `wc -l $BINHOME/bin*txt|grep -v total|awk '{if ($1==1)print $2}'`; do
   x=`echo $y|sed -e "s/.*bin/bin/g"`
   g=`cat $y`
   mkdir $OUTDIR/$x
-  ln -s `pwd`/$ALIGNHOME/$g/raxmlboot.gtrgamma/ $OUTDIR/$x  # this is for avian simulated
+  ln -fs `pwd`/$ALIGNHOME/$g/raxmlboot.gtrgamma/ $OUTDIR/$x  # this is for avian simulated
+  echo ln -fs `pwd`/$ALIGNHOME/$g/raxmlboot.gtrgamma/ $OUTDIR/$x  # this is for avian simulated
   #ln -s `pwd`/$ALIGNHOME/$g/ $OUTDIR/$x/
   echo "Done" > $OUTDIR/$x/.done.raxml.gtrgamma.1
   echo "Done" > $OUTDIR/$x/.done.raxml.gtrgamma.200.2

@@ -8,7 +8,7 @@ test $# == 1 || dir=$1/R$2
 name=$1
 test $# == 1 || name=$1-R$2
 
-REP=500
+REP=200
 
 echo '+Group = "GRAD"
 +Project = "COMPUTATIONAL_BIOLOGY"
