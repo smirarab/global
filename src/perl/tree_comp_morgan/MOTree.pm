@@ -666,13 +666,13 @@ sub Compare($$) {
     my $d1 = $t1->depthfirst();
     my @l1 = grep { $t1->is_Leaf($_) } @$d1;
     my %leaf1 = map { $t1->id($_) => $_ } @l1;
-    die "Non-unique leaf names in 1st tree" unless scalar(keys %leaf1) == scalar(@l1);
+    die "Non-unique leaf names in 1st tree ".scalar(@l1) unless scalar(keys %leaf1) == scalar(@l1);
     my $nDesc1 = $t1->countAllLeaves();
 
     my $d2 = $t2->depthfirst();
     my @l2 = grep { $t2->is_Leaf($_) } @$d2;
     my %leaf2 = map { $t2->id($_) => $_ } @l2;
-    die "Non-unique leaf names in 2nd tree" unless scalar(keys %leaf2) == scalar(@l2);
+    die "Non-unique leaf names in 2nd tree ".(@l2 - keys %leaf2) unless scalar(keys %leaf2) == scalar(@l2);
     my $nDesc2 = $t2->countAllLeaves();
 
     # Note -- these includes leaves, but not root1 <=> root2, as this prevents traversals up
