@@ -111,7 +111,7 @@ mkdir $outdir/$method
 opts=""
 MHEADER=$HEADER
 if [ "$method" == "mpest" ]; then
-   head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/:[0-9.e-]*//g" -e "s/[(,);]/ /g" -e "s/ /\n/g"|sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
+   head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/:[0-9.e-]*//g" -e "s/)[0-9.e-]*/)/g" -e "s/[(,);]/ /g" -e "s/ /\n/g"|sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
    opts="$outdir/species.list $MPESTREP"
 elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method

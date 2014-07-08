@@ -52,9 +52,9 @@ if [ "$donebs" == "" ]; then
       raxmlHPC-SSE3-7.3.5-64bit $out -m $model -n $name -s $in.phylip -N $crep -b $RANDOM -p $RANDOM $part &>$H/$id/logs/${name}_std.errout.$T
    fi
   fi
-cat  RAxML_bootstrap.$name* > RAxML_bootstrap.$all
 fi
 
+cat  RAxML_bootstrap.$name* > RAxML_bootstrap.$all
 
 if [ ! `wc -l RAxML_bootstrap.$all|sed -e "s/ .*//g"` -eq $rep ]; then
  echo `pwd`>>$H/notfinishedproperly
