@@ -78,9 +78,6 @@ fi
 
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
 binfile=$binsize
-if [ "$binsize" == "-" ]; then
- binfile=""
-fi
 
 echo "$HEADER
 executable = $BH/multilocus_bootstrap_new.sh
@@ -89,20 +86,18 @@ Log = $outdir/logs/rep.log
 
 getEnv=True
 
- Arguments = $reps $dir $filen $binfile $outdir/Reps BS $sampling
+ Arguments = $reps $dir $filen $binfile $outdir/Reps BS $sampling $binfile
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
 ">$outdir/condor/condor.rep
 
-if [ "$bestfilen" != "-" ]; then
 echo "
- Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best "site"
+ Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best "site" $binfile
  Error = $outdir/logs/rep.best.err
  Output = $outdir/logs/rep.best.out
  Queue
 ">>$outdir/condor/condor.rep
-fi
 
 ########################################## Create the condor file for each method
 for method in $methods; do

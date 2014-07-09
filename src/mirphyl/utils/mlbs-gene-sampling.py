@@ -23,7 +23,7 @@ for rep in xrange(0,reps):
         gene_samples = Counter((random.randint(0,gene_count-1) for i in xrange(0,gene_count)))     
     else:
         gene_samples = dict(zip(range(0,gene_count),[1]*gene_count))
-    for i,g in enumerate(sys.argv[6:]):
+    for i,g in enumerate(sys.argv[5:]):
         all_samples[i] = all_samples.get(i,[]) + [gene_samples.get(i,0)]
 
 for i,g in enumerate(sys.argv[5:]):
