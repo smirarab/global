@@ -86,14 +86,14 @@ Log = $outdir/logs/rep.log
 
 getEnv=True
 
- Arguments = $reps $dir $filen $binfile $outdir/Reps BS $sampling $binfile
+ Arguments = $reps $dir $filen $outdir/Reps BS $sampling $binfile
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
 ">$outdir/condor/condor.rep
 
 echo "
- Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best "site" $binfile
+ Arguments = 1 $dir $bestfilen $outdir/Reps Best "site" $binfile
  Error = $outdir/logs/rep.best.err
  Output = $outdir/logs/rep.best.out
  Queue
