@@ -4,8 +4,14 @@ set -u
 set -e
 set -o pipefail
 
-if [ $# -lt 4 ]; then  
-  echo "USAGE: $0 [number of bootstraps] [dir] [FILENAME] [outdir] [outname] [sampling] [weightfile]"
+if [ $# -lt 7 ]; then  
+  echo "USAGE: $0 [number of bootstraps] [dir] [FILENAME] [outdir] [outname] [sampling] [weightfile]
+dir: should be a directory that includes only one directory per gene
+FILENAME: dir/*/FILENAME should produces all the input bootstrap files
+outdir: is where the results will be placed
+outname: is the prefix of the otuput files
+sampling: can be either site or genesite (for site-only and gene/site resampling respectively). 
+weightfile: if - is given, it's ignored; otherwise, each gene is multiplied by the number of lines in dir/genedir/weightfile"
   exit 1
 fi
 

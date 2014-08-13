@@ -92,13 +92,14 @@ getEnv=True
  Queue
 ">$outdir/condor/condor.rep
 
-echo "
- Arguments = 1 $dir $bestfilen $outdir/Reps Best "site" $binfile
- Error = $outdir/logs/rep.best.err
- Output = $outdir/logs/rep.best.out
- Queue
-">>$outdir/condor/condor.rep
-
+if [ "$bestfilen" != "-" ]; then
+ echo "
+  Arguments = 1 $dir $bestfilen $outdir/Reps Best "site" $binfile
+  Error = $outdir/logs/rep.best.err
+  Output = $outdir/logs/rep.best.out
+  Queue
+ ">>$outdir/condor/condor.rep
+fi
 ########################################## Create the condor file for each method
 for method in $methods; do
 

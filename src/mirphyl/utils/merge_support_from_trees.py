@@ -41,11 +41,11 @@ for edge in con_tree.postorder_edge_iter():
     labels=[]
     for tre in trees:
         mrca = tre.mrca(taxa=taxa)
-        labels.append(str(mrca.label) if mrca.label is not None and len(mrca.leaf_nodes()) == len(taxa) else "NA")
-    sum = "*" if all(x=="100" for x in labels) else (None if all(x=="NA" for x in labels) else ",".join(labels))
-    print labels,sum
-    edge.head_node.label = sum
-    edge.label = sum
+        labels.append(str(int(round(float(mrca.label)))) if mrca.label is not None and len(mrca.leaf_nodes()) == len(taxa) else "NA")
+    fl = "*" if all(x=="100" for x in labels) else (None if all(x=="NA" for x in labels) else ",".join(labels))
+    print labels,fl
+    edge.head_node.label = fl
+    edge.label = fl
 con = con_tree.as_string('newick')
 dest.write(con)
 
