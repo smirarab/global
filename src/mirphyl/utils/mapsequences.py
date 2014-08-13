@@ -11,8 +11,8 @@ if QUOTE:
 else:
     pattern = re.compile("(?<=[,(])([^(,:)]+)(?=[,():])")
 
-QUOTEOUT = True
-UNDEROUT= False
+QUOTEOUT = False
+UNDEROUT= True
 
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.stderr.write("usage: %s [<tree-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])
