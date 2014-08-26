@@ -78,7 +78,6 @@ and always the mrca of the + delimited list of outgroups is used.
                         print "outgroup not found %s," %out,
                         continue            
                     outns.append(n.taxon)
-                print "" 
                 if len (outns) != 0:
                     # Find an ingroup and root the tree there
                     for n in tree.leaf_iter():
