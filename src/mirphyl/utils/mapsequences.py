@@ -4,19 +4,20 @@ import os
 import sys
 import re
 
-QUOTE = False
+if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
+    sys.stderr.write("usage: %s [<tree-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])
+    sys.exit(1)
 
-if QUOTE:
+QUOTEIN = False
+IGNORE = False
+QUOTEOUT = False
+UNDEROUT= True
+
+if QUOTEIN:
     pattern = re.compile("(?<=[,(])'([^']+)'(?=[,():])")
 else:
     pattern = re.compile("(?<=[,(])([^(,:)]+)(?=[,():])")
 
-QUOTEOUT = False
-UNDEROUT= True
-
-if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
-    sys.stderr.write("usage: %s [<tree-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])
-    sys.exit(1)
  
 src_fpath = os.path.expanduser(os.path.expandvars(sys.argv[1]))
 if not os.path.exists(src_fpath):
@@ -47,10 +48,16 @@ for line in mapfile:
     else: 
         mapping[m[0].split(" ")[0]] = m[1]
 
-template = "'%s'" if QUOTEOUT else "%s"      
+def replace_func(m):
+    repl = mapping[m.group(1)] if mapping.has_key(m.group(1)) or not IGNORE else m.group(1)
+    if UNDEROUT:
+        repl = repl.replace(' ','_')
+    if QUOTEOUT:
+        repl = "'%s'" % repl
+    return repl 
 for t in src:    
     #print "tree is",t
-    t = pattern.sub(lambda m: template % mapping[m.group(1)].replace(' ','_') if UNDEROUT else template % mapping[m.group(1)] ,t)
+    t = pattern.sub(replace_func,t)
     dest.write(t)
 
 dest.close()
