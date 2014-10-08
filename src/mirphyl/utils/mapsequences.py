@@ -9,9 +9,9 @@ if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.exit(1)
 
 QUOTEIN = False
-IGNORE = False
-QUOTEOUT = False
-UNDEROUT= True
+IGNORE = True
+QUOTEOUT = True
+UNDEROUT= False
 
 if QUOTEIN:
     pattern = re.compile("(?<=[,(])'([^']+)'(?=[,():])")
@@ -49,7 +49,13 @@ for line in mapfile:
         mapping[m[0].split(" ")[0]] = m[1]
 
 def replace_func(m):
-    repl = mapping[m.group(1)] if mapping.has_key(m.group(1)) or not IGNORE else m.group(1)
+    repl = m.group(1)
+    if mapping.has_key(m.group(1)):
+        repl = mapping[m.group(1)]
+    elif IGNORE:
+        print "Ignoring", m.group(1)
+    else:
+        raise "Name %s not found in the mapping file." %m.group(1)
     if UNDEROUT:
         repl = repl.replace(' ','_')
     if QUOTEOUT:
