@@ -11,7 +11,7 @@ use strict;
 
 # mutable depending on installation directory - so all simstudy code
 # knows how to access all components used
-use constant RESEARCH_DIR_LOCAL => "/projects/sate7/smirarab/kevinrep/repository/trunk/code/";
+use constant RESEARCH_DIR_LOCAL => "/projects/sate4/smirarab/kevinrep/";
 # kliu - remove java local dependency - just ship it along with code
 # repository
 # crap - 32-bit vs. 64-bit java important for performance 

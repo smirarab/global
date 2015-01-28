@@ -23,11 +23,6 @@ if __name__ == '__main__':
 
     treeName = sys.argv[1]
     
-    #cmd = 'find %s -name "%s" -print' % (treeDir,treeName)
-    #print cmd
-    #for file in os.popen(cmd).readlines():     # run find command        
-    #    name = file[:-1]                       # strip '\n'                
-    #    fragmentsFile=name.replace(treeName,"sequence_data/short.alignment");
     resultsFile="%s.%dfold.longbranch.removed" % (treeName,LIMIT)
             
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')    
@@ -41,19 +36,9 @@ if __name__ == '__main__':
         elensort = sorted([float(x) for x in elen.values() if x is not None])
         n = len(elensort)
         mid = elensort[n/2]
-        hm_avg  = n / sum([ 1/x for x in elensort])
-        
-        '''
-        The Standard Errors of the Geometric and Harmonic Means and Their Application to Index Numbers
-            Nilan Norris
-            The Annals of Mathematical Statistics 
-            Vol. 11, No. 4 (Dec., 1940), pp. 445-448
-            Published by: Institute of Mathematical Statistics
-            Stable URL: http://www.jstor.org/stable/2235723
-        '''
-        from math import sqrt
-        sdhm =   sqrt(sum([ pow(1./x - 1./hm_avg,2) for x in elensort]))*pow(hm_avg,2) / sqrt(n-1)         
-        
+        #hm_avg  = n / sum([ 1/x for x in elensort])        
+        #from math import sqrt
+        #sdhm =   sqrt(sum([ pow(1./x - 1./hm_avg,2) for x in elensort]))*pow(hm_avg,2) / sqrt(n-1)                 
         #print hm_avg, sehm
         # Find long edges
         l = mid * LIMIT

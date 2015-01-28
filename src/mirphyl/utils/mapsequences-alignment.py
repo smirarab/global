@@ -4,7 +4,7 @@ import os
 import sys
 import re
 
-pattern = re.compile("(?<=[>])(.+)")
+pattern = re.compile("(?<=[>])([^\n]+)")
  
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.stderr.write("usage: %s [<alignment-file-path>] [<map-file-path>] [<out-file-path>] [-rev]\n"%sys.argv[0])
@@ -37,8 +37,9 @@ for line in mapfile:
         
 #print mapping
 try:
-    for t in src:    
-        t = pattern.sub(lambda m: mapping[m.group(1)],t)
+    for t in src:
+        if t.startswith(">"):
+            t = pattern.sub(lambda m: mapping[m.group(1)],t)
         dest.write(t)
 except Exception as e:
     print >>sys.stderr, "Error: %s "  %src_fpath

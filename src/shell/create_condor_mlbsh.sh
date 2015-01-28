@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ $# != 9 ]; then 
- echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file"; 
+if [ $# != 10 ]; then 
+ echo "USAGE: rep_count input_dir input_bootstrap_name methods outdir outgroup repetition_file input_best_name postfix_for_rooted_file site|genesite"; 
  exit 1;
 fi
 
@@ -14,6 +14,7 @@ outgroup=$6
 binsize=$7
 bestfilen=$8
 rootpostfix=$9
+sampling=${10}
 
 MPESTREP=10
 
@@ -27,9 +28,11 @@ HEADER="+Group = \"GRAD\"
 Universe = vanilla
 "
 
+echo Number of input files: `ls $dir/*/$filen|wc -l`
+
 ############### Prepare directory structure
 
-mkdir $outdir
+mkdir -p $outdir
 mkdir $outdir/logs
 mkdir $outdir/condor
 
@@ -39,27 +42,33 @@ ofilen=$filen
 
 if [ "$outgroup" != "-" ]; then
 echo "$HEADER
-executable = $WH/src/mirphyl/utils/reroot.noerr.py
+executable = $WH/src/mirphyl/utils/reroot.py
 
 Log = $outdir/logs/reroot.log
 
 getEnv=True
 ">$outdir/condor/condor.reroot
 for x in $dir/*/$filen; do
+ y=`dirname $x`
+ y=`dirname $y`
+ y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err
- Output = $outdir/logs/reroot.out
+ Error = $outdir/logs/reroot.err.$y
+ Output = $outdir/logs/reroot.out.$y
  Queue">>$outdir/condor/condor.reroot
 done
 filen=$filen.$rootpostfix
 
 if [ "$bestfilen" != "-" ]; then
 for x in $dir/*/$bestfilen; do
+ y=`dirname $x`
+ y=`dirname $y`
+ y=`basename $y`
  echo "
  Arguments = $x $outgroup $x.$rootpostfix
- Error = $outdir/logs/reroot.err
- Output = $outdir/logs/reroot.out
+ Error = $outdir/logs/reroot.best.err.$y
+ Output = $outdir/logs/reroot.best.out.$y
  Queue">>$outdir/condor/condor.reroot
 done
 bestfilen=$bestfilen.$rootpostfix
@@ -69,49 +78,48 @@ fi
 
 ##################################### Create replicates. Repeat if bin size files are given, otherwise (if it is -) don't repeat.
 binfile=$binsize
-if [ "$binsize" == "-" ]; then
- binfile=somerandomdummyname$RANDOM
-fi
 
 echo "$HEADER
-executable = $BH/multilocus_bootstrap.sh
+executable = $BH/multilocus_bootstrap_new.sh
 
 Log = $outdir/logs/rep.log
 
 getEnv=True
 
- Arguments = $reps $dir $filen $binfile $outdir/Reps
+ Arguments = $reps $dir $filen $outdir/Reps BS $sampling $binfile
  Error = $outdir/logs/rep.err
  Output = $outdir/logs/rep.out
  Queue
 ">$outdir/condor/condor.rep
 
 if [ "$bestfilen" != "-" ]; then
-echo "
- Arguments = 1 $dir $bestfilen $binfile $outdir/Reps Best
- Error = $outdir/logs/rep.best.err
- Output = $outdir/logs/rep.best.out
- Queue
-">>$outdir/condor/condor.rep
+ echo "
+  Arguments = 1 $dir $bestfilen $outdir/Reps Best "site" $binfile
+  Error = $outdir/logs/rep.best.err
+  Output = $outdir/logs/rep.best.out
+  Queue
+ ">>$outdir/condor/condor.rep
 fi
-
 ########################################## Create the condor file for each method
 for method in $methods; do
 
 mkdir $outdir/$method
 opts=""
+MHEADER=$HEADER
 if [ "$method" == "mpest" ]; then
-   head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/[(,);]/ /g" -e "s/ /\n/g" |sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
+   head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/:[0-9.e-]*//g" -e "s/)[0-9.e-]*/)/g" -e "s/[(,);]/ /g" -e "s/ /\n/g"|sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
    opts="$outdir/species.list $MPESTREP"
 elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method
 elif [ "$method" == "greedy" ]; then
    opts=0
+elif [ "$method" == "astral" ]; then
+   MHEADER="$MHEADER
+Requirements = Memory >= 5000 && InMastodon
+"
 fi
-echo "$HEADER
+echo "$MHEADER
 executable = $BH/$method
-
-Requirements = InMastodon
 
 Log = $outdir/logs/$method.log
 
