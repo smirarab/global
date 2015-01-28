@@ -3,17 +3,43 @@ require(reshape)
 
 #rm(list=ls())
 
-clade.colors <- c("Strong Support"=rgb(1, 133, 113, max = 255), "Strong Support (partially missing)"=rgb(178, 223, 138, max = 255),
-		"Weak Support"=rgb(128, 205, 193, max = 255), "Weak Support (partially missing)"=rgb(166, 206, 227, max = 255),
-		"Compatible (Weak Rejection)"=rgb(223, 194, 125, max = 255), "Compatible.Low.Incomplete"=rgb(255, 255, 153, max = 255),
-		"Strong Rejection"=rgb(166, 97, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+if (ST) {
+clade.colors <- c("Strong Support"="#91b38d", "Weak Support"="#b1ada2", 
+		"Compatible (Weak Rejection)"="#eae0c5", "Strong Rejection"="#f58555", "Missing"=rgb(192, 192, 192, max = 255) )
 rename.c <- list(
-		"Strong Support"="IS_MONO-IS_MONO", "Strong Support (partially missing)"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
-		"Weak Support"="IS_MONO-CAN_MONO", "Weak Support (partially missing)"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
-		"Compatible (Weak Rejection)"="CAN_MONO-CAN_MONO", "Compatible (Weak Rejection)"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
-		"Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO", "Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE" ,
-		"Strong Rejection"="NOT_MONO-NOT_MONO")
+		"Strong Support"="IS_MONO-IS_MONO","Weak Support"="IS_MONO-CAN_MONO",
+		"Compatible (Weak Rejection)"="CAN_MONO-CAN_MONO", 
+		"Compatible (Weak Rejection)"="NOT_MONO-CAN_MONO", 
+		"Strong Rejection"="NOT_MONO-NOT_MONO",
+                "Missing"="IS_MONO_INCOMPLETE-CAN_MONO","Missing"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE","Missing"="NOT_MONO-CAN_MONO_INCOMPLETE", "Missing"="NO_CLADE-NO_CLADE","Missing"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE", "Missing"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE","Missing"="COMP_MISSING-COMP_MISSING"
+)
 
+} else {
+clade.colors <- c("Strongly Supported/Complete"=rgb(50, 160, 45, max = 255), "Strongly Supported/Incomplete"=rgb(178, 223, 138, max = 255),
+		"Weakly Supported/Complete"=rgb(30, 120, 180, max = 255), "Weakly Supported/Incomplete"=rgb(160, 190, 225, max = 255),
+		"Weakly Reject"=rgb(255, 240, 170, max = 255),
+		"Strongly Reject"=rgb(230, 25, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+rename.c <- list(
+		"Strongly Supported/Complete"="IS_MONO-IS_MONO", "Strongly Supported/Incomplete"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
+		"Weakly Supported/Complete"="IS_MONO-CAN_MONO", "Weakly Supported/Incomplete"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Missing"="NO_CLADE-NO_CLADE","Missing"="COMP_MISSING-COMP_MISSING",
+		"Weakly Reject"="CAN_MONO-CAN_MONO", "Weakly Reject"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Weakly Reject"="NOT_MONO-CAN_MONO", "Weakly Reject"="NOT_MONO-CAN_MONO_INCOMPLETE",
+		"Strongly Reject"="NOT_MONO-NOT_MONO")
+clade.colors <- c("Strongly Supported"=rgb(50, 100, 130, max = 255), #"Strongly Supported"=rgb(178, 223, 138, max = 255),
+		"Weakly Supported"=rgb(100, 160, 250, max = 255), #"Weakly Supported"=rgb(160, 190, 225, max = 255),
+		"Weakly Reject"=rgb(255, 240, 170, max = 255),
+		"Strongly Reject"=rgb(230, 25, 26, max = 255), "Missing"=rgb(192, 192, 192, max = 255) )
+rename.c <- list(
+		"Strongly Supported"="IS_MONO-IS_MONO", "Strongly Supported"= "IS_MONO_INCOMPLETE-IS_MONO_INCOMPLETE",
+		"Weakly Supported"="IS_MONO-CAN_MONO", "Weakly Supported"="IS_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Missing"="NO_CLADE-NO_CLADE","Missing"="COMP_MISSING-COMP_MISSING",
+		"Weakly Reject"="CAN_MONO-CAN_MONO", "Weakly Reject"="CAN_MONO_INCOMPLETE-CAN_MONO_INCOMPLETE",
+		"Weakly Reject"="NOT_MONO-CAN_MONO", "Weakly Reject"="NOT_MONO-CAN_MONO_INCOMPLETE",
+		"Strongly Reject"="NOT_MONO-NOT_MONO")
+}
+
+cols <- c( "ID" ,   "CLADE", "BOOT")
 #Read Raw files
 read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.order = NULL, techs.order = NULL) {
 	raw.all = read.csv(file.all,sep="\t", header=T)
@@ -64,7 +90,6 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	countes.melted <- melt(recast(countes.melted, Classification ~ CLADE ~ DS, fun.aggregate=sum))
 	countes.melted <- subset(countes.melted, countes.melted$value != 0)
 	countes.melted$Classification <- factor(countes.melted$Classification,levels=lo)
-	
 	# order clades based on support
 	if (is.null(clade.order)) {
 		all.monophyletic  <- raw.all[which(raw.all$MONO %in% c("IS_MONO","IS_MONO_INCOMPLETE") ),]
@@ -72,6 +97,7 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 		clade.order = c(levels(d.boot.mono$CLADE), setdiff(levels(countes.melted$CLADE), levels(d.boot.mono$CLADE)))
 	}
 	countes.melted$CLADE <- factor(countes.melted$CLADE, levels=clade.order)
+   print ("working on counts ...")	
 	
 	
 	# Add 75% and normal classifications, and reorder column
@@ -86,23 +112,38 @@ read.data <- function (file.all="clades.txt", file.hs="clades.hs.txt", clade.ord
 	return (list (y=y, countes=clade.counts, countes.melted=countes.melted, raw.all = raw.all, y.colors=y.colors))
 }
 
-metabargraph <- function (d.c.m, y){
+metabargraph2 <- function (d.c.m, y,sizes=c(15,19)){
 	
-	pdf("Monophyletic_Bargraphs.pdf",width=15,height=10)
-	d.c.m.colors <- array(clade.colors[levels(d.c.m$Classification)])
-	p1 <- ggplot(d.c.m, aes(x=CLADE, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Porportion of Trees") + 
-			geom_bar(aes(y = value)) + facet_wrap(~DS,scales="free_y",ncol=1) + opts(axis.text.x = theme_text(size=8,angle = 90,hjust=1),legend.position=c(0.5,0.03), legend.direction="horizontal") + 
-			scale_fill_manual(name="Classification", values=d.c.m.colors)
+	pdf("Monophyletic_Bargraphs_Porportion.pdf",width=sizes[1],height=sizes[2])
+        x = d.c.m[d.c.m$Classification != "Missing",]
+	d.c.m.colors <- array(clade.colors[levels(droplevels(x$Classification))])
+	p1 <- ggplot(x, aes(x=CLADE, y = value, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Proportion of relevant gene trees") + 
+			geom_bar(position="fill",stat="identity",colour="black") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
+			theme(axis.text.x = element_text(size=10,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
+			scale_fill_manual(name=element_blank(), values=d.c.m.colors)  + scale_x_discrete(drop=FALSE)
+	
+	print(p1)
+	dev.off()
+}
+
+metabargraph <- function (d.c.m, y,sizes=c(15,19)){
+	
+	pdf("Monophyletic_Bargraphs.pdf",width=sizes[1],height=sizes[2])
+	d.c.m.colors <- array(clade.colors[levels(droplevels(d.c.m$Classification))])
+	p1 <- ggplot(d.c.m, aes(x=CLADE, fill=Classification) , main="Support for each clade") + xlab("") + ylab("Number of Gene Trees") + 
+			geom_bar(aes(y = value),stat="identity",colour="black") + facet_wrap(~DS,scales="free_y",ncol=1) + theme_bw()+ 
+			theme(axis.text.x = element_text(size=10,angle = 90,hjust=1),legend.position="bottom", legend.direction="horizontal") + 
+			scale_fill_manual(name=element_blank(), values=d.c.m.colors)  + scale_x_discrete(drop=FALSE)
 	
 	print(p1)
 	dev.off()
 	
-	for ( ds in levels(y$DS)) {
+	for ( ds in levels(droplevels(y$DS))) {
 		write.csv(file=paste(ds,"counts","csv",sep="."),cast(d.c.m[which(d.c.m$DS == ds),c(1,2,4)],CLADE~Classification))
+		print(ds)
 		for ( clade in levels(y$CLADE)) {
 			q <- y[which(y$CLADE == clade & y$DS ==ds),] 
-			#print(nrow(q))
-			write.csv(file=paste("finegrained/clades",ds,clade,"csv",sep="."),q, row.names=F)
+			write.csv(file=paste("finegrained/clades",ds,gsub("/",",",clade),"csv",sep="."),q, row.names=F)
 		}
 	} 
 	
@@ -130,7 +171,20 @@ metahistograms<- function (d.boot) {
 	dev.off()	
 }
 
-metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
+metahistograms2<- function (d.boot) {
+	print(levels(d.boot$DS))
+	pdf("Monophyletic_Bootstrap_Support_2.pdf",width=18,height=18)
+	o <- theme_bw()+theme(strip.text.x = theme_text(size = 9),legend.position="bottom")
+	
+	Main="Distribution of Support for each Clade When Monophyletic but Potentially Incomplete"
+		d.boot.mono  <- d.boot[which(d.boot$MONO %in% c("IS_MONO","IS_MONO_INCOMPLETE")  & !is.na(d.boot$BOOT)),]
+		#d.boot.mono$CLADE = reorder(d.boot.mono$CLADE, d.boot.mono$MONO, FUN = function (x) {return (-length(x))})
+		p1 <- qplot(DS,BOOT,data=d.boot.mono,geom="jitter", alpha=0.5, colour=DS,  main = Main, xlab="Bootstrap Support")+facet_wrap(~CLADE,scales="free_y") + o
+		print(p1)
+	dev.off()	
+}
+
+metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13),raw.all){
 	print(levels(y$DS))
 	# Draw the block driagram
 	for ( ds in levels(y$DS)) {
@@ -139,14 +193,12 @@ metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
 		#png(paste(ds,"block","png",sep="."),width=2000,height=2000)#,width=figuresizes[1],height=figuresizes[2])
 		
 		op <- opts(axis.text.x = theme_text(size=10,angle = 90,hjust=1),legend.position=c(-.15,-.15),axis.text.y = theme_text(hjust=1))
-		
-		print (y$colors)
-		
 		if (1 %in% pages) {			
 			p1 <- qplot(ID,CLADE,data=y,fill=Classification,geom="tile",xlab="",ylab="")+ 
                         scale_x_discrete(drop=FALSE) + scale_y_discrete(drop=FALSE) +
 			scale_fill_manual(name="Classification", values=y.colors) + theme_bw() + op
 			print(p1)
+			
 		}
 		
 		if (2 %in% pages){
@@ -175,6 +227,21 @@ metatable <- function (y,y.colors,c.counts,pages=1:3, figuresizes=c(15,13)){
 			
 			print(p3)
 		}
+		dev.off()
+		db=raw.all[raw.all$MONO=="IS_MONO",]
+                dbc=y[which(y$Classification=="Compatible (Weak Rejection)"),1:3]
+		dbn=y[which(y$Classification=="Strong Rejection"),1:3]
+                dbc$BOOT=-30; 
+		dbn$BOOT=-100;		
+                db2=rbind(dbn[,cols],dbc[,cols],db[,cols]);
+                db2$CLADE <- factor(db2$CLADE, levels=rev(clade.order)) 
+		nrow(db2)
+		pdf(paste(ds,"block-shades","pdf",sep="."),width=figuresizes[1],height=figuresizes[2]) 
+                p1 <- qplot(ID,CLADE,data=db2,fill=BOOT,geom="tile",xlab="",ylab="")+
+		      scale_x_discrete(drop=FALSE) + scale_y_discrete(drop=FALSE)+
+		      scale_fill_gradient2(high="#257070",mid="#DDEEFF",low="#c84060",na.value="white")+ 
+		      theme_bw() + theme(axis.text.x = theme_text(size=10,angle = 90,hjust=1),axis.text.y = theme_text(hjust=1))#+theme(legend.position="bottom")
+		print(p1)
 		dev.off()
 		write.csv(file=paste(ds,"metatable.results","csv",sep="."),cast(y,ID~CLADE))		
 	}

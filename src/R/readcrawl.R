@@ -121,14 +121,14 @@ lineplot <- function( metric, color.caption = "Techniques") {
 					shape=FACTORS,
 					geom=c("line","point"),
 					group=FACTORS, stat="summary", fun.y = "mean", 
-					linetype=FACTORS,
+					#linetype=FACTORS,
 					fill=FACTORS
 			) +			
 			geom_point(size=3, stat="summary", fun.y="mean")+
-			scale_x_discrete("Datasets",formatter = xformatter) + 			
+			scale_x_discrete("Datasets") + 			
 			scale_shape_manual(color.caption,values=shapes.pattern)+									
 			#geom_line(stat="summary", fun.y = "mean") +
-			scale_linetype_manual(color.caption,values=shapes.lt.pattern)+			
+			#scale_linetype_manual(color.caption,values=shapes.lt.pattern)+			
 			scale_color_manual(color.caption,values=colors)+
 			scale_fill_manual(color.caption,values=colors) +
 			stat_sum_df()
@@ -162,7 +162,7 @@ barplot <- function( metric, color.caption = "Techniques") {
 					fill=FACTORS, group=FACTORS, 
 					stat="summary", fun.y = "mean", 
 					geom="bar", position=dodge) +
-			scale_x_discrete("Datasets",formatter = xformatter) + 			
+			scale_x_discrete("Datasets") + 			
 			stat_sum_df(geom = "errorbar", position=dodge)+
 			labs(fill = color.caption)+
 			scale_color_manual(values=colors)+

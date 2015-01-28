@@ -6,7 +6,7 @@ Created on Jun 3, 2011
 '''
 import dendropy
 import sys
-
+import random
 
 if __name__ == '__main__':
 
@@ -22,6 +22,6 @@ if __name__ == '__main__':
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
     for tree in trees:            
         print "."    
-        tree.resolve_polytomies()     
+        tree.resolve_polytomies(rng=random)     
     
     trees.write(open(resultsFile,'w'),'newick',edge_lengths=True)

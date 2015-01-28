@@ -2,5 +2,5 @@
 # $1 is reference tree. $2 is estimated tree
 # output to stderr is 
 #Splits  Found   xxx     Total   xxx     Frac    0.xxx   MaxLnDf         Ratio           MaxBtDf
-TREECOMPHOME=~/workspace/global/src/perl/tree_comp_morgan
-perl -I  $TREECOMPHOME $TREECOMPHOME/CompareTree.pl -tree $1 -versus $2  
+TREECOMPHOME=$WS_HOME/global/src/perl/tree_comp_morgan
+perl -I  $TREECOMPHOME $TREECOMPHOME/CompareTree.pl $3 -tree $1 -versus $2  
