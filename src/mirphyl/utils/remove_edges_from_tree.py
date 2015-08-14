@@ -20,6 +20,7 @@ if __name__ == '__main__':
 
     if (len(sys.argv) < 2):
         print "USAGE: %s tree_file [threshold - default 75] [outfile name; - uses default] [-strip-internal|-strip-bl|strip-both|-nostrip; default: nostrip]" %sys.argv[0]
+        sys.exit(1)
 
     treeName = sys.argv[1]            
     t = 75 if len (sys.argv) < 3 else float(sys.argv[2])
@@ -38,6 +39,7 @@ if __name__ == '__main__':
                 #print n.label
                 #n.label = round(n.label/2)   
         edges = tree.get_edge_set(filt)
+        print >>sys.stderr, len(edges), "edges will be removed"
         for e in edges:
             e.collapse()
         if strip_internal:

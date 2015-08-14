@@ -60,8 +60,9 @@ and always the mrca of the + delimited list of outgroups is used.
     print "%d tree(s) found" %len(trees)
     i = 0;   
     outtrees=TreeList() 
-    for tree in trees:        
+    for tree in trees:
         i+=1
+        print ".",
         oldroot = tree.seed_node
         #print "Tree %d:" %i
         if outgroups[0] == "-m":            
@@ -98,7 +99,7 @@ and always the mrca of the + delimited list of outgroups is used.
                    print  >>sys.stderr, "Outgroups not found: %s" %outgroups
                    continue
                 else:
-                   raise KeyError("Outgroups not found: %s" %outgroups)
+                   raise KeyError("Outgroups not found %d: %s" %(i,outgroups))
             #print mrca.leaf_nodes()
             #if not mono-phyletic, then use the first
             if not use_mrca and len (mrca.leaf_nodes()) != len(outns):
