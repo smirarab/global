@@ -9,8 +9,13 @@ rep=$5 # Number of replicates
 model="GTRGAMMA" # DNA Model to use
 T=`echo $model|sed -e "s/\(.*\)/\L\1/g"`
 dirn=raxmlboot.$T # output raxml directory
+
 part=""
-[ $# == 6 ] && [ $6 != "-" ] && part="-q $6"
+pp="unpart"
+[ $# -gt 5 ] && [ $6 != "-" ] && part="-M -q $6"
+[ $# -gt 5 ] && [ $6 != "-" ] && pp="part"
+dirn=$dirn.$pp
+
 name=ml
 [ $# == 7 ] && [ $7 != "-" ] && name="$7"
 all=all
@@ -47,9 +52,9 @@ if [ "$donebs" == "" ]; then
   mv RAxML_info.$name RAxML_info.$name.$l
   if [ $crep -gt 0 ]; then
    if [ $C -gt 1 ]; then
-      raxmlHPC-PTHREADS-SSE3-7.3.5-64bit $out -m $model -n $name -s $in.phylip -N $crep -b $RANDOM -T $C  -p $RANDOM $part &>$H/$id/logs/${name}_std.errout.$T
+      raxmlHPC-8.0.19-PTHREADS-SSE3-modified $out -m $model -n $name -s $in.phylip -N $crep -b $RANDOM -T $C  -p $RANDOM $part &>$H/$id/logs/${name}_std.errout.$T
    else 
-      raxmlHPC-SSE3-7.3.5-64bit $out -m $model -n $name -s $in.phylip -N $crep -b $RANDOM -p $RANDOM $part &>$H/$id/logs/${name}_std.errout.$T
+      raxmlHPC-8.0.19-SSE3-modified $out -m $model -n $name -s $in.phylip -N $crep -b $RANDOM -p $RANDOM $part &>$H/$id/logs/${name}_std.errout.$T
    fi
   fi
 fi
@@ -57,17 +62,17 @@ fi
 cat  RAxML_bootstrap.$name* > RAxML_bootstrap.$all
 
 if [ ! `wc -l RAxML_bootstrap.$all|sed -e "s/ .*//g"` -eq $rep ]; then
- echo `pwd`>>$H/notfinishedproperly
+ #echo `pwd`>>$H/notfinishedproperly
  exit 1
 else
  rm *info*$final.back*
  rename "s/$final/$final.back/g" *$final.f$rep
  #Finalize 
- raxmlHPC-SSE3-7.3.5-64bit $out -f b -m $model -n $final.f$rep -z RAxML_bootstrap.$all -t RAxML_bestTree.best 
+ raxmlHPC-8.0.19-SSE3-modified $out -f b -m $model -n $final.f$rep -z RAxML_bootstrap.$all -t RAxML_bestTree.best 
  #/share/home/01721/smirarab/bin/mapsequences.py raxml/RAxML_bipartitions.ml namemap ml.mapped -rev &>logs/map
  cd ..
  if [ -s $H/$id/$dirn/RAxML_bipartitions.$final.f$rep ]; then
-  echo "Done">.done.raxml.$T.$rep.2
+  echo "Done">.done.raxml.$T.$rep.$pp.2
   cd $dirn
   cat  RAxML_bootstrap.$name* > .tmp
   tar cfj boot.$rep.run.logs.tar.bz --remove-files RAxML_bootstrap.$name* RAxML_*back* RAxML_info.$name.*
