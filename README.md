@@ -15,4 +15,5 @@ Installing this is going to be hell. But the following tips might help.
 
 1. Set environmental variable `WS_HOME` to the directory under which "global" repository lives
 2. Add `$WS_HOME/global/src/mirphyl/utils/` and `$WS_HOME/global/src/shell/` to your `$PATH`
+3. Look at (and run?) `src/shell/setup.sh`
 3. Be ready to change hard-coded paths (argh!)
