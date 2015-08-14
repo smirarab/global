@@ -11,4 +11,4 @@ export MLIB=$MHOME/lib
 export MSH=$MHOME/src/shell
 export MPUTIL=$MHOME/src/mirphyl/utils
 
-PATH=$PATH:$MSH:$MPUTIL
+export PATH=$PATH:$MSH:$MPUTIL
