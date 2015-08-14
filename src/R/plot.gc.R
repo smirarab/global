@@ -1,5 +1,5 @@
 require(ggplot2)
-
+require(reshape2)
 
 f = read.csv("gc.stat",sep=" ")
 fall=f[,c(1,2,3,4,9,10,11,12)]
@@ -11,7 +11,7 @@ pdf("allgenes_nucfreq.pdf")
 qplot(variable,value,data=fdall,geom="boxplot", color=variable)+facet_grid(DATASET~., scales = "free")
 dev.off()
 
-pdf("pT_ACGT_point.pdf",width=12,height=8)
+pdf("pT_ACGT_point.pdf",width=16,height=8)
 qplot(reorder(SEQUENCE,value),value,data=fdall,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")
 dev.off()
 
@@ -36,12 +36,12 @@ pdf("perposition_GC_content.pdf",width=16,height=8)
 qplot(variable,value,data=fcg,geom="boxplot", color=variable,ylab="GC Content")		
 dev.off()
 
-pdf("pTpP_GC_point.pdf",width=12,height=8)
-qplot(reorder(SEQUENCE,value),value,data=fcg,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")
+pdf("pTpP_GC_point.pdf",width=24,height=8)
+qplot(reorder(SEQUENCE,value),value,data=fcg,geom="point",stat="summary", fun.y = "mean", color=variable,xlab="")+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(DATASET~., scales = "free")+theme_classic()
 dev.off()
 
-pdf("pTpP_GC_box.pdf",width=14,height=12)
-qplot(reorder(SEQUENCE,value),value,data=fcg,geom="boxplot",xlab="",ylab="GC content",outlier.size=0.4)+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(variable~., scales = "free")
+pdf("pTpP_GC_box.pdf",width=24,height=12)
+qplot(reorder(SEQUENCE,value),value,data=fcg,geom="boxplot",xlab="",ylab="GC content",outlier.size=0.4)+ opts(axis.text.x = theme_text(angle = 90))+facet_grid(variable~., scales = "free")+theme_classic()
 dev.off()
 
 quit()
