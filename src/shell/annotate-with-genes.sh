@@ -7,6 +7,7 @@ set -o pipefail
 echo USAGE: species_tree gene_trees
 
 ## This script annotate the species_tree with support from gene_trees, collapsing branches below $THS support
+## Depends on java, newick utilities and dendropy < 3.18. Phylonet code is also used but is bundled
 
 MP=$WS_HOME/global/
 
