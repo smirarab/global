@@ -11,7 +11,10 @@ T=`echo $model|sed -e "s/\(.*\)/\L\1/g"`
 dirn=raxmlboot.$T # output raxml directory
 
 part=""
-[ $# == 6 ] && part="-q $6"
+pp="unpart"
+[ $# -gt 5 ] && [ $6 != "-" ] && part="-M -q $6"
+[ $# -gt 5 ] && [ $6 != "-" ] && pp="part"
+dirn=$dirn.$pp
 
 out=""
 echo Rooting at $out
@@ -34,16 +37,16 @@ tar cfz `mktemp ./BEST.backup.XXXXX.tgz` --remove-files *best*
 
 # Estimate the RAxML best tree
 if [ $C -gt 1 ]; then
- raxmlHPC-PTHREADS-SSE3-7.3.5-64bit $out -m $model -T $C -n best -s $in.phylip -N $N -p $RANDOM $part &>$H/$id/logs/best
+ raxmlHPC-8.0.19-PTHREADS-SSE3-modified $out -m $model -T $C -n best -s $in.phylip -N $N -p $RANDOM $part &>$H/$id/logs/best
 else
- raxmlHPC-SSE3-7.3.5-64bit $out -m $model -n best -s $in.phylip -N $N -p $RANDOM $part &>$H/$id/logs/best
+ raxmlHPC-8.0.19-SSE3-modified $out -m $model -n best -s $in.phylip -N $N -p $RANDOM $part &>$H/$id/logs/best
 fi
 
 #/share/home/01721/smirarab/bin/mapsequences.py raxml/RAxML_bipartitions.ml namemap ml.mapped -rev &>logs/map
 
 cd ..
 if [ -s $H/$id/$dirn/RAxML_bestTree.best ]; then 
-  echo "Done">.done.raxml.$T.1
+  echo "Done">.done.raxml.$T.$pp.1
   cd $dirn
   tar cfj best.run.logs.tar.bz --remove-files RAxML_log* RAxML_pars* RAxML_res*
   rm *reduced
