@@ -18,7 +18,7 @@ alg=dict()
 s=0
 i=0
 skip=False
-for line in open(sys.argv[1]):
+for line in open(sys.argv[1]) if sys.argv[1] != "-" else sys.stdin:
 	s = line.split()
         if not s[1].isdigit():
 		if not skip:
