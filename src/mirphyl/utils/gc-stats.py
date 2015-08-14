@@ -28,6 +28,10 @@ if len(sys.argv) > 2:
 else:
     dest = sys.stdout
 
+def counts(l):
+    x=l.lower()
+    return (x.count('a'),x.count('c'),x.count('g'),x.count('t'))
+
 print >>dest, "%s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s" %("SEQUENCE","TAXON","A_C","C_C","G_C","T_C","A_R","C_R","G_R","T_R","c1_A_C","c1_C_C","c1_G_C","c1_T_C","c1_A_R","c1_C_R","c1_G_R","c1_T_R","c2_A_C","c2_C_C","c2_G_C","c2_T_C","c2_A_R","c2_C_R","c2_G_R","c2_T_R","c3_A_C","c3_C_C","c3_G_C","c3_T_C","c3_A_R","c3_C_R","c3_G_R","c3_T_R")
 #print mapping
 try:
@@ -37,46 +41,32 @@ try:
             seq=l[1:]
             seq2=seq.split("_")[0]
         else:
+            if not l:
+                continue
             a= [0, 0, 0, 0]
             c= [0, 0, 0, 0]
             g= [0, 0, 0, 0]
             t= [0, 0, 0, 0]
-            for x in l: 
-                a[0]+= (1 if x == "A" or x == "a" else 0)  
-                c[0]+= (1 if x == "C" or x == "c" else 0)
-                g[0]+= (1 if x == "G" or x == "g" else 0)
-                t[0]+= (1 if x == "T" or x == "t" else 0)
+            (a[0],c[0],g[0],t[0]) = counts(l)
             
             s=a[0]+c[0]+g[0]+t[0]+0.0
             sc=s/3
             
-            lc = l[0::3]
-            for x in lc: 
-                a[1]+= (1 if x == "A" or x == "a" else 0)  
-                c[1]+= (1 if x == "C" or x == "c" else 0)
-                g[1]+= (1 if x == "G" or x == "g" else 0)
-                t[1]+= (1 if x == "T" or x == "t" else 0)
-           
-            lc = l[1::3]
-            for x in lc: 
-                a[2]+= (1 if x == "A" or x == "a" else 0)  
-                c[2]+= (1 if x == "C" or x == "c" else 0)
-                g[2]+= (1 if x == "G" or x == "g" else 0)
-                t[2]+= (1 if x == "T" or x == "t" else 0)
+            (a[1],c[1],g[1],t[1]) = counts(l[0::3])
+            (a[2],c[2],g[2],t[2]) = counts(l[1::3])
+            (a[3],c[3],g[3],t[3]) = counts(l[2::3])
             
-            lc = l[2::3]
-            for x in lc: 
-                a[3]+= (1 if x == "A" or x == "a" else 0)  
-                c[3]+= (1 if x == "C" or x == "c" else 0)
-                g[3]+= (1 if x == "G" or x == "g" else 0)
-                t[3]+= (1 if x == "T" or x == "t" else 0)
-            
-            print >>dest, "%s %s %d %d %d %d %f %f %f %f %d %d %d %d %f %f %f %f %d %d %d %d %f %f %f %f %d %d %d %d %f %f %f %f" %(
+            try:
+                print >>dest, "%s %s %d %d %d %d %f %f %f %f %d %d %d %d %f %f %f %f %d %d %d %d %f %f %f %f %d %d %d %d %f %f %f %f" %(
                           seq,seq2,
                                   a[0],c[0],g[0],t[0],a[0]/s,c[0]/s,g[0]/s,t[0]/s,
                                                          a[1],c[1],g[1],t[1],a[1]/sc,c[1]/sc,g[1]/sc,t[1]/sc,
                                                                                   a[2],c[2],g[2],t[2],a[2]/sc,c[2]/sc,g[2]/sc,t[2]/sc,
                                                                                                         a[3],c[3],g[3],t[3],a[3]/sc,c[3]/sc,g[3]/sc,t[3]/sc)
+            except ZeroDivisionError as e:
+                print >>sys.stderr, "%s %s ERROR" %(seq,seq2)
+                print >>sys.stderr, "L:%s*\n%d %s" %(l, s, a)
+
 except RuntimeError as e:
     dest.close()
     if dest_fpath is not None:
