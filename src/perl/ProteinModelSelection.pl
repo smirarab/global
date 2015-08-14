@@ -11,7 +11,7 @@ if($#ARGV < 0 || $#ARGV > 1)
 
 $alignmentName = $ARGV[0];
 
-$raxmlHPC = "raxmlHPC-SSE3-7.3.5-64bit";
+$raxmlHPC = "raxmlHPC-SSE3-git-30apr14";
 
 $UNLIKELY = -1.0E300;
 
@@ -47,6 +47,7 @@ sub getTIME
 
 @AA_Models = ("LG", "MTART",  "PMB", "JTTDCMUT",  "DAYHOFF", "DCMUT", "JTT", "MTREV", "WAG", "RTREV", "CPREV", "VT", "BLOSUM62", "MTMAM", 
 	      "LGF", "MTARTF",  "PMBF", "JTTDCMUTF","DAYHOFFF", "DCMUTF", "JTTF", "MTREVF", "WAGF", "RTREVF", "CPREVF", "VTF", "BLOSUM62F", "MTMAMF");
+@AA_Models = ("LG", "JTT");
 
 my $seed = int(rand(1000));
 
