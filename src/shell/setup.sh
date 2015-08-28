@@ -6,9 +6,10 @@ if [ -z $WS_HOME ]; then
   exit 1
 fi
 
-export MHOME=$WS_HOME/global
-export MLIB=$MHOME/lib
-export MSH=$MHOME/src/shell
-export MPUTIL=$MHOME/src/mirphyl/utils
+export WS_GLB_HOME=$WS_HOME/global
+export WS_GLB_LIB=$WS_GLB_HOME/lib
+export WS_GLB_BIN=$WS_GLB_HOME/bin
+export WS_GLB_SH=$WS_GLB_HOME/src/shell
+export WS_GLB_PUTIL=$WS_GLB_HOME/src/mirphyl/utils
 
-export PATH=$PATH:$MSH:$MPUTIL
+#export PATH=$PATH:$WS_GLB_SH:$WS_GLB_PUTIL:$WS_GLB_BIN
