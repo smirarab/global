@@ -10,8 +10,9 @@ Each script would ideally give their usage (again someday!):
 * [compareTrees.missingBranch](compareTrees.missingBranch): compare an estimated tree versus a reference tree, and outputs the 
   missing branch rate (FN). 
   * The output format is:
-       [number of branches in reference] [number of branches in the reference tree not found in the estiamte tree] [fraction of branches in refrence not found in estimated]
-  
+
+    `[number of branches in reference] [number of branches in the reference tree not found in the estiamte tree] [fraction of branches in refrence not found in estimated]`
+ 
   * This is just a wrapper around a perl script by Morgan Price, and available [here](http://www.microbesonline.org/fasttree/treecmp.html). Thanks Morgan!
   * No extra steps for installation should be required, except you need to have perl installed. 
   * The reference tree can be multiple lines; in that case, the comparison is between the reference tree (only first line) and all estimated trees. 
