@@ -10,7 +10,9 @@ config = ConfigParser.ConfigParser()
 config.readfp(open(CONFIG_FILE))
 
 HOME = config.get("DEFAULT", "home")
-WS_HOME = config.get("DEFAULT", "ws-home")
+WS_HOME = os.environ.get('WS_HOME',config.get("DEFAULT", "ws-home"))
+WS_HOME = os.environ.get('WS_HOME')
+
 #tools_options = config.options("tools")
 
 def get_tool_path(tool_name, ver='*'):
