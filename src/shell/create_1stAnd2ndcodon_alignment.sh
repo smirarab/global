@@ -1,5 +1,6 @@
 #!/bin/bash
-set -x
+#set -x
+set -e
 
 export PERL5LIB="$PERL5LIB:$HOME/workspace/global/src/perl"
 
