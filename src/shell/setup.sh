@@ -12,4 +12,4 @@ export WS_GLB_BIN=$WS_GLB_HOME/bin
 export WS_GLB_SH=$WS_GLB_HOME/src/shell
 export WS_GLB_PUTIL=$WS_GLB_HOME/src/mirphyl/utils
 
-#export PATH=$PATH:$WS_GLB_SH:$WS_GLB_PUTIL:$WS_GLB_BIN
+export PATH=$PATH:$WS_GLB_SH:$WS_GLB_PUTIL:$WS_GLB_BIN
