@@ -108,17 +108,17 @@ opts=""
 MHEADER=$HEADER
 if [ "$method" == "mpest" ]; then
    head -n1 $dir/*/$ofilen|grep -v ">"|sed -e "s/:[0-9.e-]*//g" -e "s/)[0-9.e-]*/)/g" -e "s/[(,);]/ /g" -e "s/ /\n/g"|sort|uniq|tail -n+2|sed -e "s/^\(.*\)$/\1 1 \1/g" >$outdir/species.list
-   opts="$outdir/species.list $MPESTREP"
+   opts="$outdir/species.list $WS_GLB_PESTREP"
 elif [ "$method" == "mrp" ]; then
    opts=$outdir/$method
 elif [ "$method" == "greedy" ]; then
    opts=0
 elif [ "$method" == "astral" ]; then
-   MHEADER="$MHEADER
+   MHEADER="$WS_GLB_HEADER
 Requirements = Memory >= 5000 && InMastodon
 "
 fi
-echo "$MHEADER
+echo "$WS_GLB_HEADER
 executable = $BH/$method
 
 Log = $outdir/logs/$method.log
