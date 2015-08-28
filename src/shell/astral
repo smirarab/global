@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export j="/projects/sate7/tools/bin/astral.4.6.0.jar"
+export j="/projects/sate7/tools/bin/astral.4.7.6.jar"
 
 out=$2
 

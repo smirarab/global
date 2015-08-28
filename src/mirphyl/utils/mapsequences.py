@@ -10,7 +10,7 @@ if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
 
 QUOTEIN = False
 IGNORE = True
-QUOTEOUT = True
+QUOTEOUT = False
 UNDEROUT= False
 
 if QUOTEIN:

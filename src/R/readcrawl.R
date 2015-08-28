@@ -100,6 +100,13 @@ a$STAT = "Total_Time"
 d <- rbind(data,a[,c("DATASET","REPLICA","DIR","FACTORS","STAT","VAL","VAL.sort")])	
 data= d
 #assign(deparse(substitute(data)), d , envir = .GlobalEnv)
+a = merge(data[data$STAT=="SPFN_SPFN",],data[data$STAT=="SPFP_SPFP",], c("DATASET","REPLICA","DIR","FACTORS","VAL.sort"),all="T")
+a$VAL.x[is.na(a$VAL.x)]<-0
+a$VAL.y[is.na(a$VAL.y)]<-0
+a$VAL=1-(a$VAL.x+a$VAL.y)/2
+a$STAT = "PSCORE" 
+d <- rbind(data,a[,c("DATASET","REPLICA","DIR","FACTORS","STAT","VAL","VAL.sort")])	
+data= d
 
 data$DATASET = reorder(data$DATASET, data$VAL.sort)
 
@@ -118,7 +125,24 @@ lineplot <- function( metric, color.caption = "Techniques") {
 		 }
 	#print (d$FACTORS)
 	p <- qplot(reorder(DATASET,VAL.sort), VAL, data = d, colour=FACTORS, 
-					shape=FACTORS,
+			#		shape=FACTORS,
+        shapes.pattern=c(25,23,22,21,3)        	
+	postscript(paste(out.filename,"alg","eps",sep="."), 
+			horizontal = FALSE,width = 6, height = 4,onefile = TRUE, paper = "special")
+	p = lineplot("PSCORE",color.caption = "") + ylab("Pairs score") + scale_y_continuous(labels = percent)+ 
+			opts(legend.position="bottom", legend.background = theme_rect(fill="white",size=.4, linetype="dotted"),
+					axis.title.x = theme_blank())			
+	print(p)
+	dev.off()
+
+	postscript(paste(out.filename,"tc","eps",sep="."), 
+			horizontal = FALSE,width = 6, height = 4,onefile = TRUE, paper = "special")
+	p = lineplot("SPFN_TC",color.caption = "") + ylab("Total columns score") + scale_y_continuous(labels = percent)+ 
+			opts(legend.position="bottom", legend.background = theme_rect(fill="white",size=.4, linetype="dotted"),
+					axis.title.x = theme_blank())			
+	print(p)
+	dev.off()
+
 					geom=c("line","point"),
 					group=FACTORS, stat="summary", fun.y = "mean", 
 					#linetype=FACTORS,
