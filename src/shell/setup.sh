@@ -10,6 +10,12 @@ export WS_GLB_HOME=$WS_HOME/global
 export WS_GLB_LIB=$WS_GLB_HOME/lib
 export WS_GLB_BIN=$WS_GLB_HOME/bin
 export WS_GLB_SH=$WS_GLB_HOME/src/shell
+export WS_GLB_PERL=$WS_GLB_HOME/src/perl
 export WS_GLB_PUTIL=$WS_GLB_HOME/src/mirphyl/utils
 
 export PATH=$PATH:$WS_GLB_SH:$WS_GLB_PUTIL:$WS_GLB_BIN
+
+export PERL5LIB="$PERL5LIB:$WS_GLB_PERL"
+
+#DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+#source $DIR/setup.sh
