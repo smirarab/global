@@ -34,6 +34,11 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
    * you need to remove internal node labels (e.g., bootstrap support). 
    * I think this old phylonet dislikes funky characters in taxon names; this includes quotation.
 
+* [compareTrees.triplets](compareTrees.triplets): finds the triplet distance between two trees. 
+  * This is just a wrapper around an excellent program from a [MS thesis by Jens Johansen](http://jensjohansen.com/thesis/). Thanks Jens!
+  * The binaries of Jen's code are *not* included in this package. Please download the code from the link above, build it, and put the binaries under `$WS_HOME/bin` and name the binary file `triplets.soda2103`.
+  * Note that the script can be easily adopted to do quartets instead of triplets (TODO). 
+
 * [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon posistions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
 
 * [simplifyfasta.sh](simplifyfasta.sh): a one-liner that standardizes fasta alignment files so that each sequence is only one line. Simple and sweet with no dependencies. 
