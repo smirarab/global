@@ -30,8 +30,8 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 
 * [compareTrees.compatibility](compareTrees.compatibility): compare trees in terms of compatibility, and thus, the two trees need not be on the same exact set of taxa, 
  or fully binary. However, this code is just a wrapper around an old hacked [phylonet](http://bioinfo.cs.rice.edu/phylonet) code, with some bug fixes I added.
- This old phylonet code is packaged with the repository. Some limitation of the code are 
-   * you need to remove internal node labels (e.g., bootstrap support). 
+ This old phylonet code is packaged with the repository. Some limitation of the code are:
+   * Internal node labels are problematic (if repeated). Usually, you need to remove internal node labels (e.g., bootstrap support). 
    * I think this old phylonet dislikes funky characters in taxon names; this includes quotation.
 
 * [compareTrees.triplets](compareTrees.triplets): finds the triplet distance between two trees. 
@@ -39,9 +39,16 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
   * The binaries of Jen's code are *not* included in this package. Please download the code from the link above, build it, and put the binaries under `$WS_HOME/bin` and name the binary file `triplets.soda2103`.
   * Note that the script can be easily adopted to do quartets instead of triplets (TODO). 
 
-* [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon posistions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
+* [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon positions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
+
+* [remove_taxon_from_fasta.sh](remove_taxon_from_fasta.sh): removes a set of sequences from a fasta file.
+  * The set of sequence names should be | delimited; so to remove human, gorilla, and chimp, the first argument should be `human|gorilla|chimp`.
+  * You should be able to use more fancy regular expressions in the first argument (sequence name).
+  * Use `-rev` as the third argument to keep sequences in the first argument and remove everything else
 
 * [simplifyfasta.sh](simplifyfasta.sh): a one-liner that standardizes fasta alignment files so that each sequence is only one line. Simple and sweet with no dependencies. 
+
+* [trim-fasta.sh](trim-fasta.sh): strips down a fasta file to its first N sites
 
 * [triplet.freq.sh](triplet.freq.sh): given a file with a bunch of newick trees, computes the frequencies of the three topologies for all n choose 3 triplets and outputs results to standard output. 
   * This is just a wrapper around an excellent program from a [MS thesis by Jens Johansen](http://jensjohansen.com/thesis/). Thanks Jens!
