@@ -35,3 +35,7 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
   with the number (or frequency) of source trees that have that branch with high support
 
 * [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon posistions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
+
+* [bootstrap_summary.sh](bootstrap_summary.sh): Summarizes the bootstrap support of branches. Outputs min, max, and average bootstrap support, plus the number of highly supported branches. Input is newick tree, and the script assumes bootstrap support values are given as node labels (so for example, `((a,b)76,(c,d)45)`).
+
+
