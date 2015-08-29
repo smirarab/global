@@ -46,6 +46,8 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
   * You should be able to use more fancy regular expressions in the first argument (sequence name).
   * Use `-rev` as the third argument to keep sequences in the first argument and remove everything else
 
+* [remove_empty_sequences_from_fasta.sh](remove_empty_sequences_from_fasta.sh): removes empty sequence headers from a fasta file
+
 * [simplifyfasta.sh](simplifyfasta.sh): a one-liner that standardizes fasta alignment files so that each sequence is only one line. Simple and sweet with no dependencies. 
 
 * [trim-fasta.sh](trim-fasta.sh): strips down a fasta file to its first N sites
