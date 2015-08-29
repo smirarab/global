@@ -1,8 +1,9 @@
-#!/bin/sh
+#!/bin/bash
+
 if [ $# -lt 1 ]; then  
   echo "USAGE: $0 [newick_tree_file] [bootstrap_threshold (optional; defaults to 75)]
-        OUTPUT (to stdout): Average_support Maximum_Support Minimum_support Number_of_Internal_Edges Number_of_High_Support_Edges"
-        OUTPUT (to stderr): support of each branch individually
+        OUTPUT (to stdout): Average_support Maximum_Support Minimum_support Number_of_Internal_Edges Number_of_High_Support_Edges
+        OUTPUT (to stderr): support of each branch individually"
   exit 1
 fi
 
