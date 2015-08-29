@@ -1,14 +1,18 @@
 #!/bin/sh
 if [ $# -lt 1 ]; then  
   echo "USAGE: $0 [newick_tree_file] [bootstrap_threshold (optional; defaults to 75)]
-        OUTPUT: Average_support Maximum_Support Minimum_support Number_of_Internal_Edges Number_of_High_Support_Edges"
+        OUTPUT (to stdout): Average_support Maximum_Support Minimum_support Number_of_Internal_Edges Number_of_High_Support_Edges"
+        OUTPUT (to stderr): support of each branch individually
   exit 1
 fi
+
 S=$2
-if [ -z $S ] || [ $S -gt 1000 ] || [ $S -lt 0 ]; then
-	S=75
+test -z $S && S=75
+if [ $S -gt 1000 ] || [ $S -lt 0 ]; then
+	echo Threshold $S not recongnized. Give a number between 0 and 1000
+        exit 1
 fi
-pattern="s/[^)]*[);]\([0-9]*\)/\1 /g"
+
 for x in `cat $1`; do 
   echo $x| sed -e "s/[^)]*[);]\([0-9]*\)/\1 /g"|tr " " "\n"|awk '/^[0-9]/ {print "'$1'",$1;}' >&2
   echo -n $1" "
