@@ -1,6 +1,11 @@
-#!/bin/sh
+#!/bin/bash
+
 if [ $# -ne 2 ]; then
 	echo USAGE: $0 tree_file1 tree_file2
 	exit 1
 fi
-java -jar /projects/sate7/tools/bin/phylonet_v2_5_compat.jar compat $1 $2 b
+
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/setup.sh
+
+java -jar $WS_GLB_LIB/phylonet_v2_5_compat.jar compat $1 $2 b
