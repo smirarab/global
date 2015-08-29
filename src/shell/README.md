@@ -28,6 +28,12 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
   Refer to Price's [website](http://www.microbesonline.org/fasttree/treecmp.html) for more info. 
   * This is useful for branch length and bootstrap support comparison. 
 
+* [compareTrees.compatibility](compareTrees.compatibility): compare trees in terms of compatibility, and thus, the two trees need not be on the same exact set of taxa, 
+ or fully binary. However, this code is just a wrapper around an old hacked [phylonet](http://bioinfo.cs.rice.edu/phylonet) code, with some bug fixes I added.
+ This old phylonet code is packaged with the repository. Some limitation of the code are 
+   * you need to remove internal node labels (e.g., bootstrap support). 
+   * I think this old phylonet dislikes funky characters in taxon names; this includes quotation.
+
 * [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon posistions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
 
 * [simplifyfasta.sh](simplifyfasta.sh): a one-liner that standardizes fasta alignment files so that each sequence is only one line. Simple and sweet with no dependencies. 
