@@ -1,9 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ $# -lt 1 ]; then
- echo USAGE: $0 inputfile
- exit 1
-fi
+test  $# == 1 || { echo USAGE: $0 inputfile; exit 1; }
 
 number="[0-9]*\.\?[0-9]\+\([eE][-+]\?[0-9]\+\)\?";
 

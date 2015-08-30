@@ -41,6 +41,9 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 
 * [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon positions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
 
+* [reformat_bootstrap_support.sh](reformat_bootstrap_support.sh): bootstrap support is sometimes shown in brackets (e.g., `(a,b)[98])`.
+  To convert that to the format that most tools here understand (e.g., `(a,b)98`), you can use this script. 
+
 * [remove_taxon_from_fasta.sh](remove_taxon_from_fasta.sh): removes a set of sequences from a fasta file.
   * The set of sequence names should be | delimited; so to remove human, gorilla, and chimp, the first argument should be `human|gorilla|chimp`.
   * You should be able to use more fancy regular expressions in the first argument (sequence name).
