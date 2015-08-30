@@ -12,6 +12,9 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 
 * [bootstrap_summary.sh](bootstrap_summary.sh): Summarizes the bootstrap support of branches. Outputs min, max, and average bootstrap support, plus the number of highly supported branches. Input is newick tree, and the script assumes bootstrap support values are given as node labels (so for example, `((a,b)76,(c,d)45)`).
 
+* [contract_low_support.sh](contract_low_support.sh): contracts low support branches in a newick tree. 
+  * this is just a wrapper for a perl script that I obtained from Kevin Liu many years ago. The perl script is packaged. Thanks Kevin! 
+
 * [compareTrees.missingBranch](compareTrees.missingBranch): compare an estimated tree versus a reference tree, and outputs the 
   missing branch rate (FN). 
   * The output format is:
