@@ -15,6 +15,8 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 * [contract_low_support.sh](contract_low_support.sh): contracts low support branches in a newick tree. 
   * this is just a wrapper for a perl script that I obtained from Kevin Liu many years ago. The perl script is packaged. Thanks Kevin! 
 
+* [convert_to_phylip.sh](convert_to_phylip.sh): converts fasta alignments into phylip alignments. 
+
 * [compareTrees.missingBranch](compareTrees.missingBranch): compare an estimated tree versus a reference tree, and outputs the 
   missing branch rate (FN). 
   * The output format is:
