@@ -5,6 +5,7 @@ test $# == 1 || { echo USAGE: $0 file_with_newick_trees; exit 1; }
 DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 source $DIR/setup.sh
 
+
 tmp=`mktemp`
 
 for x in `cat $1`; do 

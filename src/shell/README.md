@@ -66,7 +66,7 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 
 * [triplet.freq.sh](triplet.freq.sh): given a file with a bunch of newick trees, computes the frequencies of the three topologies for all n choose 3 triplets and outputs results to standard output. 
   * This is just a wrapper around an excellent program from a [MS thesis by Jens Johansen](http://jensjohansen.com/thesis/). Thanks Jens!
-  * The binaries of Jen's code are *not* included in this package. Please download the code from the link above, build it, and put the binaries under `$WS_HOME/bin` and name the binary file `triplets.soda2103`.
+  * The binaries of Jen's code are *not* included in this package. Please download the code from the link above, build it, and put the binaries under `$WS_HOME/bin` and name the binary file `trip_bin`.
   * Note that the script can be easily adopted to do quartets instead of triplets (TODO). 
   * python > 2.6 is a requirement (but python >3.0 would probably not work). 
 
