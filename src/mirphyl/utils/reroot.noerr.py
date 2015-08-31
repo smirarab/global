@@ -1,4 +1,4 @@
-#!/lusr/bin/python
+#!/usr/bin/env python
 
 import reroot
 import sys
