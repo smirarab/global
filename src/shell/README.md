@@ -44,6 +44,10 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 
 * [create_1stAnd2ndcodon_alignment.sh](create_1stAnd2ndcodon_alignment.sh): creates an alignment where the first half are the first codon positions of the input alignment and the second half is the second codon position. It also outputs a file that gives the boundaries between the two codons. 
 
+* [distance.sh](distance.sh): calculates a bunch of statistics on a given fasta alignment file. 
+  These include things like mean and max p-distance, gappiness, length, etc.
+  * This is just a wrapper around a java code I obtained from Kevin Liu and packaged here. 
+
 * [reformat_bootstrap_support.sh](reformat_bootstrap_support.sh): bootstrap support is sometimes shown in brackets (e.g., `(a,b)[98])`.
   To convert that to the format that most tools here understand (e.g., `(a,b)98`), you can use this script. 
 
