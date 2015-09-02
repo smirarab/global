@@ -12,8 +12,9 @@ export WS_GLB_BIN=$WS_GLB_HOME/bin
 export WS_GLB_SH=$WS_GLB_HOME/src/shell
 export WS_GLB_PERL=$WS_GLB_HOME/src/perl
 export WS_GLB_PUTIL=$WS_GLB_HOME/src/mirphyl/utils
-
-export PATH=$PATH:$WS_GLB_SH:$WS_GLB_PUTIL:$WS_GLB_BIN
+export WS_GLB_RES=$WS_GLB_HOME/results
+export WS_GLB_TS=$WS_GLB_HOME/tests
+export PATH=$PATH:$WS_GLB_SH:$WS_GLB_PUTIL:$WS_GLB_BIN:$WS_GLB_RES:$WS_GLB_TS
 
 export PERL5LIB="$PERL5LIB:$WS_GLB_PERL"
 
