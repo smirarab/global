@@ -62,6 +62,8 @@ I found [this](https://www.topbug.net/blog/2013/04/14/install-and-use-gnu-comman
 
 * [simplifyfasta.sh](simplifyfasta.sh): a one-liner that standardizes fasta alignment files so that each sequence is only one line. Simple and sweet with no dependencies. 
 
+* [subsample.fasta.sh](subsample.fasta.sh): restricts a fasta file to a subset of columns. Does not remove all gap columns.
+
 * [trim-fasta.sh](trim-fasta.sh): strips down a fasta file to its first N sites
 
 * [triplet.freq.sh](triplet.freq.sh): given a file with a bunch of newick trees, computes the frequencies of the three topologies for all n choose 3 triplets and outputs results to standard output. 
