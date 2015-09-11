@@ -8,3 +8,8 @@ Random scripts that do phylogenetic plumbing ,,,
     * The first element is the sequence name, the second field is the everything in the sequence name before `_`
     * Then there are counts of A, C, G, T, and then the ratio of A, C, G, and T. 
     * Then comes the counts and ratios for each of the three codon positions.
+
+* [backtranslate.py](backtranslate.py): Translate back from FAA alignemnts to FNA alignments; no dependencies to any other parts of this repository.
+    * Outputs the results to standard output
+    * Checks for mismatches and knows about NT ambegious characters
+    * Expects - for stop codons. You can edit this in gencode dictionary
