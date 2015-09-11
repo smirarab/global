@@ -2,21 +2,25 @@
 #set -x
 set -e
 
-export PERL5LIB="$PERL5LIB:$HOME/workspace/global/src/perl"
+DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+source $DIR/setup.sh
+
 
 if [ ! $# == 3 ]; then  
   echo USAGE: $0 alignment_file output_file output_partition_file;
   exit 1;
 fi
 
-$HOME/workspace/global/src/shell/simplifyfasta.sh $1 >$1.simp
+$WS_GLB_SH/simplifyfasta.sh $1 >$1.simp
 
-python $HOME/workspace/global/src/mirphyl/utils/extract-codon.py $1.simp codon1st  1
-python $HOME/workspace/global/src/mirphyl/utils/extract-codon.py $1.simp codon2nd  2
+python $WS_GLB_PUTIL/extract-codon.py $1.simp codon1st  1
+python $WS_GLB_PUTIL/extract-codon.py $1.simp codon2nd  2
+
+tmp=`mktemp "tmp-codon-XXXXXX"`
 
 echo "codon1st
-codon2nd" > .codon_files
+codon2nd" > $tmp
 
-perl $HOME/workspace/global/src/perl/concatenate_alignments.pl -i .codon_files -o $2 -p $3
+perl $WS_GLB_PERL/concatenate_alignments.pl -i $tmp -o $2 -p $3
 
-rm codon1st codon2nd .codon_files $1.simp
+rm codon1st codon2nd $tmp $1.simp
