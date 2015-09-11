@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+
+
 import sys
 import itertools
 
@@ -114,6 +117,9 @@ def backtranslate(faa,fna):
         newfna[k] = ''.join(cd)
     return newfna
 
+if ("--help" in sys.argv) or ("-?" in sys.argv) or ("-h" in sys.argv) or len(sys.argv) < 3:
+    sys.stderr.write("usage: %s <FAA alignment> <FNA unaligned file>\n"%sys.argv[0])
+    sys.exit(1)
 
 faa = read_fasta(sys.argv[1])
 fna = read_fasta(sys.argv[2])
