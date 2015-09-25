@@ -1,8 +1,9 @@
 #!/bin/sh
 
+test $# == 2 || {echo USAGE: input_fasta output_phylip_file_name; exit 1; }
+
 tmp=`mktemp`
 
-# simplifyfasta.sh
 sed -e "s/>\(.*\)/@>\1@/g" $1|tr -d "\n"|tr "@" "\n"|tail -n+2> $tmp
 
 #find length and count

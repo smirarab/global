@@ -1,4 +1,9 @@
-#~/bin/sh
+#!/bin/sh
+
+if [ ! $# == 2 ]; 
+	echo USAGE: [process_id] [min diff]
+	exit 1
+fi
 
 s=0
 while [ 1 ]; do 

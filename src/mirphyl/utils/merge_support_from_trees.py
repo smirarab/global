@@ -7,7 +7,7 @@ import re
 
 
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
-    sys.stderr.write("usage: %s [treshold] [<tree-file-path>] [<out-file-path>]\n" % sys.argv[0])
+    sys.stderr.write("usage: %s [threshold] [<tree-file-path>] [<out-file-path>]\n" % sys.argv[0])
     sys.exit(1)
  
 src_fpath = os.path.expanduser(os.path.expandvars(sys.argv[2]))
