@@ -29,7 +29,7 @@ Universe = vanilla
 
 Requirements = Arch == "X86_64"
 
-executable = /projects/sate4/smirarab/1kp-capstone/secondround/1kpscripts/runastral.sh
+executable = '$DIR'/runastral.sh
 
 Log = condor.log
 
