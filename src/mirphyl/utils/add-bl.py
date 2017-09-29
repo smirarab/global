@@ -31,6 +31,7 @@ if __name__ == '__main__':
         trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
         for tree in trees:
             for e in tree.postorder_edge_iter():
-                e.length = 1
+                if not e.length:
+                    e.length = 1
         print >>sys.stderr, "writing results to " + resultsFile.name        
         trees.write(resultsFile,'newick',write_rooting=False)
