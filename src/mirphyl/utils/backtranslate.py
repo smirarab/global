@@ -98,7 +98,7 @@ def is_ambiguous(cd):
 
 def backtranslate(faa, fna):
     newfna = dict()
-    for k, s in fna.iteritems():
+    for k, s in fna.items():
         if k in faa.keys():
             aa = faa[k]
             cd = []
