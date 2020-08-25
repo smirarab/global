@@ -15,10 +15,11 @@ source $DIR/setup.sh
 
 COUNT=false
 THS=75
+ths=$THS
 
 gt=$2
 st=$1
-tmp=`mktemp`
+tmp=`mktemp -t annotate.XXXXXX`
 
 l=`cat $gt|wc -l`
 
