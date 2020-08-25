@@ -13,7 +13,7 @@ import os.path
 if __name__ == '__main__':
 
     if len(sys.argv) < 3: 
-        print "USAGE: [postfix|-|--] treefile"
+        print("USAGE: [postfix|-|--] treefile")
         sys.exit(1)
     stdout = False
     if sys.argv[1] == "-":
@@ -28,9 +28,10 @@ if __name__ == '__main__':
     for treeName in sys.argv[2:]:
         if not stdout:
             resultsFile=open("%s.%s" % (treeName, postfix),'w')
-        trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
+        trees = dendropy.TreeList.get_from_path(treeName, 'newick')
         for tree in trees:
             for e in tree.postorder_edge_iter():
-                e.length = 1
-        print >>sys.stderr, "writing results to " + resultsFile.name        
-        trees.write(resultsFile,'newick',write_rooting=False)
+                if not e.length:
+                    e.length = 1
+        print("writing results to " + resultsFile.name, file=sys.stderr)        
+        trees.write(file=resultsFile,schema='newick')
