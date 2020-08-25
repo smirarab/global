@@ -33,5 +33,5 @@ if __name__ == '__main__':
             for e in tree.postorder_edge_iter():
                 if not e.length:
                     e.length = 1
-        print("writing results to " + resultsFile.name, file=sys.stderr)        
+        sys.stderr.write("writing results to " + resultsFile.name + "\n")        
         trees.write(file=resultsFile,schema='newick')
