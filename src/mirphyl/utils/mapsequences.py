@@ -11,7 +11,7 @@ if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
 QUOTEIN = False
 IGNORE = True
 QUOTEOUT = False
-UNDEROUT= False
+UNDEROUT= True
 
 if QUOTEIN:
     pattern = re.compile("(?<=[,(])'([^']+)'(?=[,():])")
@@ -37,7 +37,7 @@ reverse = False
 if len(sys.argv) == 5 and sys.argv[4] == "-rev":
     reverse = True
 
-print "writing to file %s" %os.path.abspath(dest_fpath)
+print("writing to file %s" %os.path.abspath(dest_fpath))
 
 mapping = {}
 for line in mapfile:
@@ -50,10 +50,10 @@ for line in mapfile:
 
 def replace_func(m):
     repl = m.group(1)
-    if mapping.has_key(m.group(1)):
+    if m.group(1) in mapping:
         repl = mapping[m.group(1)]
     elif IGNORE:
-        print "Ignoring", m.group(1)
+        print("Ignoring", m.group(1))
     else:
         raise "Name %s not found in the mapping file." %m.group(1)
     if UNDEROUT:

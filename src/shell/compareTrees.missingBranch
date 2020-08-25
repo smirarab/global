@@ -7,7 +7,8 @@ then
 fi
 
 while read x; do
-  s=( `echo "$x" |compareTrees $1 /dev/stdin $3 2>&1|grep Frac|sed -e "s/.*Found	//g" -e "s/Total	//g" -e "s/Frac	//g" -e "s/Max.*//g" -e "s/	| //g"` ) 
+  test -z "$x" && continue
+  s=( `echo "$x" |$WS_HOME/global/src/shell/compareTrees $1 /dev/stdin $3 2>&1|grep Frac|sed -e "s/.*Found	//g" -e "s/Total	//g" -e "s/Frac	//g" -e "s/Max.*//g" -e "s/	| //g"` ) 
   mis=`expr ${s[1]} - ${s[0]}`
   f=`echo 1 - ${s[2]}|bc`
   echo ${s[1]} $mis $f

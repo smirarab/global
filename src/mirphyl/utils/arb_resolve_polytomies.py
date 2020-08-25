@@ -53,7 +53,7 @@ if __name__ == '__main__':
     
     trees = dendropy.TreeList.get_from_path(treeName, 'newick')
     for tree in trees:            
-        print ".",  
+        print(".", end=' ')  
         resolve_polytomies(tree,rng=random) 
-    print 
-    trees.write(open(resultsFile,'w'),'newick',suppress_rooting=True)
+    print() 
+    trees.write(file=open(resultsFile,'w'),schema='newick',suppress_rooting=True)

@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-test $# == 2  || { echo USAGE: input_fasta oupt_stat_file_name; exit 1 }
+test $# == 2  || { echo USAGE: input_fasta oupt_stat_file_name; exit 1; }
 
 output=$2
 
