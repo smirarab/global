@@ -5,6 +5,7 @@ import os
 import sys
 import re
 
+from statistics import mean
 
 if ("--help" in sys.argv) or ("-?" in sys.argv) or len(sys.argv) < 4:
     sys.stderr.write("usage: %s [threshold] [<tree-file-path>] [<out-file-path>]\n" % sys.argv[0])
@@ -41,14 +42,17 @@ for edge in con_tree.postorder_edge_iter():
     labels=[]
     for (i,tre) in enumerate(trees):
         mrca = tre.mrca(taxa=taxa)
-        l = float(mrca.label) if mrca.label is not None and len(mrca.leaf_nodes()) == len(taxa) else -1
+        l = float(mrca.label) if mrca.label is not None and len(mrca.leaf_nodes()) == len(taxa) else 0
         #l = int(round(l * 100.0)) # if i>-1 else int(round(l))
-        l=round(l,2)
-        labels.append("NA" if l< 0 else str(l))
-    fl = "*" if all(x=="0.0" for x in labels) else (None if all(x=="NA" for x in labels) else ",".join(labels))
-    print(labels,fl)
-    edge.head_node.label = fl
-    edge.label = fl
+        if l is not None:
+            labels.append(l)
+    if labels:
+        fl =  mean(labels)
+        print(len(labels),fl)
+        edge.head_node.label = fl
+        edge.label = fl
+    else:
+        print("Nothing found for: "+str(edge))
 con = con_tree.as_string('newick')
 dest.write(con)
 

@@ -19,12 +19,12 @@ def is_number(s):
 if __name__ == '__main__':
 
     if (len(sys.argv) < 2):
-        print "USAGE: %s tree_file [threshold - default 75] [outfile name; - uses default] [-strip-internal|-strip-bl|strip-both|-nostrip; default: nostrip]" %sys.argv[0]
+        print("USAGE: %s tree_file [threshold - default 75] [outfile name; - uses default] [-strip-internal|-strip-bl|strip-both|-nostrip; default: nostrip]" %sys.argv[0])
         sys.exit(1)
 
     treeName = sys.argv[1]            
     t = 75 if len (sys.argv) < 3 else float(sys.argv[2])
-    resultsFile="%s.%d" % (treeName,t) if len (sys.argv) < 4 or sys.argv[3]=="-" else sys.argv[3]
+    resultsFile="%s.%d" % (treeName,t * 100 if t < 1 else t) if len (sys.argv) < 4 or sys.argv[3]=="-" else sys.argv[3]
     #print "outputting to", resultsFile    
     strip_internal=True if len (sys.argv) > 4 and ( sys.argv[4]=="-strip-internal" or sys.argv[4]=="-strip-both" ) else False 
     strip_bl=True if len (sys.argv) > 4 and ( sys.argv[4]=="-strip-bl" or sys.argv[4]=="-strip-both" ) else False
@@ -38,8 +38,8 @@ if __name__ == '__main__':
                 n.edge.label = n.label
                 #print n.label
                 #n.label = round(n.label/2)   
-        edges = tree.get_edge_set(filt)
-        print >>sys.stderr, len(edges), "edges will be removed"
+        edges = tree.edges(filt)
+        #print(len(edges), "edges will be removed", file=sys.stderr)
         for e in edges:
             e.collapse()
         if strip_internal:
@@ -51,4 +51,4 @@ if __name__ == '__main__':
 
         #tree.reroot_at_midpoint(update_splits=False)
         
-    trees.write(open(resultsFile,'w'),'newick',write_rooting=False)
+    trees.write(file=open(resultsFile,'w'),schema='newick')

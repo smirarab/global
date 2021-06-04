@@ -6,4 +6,6 @@ output=$2
 
 java -cp $WS_HOME/global/src/java/distance AlignmentStatistics $*
 
-sed -i -e 's/ |//g' $output
+sed -i -e "s/ |//g" $output
+
+

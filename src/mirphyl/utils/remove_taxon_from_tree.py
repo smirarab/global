@@ -13,21 +13,16 @@ import os.path
 if __name__ == '__main__':
 
     if len(sys.argv) < 3: 
-        print "USAGE: treefile species_list_file [output]"
+        print("USAGE: treefile species_list_file [output]")
         sys.exit(1)
     treeName = sys.argv[1]
-    sample = open(sys.argv[2])
-    included = [s[:-1] for s in sample.readlines()]
-    if len(sys.argv ) == 4:
-        resultsFile=sys.argv[3]
-    else:
-        resultsFile="%s.%s" % (treeName, os.path.basename(sample.name))
-    trees = dendropy.TreeList.get_from_path(treeName, 'newick',rooted=True)
-    filt = lambda node: True if (node.taxon is not None and node.taxon.label not in included) else False
+    #sample = open(sys.argv[2])
+    included = [s for s in sys.argv[2:-1]]
+    resultsFile="%s.%s" % (treeName, "renamed")
+    trees = dendropy.TreeList.get_from_path(treeName, 'newick',preserve_underscores=True)
+    filt = lambda node: True if (node.taxon is not None and node.taxon.label in included) else False
     for tree in trees:
-        nodes = tree.get_node_set(filt)
-        tree.prune_taxa([n.taxon for n in nodes])
+        tree.filter_leaf_nodes(filt)
         tree.deroot()
         #tree.reroot_at_midpoint(update_splits=False)
-    print "writing results to " + resultsFile        
-    trees.write(open(resultsFile,'w'),'newick',write_rooting=False)
+    trees.write(file=sys.stdout, schema='newick', suppress_rooting=True)
