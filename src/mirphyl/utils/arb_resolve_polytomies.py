@@ -55,5 +55,5 @@ if __name__ == '__main__':
     for tree in trees:            
         print(".", end=' ')  
         resolve_polytomies(tree,rng=random) 
-    print() 
-    trees.write(file=open(resultsFile,'w'),schema='newick',suppress_rooting=True)
+    print(trees)
+    trees.write(open(resultsFile,'w'),'newick',suppress_rooting=True)

@@ -1,6 +1,10 @@
 #!/bin/sh
 
+<<<<<<< HEAD
+#:test $# == 2 || $( echo USAGE: input_fasta output_phylip_file_name; exit 1; )
+=======
 test $# == 2 || { echo USAGE: input_fasta output_phylip_file_name; exit 1; }
+>>>>>>> a0604c7cca6063317c83b1a1c003a8b275ece494
 
 tmp=`mktemp XXX`
 
